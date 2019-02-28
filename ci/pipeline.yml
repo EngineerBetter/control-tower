@@ -278,7 +278,6 @@ jobs:
       passed: [build]
     - get: pcf-ops
       passed: [build]
-    - get: release
       params:
         globs: [control-tower-linux-amd64]
   - task: smoke-test
