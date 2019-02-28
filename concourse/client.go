@@ -3,15 +3,15 @@ package concourse
 import (
 	"io"
 
-	"github.com/EngineerBetter/concourse-up/commands/maintain"
+	"github.com/EngineerBetter/control-tower/commands/maintain"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/certs"
-	"github.com/EngineerBetter/concourse-up/commands/deploy"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/certs"
+	"github.com/EngineerBetter/control-tower/commands/deploy"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/terraform"
 
 	"github.com/xenolf/lego/lego"
 )
@@ -37,7 +37,7 @@ type Client struct {
 	versionFile           []byte
 }
 
-// IClient represents a concourse-up client
+// IClient represents a control-tower client
 type IClient interface {
 	Deploy() error
 	Destroy() error
@@ -45,9 +45,9 @@ type IClient interface {
 	Maintain(maintain.Args) error
 }
 
-//go:generate go-bindata -pkg $GOPACKAGE ../../concourse-up-ops/director-versions-aws.json ../../concourse-up-ops/director-versions-gcp.json
-var awsVersionFile = MustAsset("../../concourse-up-ops/director-versions-aws.json")
-var gcpVersionFile = MustAsset("../../concourse-up-ops/director-versions-gcp.json")
+//go:generate go-bindata -pkg $GOPACKAGE ../../control-tower-ops/director-versions-aws.json ../../control-tower-ops/director-versions-gcp.json
+var awsVersionFile = MustAsset("../../control-tower-ops/director-versions-aws.json")
+var gcpVersionFile = MustAsset("../../control-tower-ops/director-versions-gcp.json")
 
 // New returns a new client
 func NewClient(

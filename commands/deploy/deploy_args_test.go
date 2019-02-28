@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	. "github.com/EngineerBetter/concourse-up/commands/deploy"
+	. "github.com/EngineerBetter/control-tower/commands/deploy"
 )
 
 func TestDeployArgs_Validate(t *testing.T) {

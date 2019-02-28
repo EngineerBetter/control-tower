@@ -1,7 +1,7 @@
 package workingdir
 
 import (
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/util"
 )
 
 //go:generate counterfeiter . IClient

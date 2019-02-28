@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
+	"github.com/EngineerBetter/control-tower/iaas"
 )
 
 // Destroy destroys a concourse instance

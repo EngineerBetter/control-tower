@@ -69,7 +69,7 @@ class AWS
   private
 
   def vpc_id(project, region)
-    results_json = run("aws --region #{region} ec2 describe-vpcs --filters 'Name=tag:concourse-up-project,Values=#{project}'")
+    results_json = run("aws --region #{region} ec2 describe-vpcs --filters 'Name=tag:control-tower-project,Values=#{project}'")
     results = JSON.parse(results_json)
     return '' unless results.fetch('Vpcs', []).any?
     results.fetch('Vpcs')
@@ -98,7 +98,7 @@ class AWS
   end
 
   def delete_bosh(project, region)
-    results_json = run("aws --region #{region} ec2 describe-instances --filter 'Name=tag:concourse-up-project,Values=#{project}' 'Name=tag:deployment,Values=bosh'")
+    results_json = run("aws --region #{region} ec2 describe-instances --filter 'Name=tag:control-tower-project,Values=#{project}' 'Name=tag:deployment,Values=bosh'")
     results = JSON.parse(results_json)
     ids = results.fetch('Reservations')
                 .flat_map { |reservation| reservation.fetch('Instances') }
@@ -107,7 +107,7 @@ class AWS
   end
 
   def delete_instances(project, region)
-    results_json = run("aws --region #{region} ec2 describe-instances --filter 'Name=tag:concourse-up-project,Values=#{project}'")
+    results_json = run("aws --region #{region} ec2 describe-instances --filter 'Name=tag:control-tower-project,Values=#{project}'")
     results = JSON.parse(results_json)
     ids = results.fetch('Reservations')
                 .flat_map { |reservation| reservation.fetch('Instances') }
@@ -122,7 +122,7 @@ class AWS
   end
 
   def delete_elastic_ips(project, region)
-    results_json = run("aws --region #{region} ec2 describe-addresses --filter 'Name=tag:concourse-up-project,Values=#{project}'")
+    results_json = run("aws --region #{region} ec2 describe-addresses --filter 'Name=tag:control-tower-project,Values=#{project}'")
     results = JSON.parse(results_json)
     ids = results.fetch('Addresses').map { |address| address.fetch('AllocationId') }
     ids.each { |id| run("aws --region #{region} ec2 release-address --allocation-id #{id}") }
@@ -163,7 +163,7 @@ class AWS
   end
 
   def delete_internet_gateways(project, region, vpc_id)
-    results_json = run("aws --region #{region} ec2 describe-internet-gateways --filter 'Name=tag:concourse-up-project,Values=#{project}'")
+    results_json = run("aws --region #{region} ec2 describe-internet-gateways --filter 'Name=tag:control-tower-project,Values=#{project}'")
     results = JSON.parse(results_json)
     ids = results.fetch('InternetGateways').map { |address| address.fetch('InternetGatewayId') }
     ids.each { |id| run("aws --region #{region} ec2 detach-internet-gateway --vpc-id #{vpc_id} --internet-gateway-id #{id}") }
@@ -171,7 +171,7 @@ class AWS
   end
 
   def delete_things(type, key, id_key, id_flag, project, region)
-    results_json = run("aws --region #{region} ec2 describe-#{type}s --filter 'Name=tag:concourse-up-project,Values=#{project}'")
+    results_json = run("aws --region #{region} ec2 describe-#{type}s --filter 'Name=tag:control-tower-project,Values=#{project}'")
     results = JSON.parse(results_json)
     ids = results.fetch(key).map { |address| address.fetch(id_key) }
     ids.each { |id| run("aws --region #{region} ec2 delete-#{type} --#{id_flag} #{id}") }

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# We can't test that concourse-up will update itself to a latest release without publishing a new release
+# We can't test that control-tower will update itself to a latest release without publishing a new release
 # Instead we will test that if we publish a non-existant release, the self-update will revert back to a known release
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/test-setup.sh
+source control-tower/ci/tasks/lib/test-setup.sh
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/check-cidr-ranges.sh
+source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 
 handleVerboseMode
 
@@ -14,7 +14,7 @@ setDeploymentName updt
 
 trapDefaultCleanup
 
-cp release/concourse-up-linux-amd64 ./cup
+cp release/control-tower-linux-amd64 ./cup
 chmod +x ./cup
 
 echo "DEPLOY OLD VERSION"

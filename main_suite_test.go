@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestConcourseUp(t *testing.T) {
+func TestControlTower(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Concourse-Up Suite")
+	RunSpecs(t, "Control-Tower Suite")
 }

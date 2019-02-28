@@ -1,8 +1,8 @@
 platform: linux
 
 inputs:
-- name: concourse-up-ops
-- name: concourse-up
+- name: control-tower-ops
+- name: control-tower
 - name: build-metadata
 
 outputs:
@@ -13,4 +13,4 @@ params:
   CONCOURSE_URL:
 
 run:
-  path: concourse-up/ci/tasks/get-ops-version.sh
+  path: control-tower/ci/tasks/get-ops-version.sh

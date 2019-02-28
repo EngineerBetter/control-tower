@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/testsupport"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/testsupport"
 )
 
 func FakeGCPStorage() iaas.GCPOption {

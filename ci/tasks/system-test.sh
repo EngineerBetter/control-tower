@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/test-setup.sh
+source control-tower/ci/tasks/lib/test-setup.sh
 
 handleVerboseMode
 setDeploymentName sys
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/check-db.sh
+source control-tower/ci/tasks/lib/check-db.sh
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/check-cidr-ranges.sh
+source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 
 trapDefaultCleanup
 
@@ -19,7 +19,7 @@ chmod +x ./cup
 if [ "$IAAS" = "GCP" ]; then
   custom_domain="$deployment-user.gcp.engineerbetter.com"
 else
-  custom_domain="$deployment-user.concourse-up.engineerbetter.com"
+  custom_domain="$deployment-user.control-tower.engineerbetter.com"
 fi
 
 certstrap init \
@@ -64,7 +64,7 @@ echo "$config" | jq -r '.config.concourse_cert' > generated-ca-cert.pem
 if [ "$IAAS" = "GCP" ]
 then
   gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-  export CLOUDSDK_CORE_PROJECT=concourse-up
+  export CLOUDSDK_CORE_PROJECT=control-tower-233017
 fi
 
 # Check RDS instance class is db.t2.small

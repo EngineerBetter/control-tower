@@ -7,12 +7,12 @@ params:
   OUTPUT_FILE:
 
 inputs:
-- name: concourse-up
-- name: concourse-up-ops
+- name: control-tower
+- name: control-tower-ops
 - name: version
 
 outputs:
 - name: build-linux
 
 run:
-  path: concourse-up/ci/tasks/build.sh
+  path: control-tower/ci/tasks/build.sh

@@ -6,21 +6,21 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/bosh/boshfakes"
-	"github.com/EngineerBetter/concourse-up/certs"
-	"github.com/EngineerBetter/concourse-up/certs/certsfakes"
-	"github.com/EngineerBetter/concourse-up/commands/deploy"
-	"github.com/EngineerBetter/concourse-up/concourse"
-	"github.com/EngineerBetter/concourse-up/concourse/concoursefakes"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/config/configfakes"
-	"github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/fly/flyfakes"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/iaas/iaasfakes"
-	"github.com/EngineerBetter/concourse-up/terraform"
-	"github.com/EngineerBetter/concourse-up/terraform/terraformfakes"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
+	"github.com/EngineerBetter/control-tower/certs"
+	"github.com/EngineerBetter/control-tower/certs/certsfakes"
+	"github.com/EngineerBetter/control-tower/commands/deploy"
+	"github.com/EngineerBetter/control-tower/concourse"
+	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/config/configfakes"
+	"github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/fly/flyfakes"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
+	"github.com/EngineerBetter/control-tower/terraform"
+	"github.com/EngineerBetter/control-tower/terraform/terraformfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -212,7 +212,7 @@ ZSFal6ECgYBDXbrmvF+G5HoASez0WpgrHxf3oZh+gP40rzwc94m9rVP28i8xTvT9
 sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 -----END RSA PRIVATE KEY-----`,
 			Region:            "eu-west-1",
-			Deployment:        "concourse-up-happymeal",
+			Deployment:        "control-tower-happymeal",
 			Project:           "happymeal",
 			TFStatePath:       "example-path",
 			DirectorUsername:  "admin",
@@ -242,7 +242,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 		configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 		configAfterCreateEnv.Domain = "77.77.77.77"
-		configAfterCreateEnv.Tags = []string{"concourse-up-version=some version"}
+		configAfterCreateEnv.Tags = []string{"control-tower-version=some version"}
 		configAfterCreateEnv.Version = "some version"
 
 		terraformCLI = setupFakeTerraformCLI(terraformOutputs)
@@ -423,7 +423,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			It("Returns a meaningful error", func() {
 				client := buildClient()
 				_, err := client.FetchInfo()
-				Expect(err).To(MatchError("Do you need to add your IP 1.2.3.4 to the concourse-up-happymeal-director security group/source range entry for director firewall (for ports 22, 6868, and 25555)?"))
+				Expect(err).To(MatchError("Do you need to add your IP 1.2.3.4 to the control-tower-happymeal-director security group/source range entry for director firewall (for ports 22, 6868, and 25555)?"))
 			})
 		})
 	})

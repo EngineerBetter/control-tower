@@ -16,7 +16,7 @@ var (
 var _ = Describe("commands", func() {
 	BeforeSuite(func() {
 		var err error
-		cliPath, err = Build("github.com/EngineerBetter/concourse-up")
+		cliPath, err = Build("github.com/EngineerBetter/control-tower")
 		Expect(err).ToNot(HaveOccurred(), "Error building source")
 	})
 
@@ -31,7 +31,7 @@ var _ = Describe("commands", func() {
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
 				Eventually(session).Should(Exit(0))
-				Expect(session.Out).To(Say("concourse-up deploy - Deploys or updates a Concourse"))
+				Expect(session.Out).To(Say("control-tower deploy - Deploys or updates a Concourse"))
 				Expect(session.Out).To(Say("--region value"))
 				Expect(session.Out).To(Say("--domain value"))
 				Expect(session.Out).To(Say("--tls-cert value"))
@@ -51,7 +51,7 @@ var _ = Describe("commands", func() {
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
-				Expect(session.Err).To(Say("Usage is `concourse-up deploy <name>`"))
+				Expect(session.Err).To(Say("Usage is `control-tower deploy <name>`"))
 			})
 		})
 
@@ -133,7 +133,7 @@ var _ = Describe("commands", func() {
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
 				Eventually(session).Should(Exit(0))
-				Expect(session.Out).To(Say("concourse-up destroy - Destroys a Concourse"))
+				Expect(session.Out).To(Say("control-tower destroy - Destroys a Concourse"))
 			})
 		})
 
@@ -143,7 +143,7 @@ var _ = Describe("commands", func() {
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
-				Expect(session.Err).To(Say("Usage is `concourse-up destroy <name>`"))
+				Expect(session.Err).To(Say("Usage is `control-tower destroy <name>`"))
 			})
 		})
 	})
@@ -155,7 +155,7 @@ var _ = Describe("commands", func() {
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
 				Eventually(session).Should(Exit(0))
-				Expect(session.Out).To(Say("concourse-up info - Fetches information on a deployed environment"))
+				Expect(session.Out).To(Say("control-tower info - Fetches information on a deployed environment"))
 			})
 		})
 
@@ -165,7 +165,7 @@ var _ = Describe("commands", func() {
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
-				Expect(session.Err).To(Say("Usage is `concourse-up info <name>`"))
+				Expect(session.Err).To(Say("Usage is `control-tower info <name>`"))
 			})
 		})
 	})

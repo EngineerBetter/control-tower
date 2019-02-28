@@ -5,7 +5,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/boshcli"
+	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 )
 
 type FakeICLI struct {

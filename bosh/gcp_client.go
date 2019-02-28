@@ -3,11 +3,11 @@ package bosh
 import (
 	"io"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/boshcli"
-	"github.com/EngineerBetter/concourse-up/bosh/internal/workingdir"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
+	"github.com/EngineerBetter/control-tower/bosh/internal/workingdir"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/terraform"
 )
 
 //GCPClient is an GCP specific implementation of IClient

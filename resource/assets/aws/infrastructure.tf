@@ -113,8 +113,8 @@ resource "aws_s3_bucket" "blobstore" {
 
   tags {
     Name = "${var.deployment}"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 }
 
@@ -185,8 +185,8 @@ resource "aws_vpc" "default" {
 
   tags {
     Name = "${var.deployment}"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 }
 
@@ -195,8 +195,8 @@ resource "aws_internet_gateway" "default" {
 
   tags {
     Name = "${var.deployment}"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 }
 
@@ -214,7 +214,7 @@ resource "aws_route" "internet_access" {
 
     tags {
     name = "${var.deployment}"
-    concourse-up-project = "${var.project}"
+    control-tower-project = "${var.project}"
   }
 }
 
@@ -228,8 +228,8 @@ resource "aws_route_table" "private" {
 
   tags {
     Name = "${var.deployment}-private"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 }
 
@@ -241,8 +241,8 @@ resource "aws_subnet" "public" {
 
   tags {
     Name = "${var.deployment}-public"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 }
 
@@ -254,8 +254,8 @@ resource "aws_subnet" "private" {
 
   tags {
     Name = "${var.deployment}-private"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 }
 
@@ -280,7 +280,7 @@ resource "aws_eip" "director" {
 
     tags {
     name = "${var.deployment}-director"
-    concourse-up-project = "${var.project}"
+    control-tower-project = "${var.project}"
   }
 }
 
@@ -290,7 +290,7 @@ resource "aws_eip" "atc" {
 
     tags {
     name = "${var.deployment}-atc"
-    concourse-up-project = "${var.project}"
+    control-tower-project = "${var.project}"
   }
 }
 
@@ -300,19 +300,19 @@ resource "aws_eip" "nat" {
 
     tags {
     name = "${var.deployment}-nat"
-    concourse-up-project = "${var.project}"
+    control-tower-project = "${var.project}"
   }
 }
 
 resource "aws_security_group" "director" {
   name        = "${var.deployment}-director"
-  description = "Concourse UP Default BOSH security group"
+  description = "Control-Tower Default BOSH security group"
   vpc_id      = "${aws_vpc.default.id}"
 
   tags {
     Name = "${var.deployment}-director"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 
   ingress {
@@ -346,13 +346,13 @@ resource "aws_security_group" "director" {
 
 resource "aws_security_group" "vms" {
   name        = "${var.deployment}-vms"
-  description = "Concourse UP VMs security group"
+  description = "Control-Tower VMs security group"
   vpc_id      = "${aws_vpc.default.id}"
 
   tags {
     Name = "${var.deployment}-vms"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "bosh"
+    control-tower-project = "${var.project}"
+    control-tower-component = "bosh"
   }
 
   ingress {
@@ -456,13 +456,13 @@ resource "aws_security_group" "vms" {
 
 resource "aws_security_group" "rds" {
   name        = "${var.deployment}-rds"
-  description = "Concourse UP RDS security group"
+  description = "Control-Tower RDS security group"
   vpc_id      = "${aws_vpc.default.id}"
 
   tags {
     Name = "${var.deployment}-rds"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "rds"
+    control-tower-project = "${var.project}"
+    control-tower-component = "rds"
   }
 
   ingress {
@@ -475,14 +475,14 @@ resource "aws_security_group" "rds" {
 
 resource "aws_security_group" "atc" {
   name        = "${var.deployment}-atc"
-  description = "Concourse UP ATC security group"
+  description = "Control-Tower ATC security group"
   vpc_id      = "${aws_vpc.default.id}"
   depends_on = ["aws_eip.nat", "aws_eip.atc"]
 
   tags {
     Name = "${var.deployment}-atc"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "concourse"
+    control-tower-project = "${var.project}"
+    control-tower-component = "concourse"
   }
 
   egress {
@@ -534,8 +534,8 @@ resource "aws_route_table" "rds" {
 
   tags {
     Name = "${var.deployment}-rds"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "concourse"
+    control-tower-project = "${var.project}"
+    control-tower-component = "concourse"
   }
 }
 
@@ -556,8 +556,8 @@ resource "aws_subnet" "rds_a" {
 
   tags {
     Name = "${var.deployment}-rds-a"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "rds"
+    control-tower-project = "${var.project}"
+    control-tower-component = "rds"
   }
 }
 
@@ -568,8 +568,8 @@ resource "aws_subnet" "rds_b" {
 
   tags {
     Name = "${var.deployment}-rds-b"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "rds"
+    control-tower-project = "${var.project}"
+    control-tower-component = "rds"
   }
 }
 
@@ -579,8 +579,8 @@ resource "aws_db_subnet_group" "default" {
 
   tags {
     Name = "${var.deployment}"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "rds"
+    control-tower-project = "${var.project}"
+    control-tower-component = "rds"
   }
 }
 
@@ -605,8 +605,8 @@ resource "aws_db_instance" "default" {
   }
   tags {
     Name = "${var.deployment}"
-    concourse-up-project = "${var.project}"
-    concourse-up-component = "rds"
+    control-tower-project = "${var.project}"
+    control-tower-component = "rds"
   }
 }
 

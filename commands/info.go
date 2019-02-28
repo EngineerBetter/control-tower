@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/certs"
-	"github.com/EngineerBetter/concourse-up/commands/info"
-	"github.com/EngineerBetter/concourse-up/concourse"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/terraform"
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/certs"
+	"github.com/EngineerBetter/control-tower/commands/info"
+	"github.com/EngineerBetter/control-tower/concourse"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/terraform"
+	"github.com/EngineerBetter/control-tower/util"
 	"gopkg.in/urfave/cli.v1"
 	"os"
 )
@@ -60,7 +60,7 @@ var infoFlags = []cli.Flag{
 func infoAction(c *cli.Context, infoArgs info.Args, provider iaas.Provider) error {
 	name := c.Args().Get(0)
 	if name == "" {
-		return errors.New("Usage is `concourse-up info <name>`")
+		return errors.New("Usage is `control-tower info <name>`")
 	}
 
 	version := c.App.Version

@@ -2,11 +2,11 @@ ci/credentials/*
 /tmp
 .vscode
 terraform.combined.log
-concourse-up-*.yml
-concourse-up-*.pem
-concourse-up-*.json
+control-tower-*.yml
+control-tower-*.pem
+control-tower-*.json
 .idea
-/concourse-up
+/control-tower
 bindata.go
 .vs/
 .pre-commit-config.yaml

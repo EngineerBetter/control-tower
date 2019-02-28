@@ -9,16 +9,16 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/terraform"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/certs"
-	"github.com/EngineerBetter/concourse-up/commands/deploy"
-	"github.com/EngineerBetter/concourse-up/concourse"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/certs"
+	"github.com/EngineerBetter/control-tower/commands/deploy"
+	"github.com/EngineerBetter/control-tower/concourse"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/util"
 
 	cli "gopkg.in/urfave/cli.v1"
 )
@@ -89,7 +89,7 @@ var deployFlags = []cli.Flag{
 	},
 	cli.BoolFlag{
 		Name:        "self-update",
-		Usage:       "(optional) Causes Concourse-up to exit as soon as the BOSH deployment starts. May only be used when upgrading an existing deployment",
+		Usage:       "(optional) Causes Control-Tower to exit as soon as the BOSH deployment starts. May only be used when upgrading an existing deployment",
 		EnvVar:      "SELF_UPDATE",
 		Hidden:      true,
 		Destination: &initialDeployArgs.SelfUpdate,
@@ -184,7 +184,7 @@ var deployFlags = []cli.Flag{
 func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider) error {
 	name := c.Args().Get(0)
 	if name == "" {
-		return errors.New("Usage is `concourse-up deploy <name>`")
+		return errors.New("Usage is `control-tower deploy <name>`")
 	}
 
 	version := c.App.Version

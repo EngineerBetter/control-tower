@@ -4,7 +4,7 @@ package configfakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/config"
+	"github.com/EngineerBetter/control-tower/config"
 )
 
 type FakeIClient struct {

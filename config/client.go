@@ -3,7 +3,8 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/EngineerBetter/concourse-up/iaas"
+
+	"github.com/EngineerBetter/control-tower/iaas"
 )
 
 const terraformStateFileName = "terraform.tfstate"
@@ -88,7 +89,7 @@ func (client *Client) ConfigExists() (bool, error) {
 	return client.HasAsset(configFilePath)
 }
 
-// Update stores the conconcourse up config file to S3
+// Update stores the control-tower config file to S3
 func (client *Client) Update(config Config) error {
 	bytes, err := json.Marshal(config)
 	if err != nil {
@@ -141,7 +142,7 @@ func (client *Client) configBucket() string {
 }
 
 func deployment(project string) string {
-	return fmt.Sprintf("concourse-up-%s", project)
+	return fmt.Sprintf("control-tower-%s", project)
 }
 
 func createBucketName(deployment, extension string) string {

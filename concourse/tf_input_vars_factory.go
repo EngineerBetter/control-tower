@@ -3,9 +3,9 @@ package concourse
 import (
 	"fmt"
 
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/terraform"
 )
 
 //go:generate counterfeiter . TFInputVarsFactory

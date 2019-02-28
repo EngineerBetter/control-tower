@@ -6,9 +6,9 @@ import (
 	"net"
 	"strings"
 
-	"github.com/EngineerBetter/concourse-up/commands/deploy"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/iaas"
+	"github.com/EngineerBetter/control-tower/commands/deploy"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/asaskevich/govalidator"
 )
 

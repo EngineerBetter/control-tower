@@ -9,5 +9,5 @@ import (
 
 func TestUtil(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Concourse-Up Util Suite")
+	RunSpecs(t, "Control-Tower Util Suite")
 }

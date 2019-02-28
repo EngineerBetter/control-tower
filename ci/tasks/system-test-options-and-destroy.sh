@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/test-setup.sh
+source control-tower/ci/tasks/lib/test-setup.sh
 
 handleVerboseMode
 setDeploymentName opt
@@ -9,21 +9,21 @@ setDeploymentName opt
 # Create empty array of args that is used in sourced setup functions
 args=()
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/github-auth.sh
+source control-tower/ci/tasks/lib/github-auth.sh
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/tags.sh
+source control-tower/ci/tasks/lib/tags.sh
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/letsencrypt.sh
+source control-tower/ci/tasks/lib/letsencrypt.sh
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/assert-iaas.sh
+source control-tower/ci/tasks/lib/assert-iaas.sh
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/check-cidr-ranges.sh
+source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 
 # shellcheck disable=SC1091
-[ "$IAAS" = "AWS" ] && { source concourse-up/ci/tasks/lib/destroy.sh; }
+[ "$IAAS" = "AWS" ] && { source control-tower/ci/tasks/lib/destroy.sh; }
 
 # shellcheck disable=SC1091
-[ "$IAAS" = "GCP" ] && { source concourse-up/ci/tasks/lib/gcp-destroy.sh; }
+[ "$IAAS" = "GCP" ] && { source control-tower/ci/tasks/lib/gcp-destroy.sh; }
 
 cp "$BINARY_PATH" ./cup
 chmod +x ./cup

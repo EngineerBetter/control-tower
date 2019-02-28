@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/EngineerBetter/concourse-up/terraform"
+	. "github.com/EngineerBetter/control-tower/terraform"
 )
 
 func TestGCPInputVars_ConfigureTerraform(t *testing.T) {

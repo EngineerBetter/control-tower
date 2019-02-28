@@ -2,12 +2,12 @@
 
 function recordDeployedState() {
     echo "Record ids of Concourse componenents"
-    vpc_name=$(gcloud compute networks list --filter="name ~ concourse-up-$deployment" --format=json | jq -r '.[0].name')
+    vpc_name=$(gcloud compute networks list --filter="name ~ control-tower-$deployment" --format=json | jq -r '.[0].name')
     instances=$(gcloud compute instances list --filter="networkInterfaces[0].network:$vpc_name" --format=json)
 
     existing_volumes=$(echo "$instances" | tr -d "[:cntrl:]" | jq -r '[.[].disks[].source]')
     echo "Get terraform state from bucket"
-    config_bucket="concourse-up-$deployment-$region-config"
+    config_bucket="control-tower-$deployment-$region-config"
     gsutil cp "gs://$config_bucket/default.tfstate" .
 
     echo "Record name of db instance"

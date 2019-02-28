@@ -6,7 +6,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/asaskevich/govalidator"
 )
 

@@ -2,8 +2,8 @@
 platform: linux
 
 inputs:
-- name: concourse-up
-- name: concourse-up-ops
+- name: control-tower
+- name: control-tower-ops
 
 run:
-  path: concourse-up/ci/tasks/unit-test.sh
+  path: control-tower/ci/tasks/unit-test.sh

@@ -5,8 +5,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/aws"
-	"github.com/EngineerBetter/concourse-up/db"
+	"github.com/EngineerBetter/control-tower/bosh/internal/aws"
+	"github.com/EngineerBetter/control-tower/db"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 

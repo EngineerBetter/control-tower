@@ -4,7 +4,7 @@ package boshfakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
+	"github.com/EngineerBetter/control-tower/bosh"
 )
 
 type FakeIClient struct {

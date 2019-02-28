@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/util"
 )
 
 func fakeExecCommand(command string, args ...string) *exec.Cmd {

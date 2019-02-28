@@ -3,12 +3,12 @@ package config_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/EngineerBetter/concourse-up/iaas/iaasfakes"
+	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 	"reflect"
 	"testing"
 
-	. "github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/iaas"
+	. "github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/iaas"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -31,8 +31,8 @@ var _ = Describe("Client", func() {
 	Describe("NewConfig", func() {
 		It("populates fields correctly", func() {
 			conf := client.NewConfig()
-			Expect(conf.ConfigBucket).To(Equal("concourse-up-test-eu-west-1-config"))
-			Expect(conf.Deployment).To(Equal("concourse-up-test"))
+			Expect(conf.ConfigBucket).To(Equal("control-tower-test-eu-west-1-config"))
+			Expect(conf.Deployment).To(Equal("control-tower-test"))
 			Expect(conf.Namespace).To(Equal("eu-west-1"))
 			Expect(conf.Project).To(Equal("test"))
 			Expect(conf.Region).To(Equal("eu-west-1"))
@@ -72,7 +72,7 @@ func TestNew(t *testing.T) {
 				Iaas:         provider,
 				Project:      "aProject",
 				Namespace:    "eu-west-1",
-				BucketName:   "concourse-up-aProject-eu-west-1-config",
+				BucketName:   "control-tower-aProject-eu-west-1-config",
 				BucketExists: false,
 				BucketError:  nil,
 			},
@@ -91,7 +91,7 @@ func TestNew(t *testing.T) {
 				Iaas:         provider,
 				Project:      "aProject",
 				Namespace:    "someNamespace",
-				BucketName:   "concourse-up-aProject-someNamespace-config",
+				BucketName:   "control-tower-aProject-someNamespace-config",
 				BucketExists: false,
 				BucketError:  nil,
 			},
@@ -110,12 +110,12 @@ func TestNew(t *testing.T) {
 				Iaas:         provider,
 				Project:      "aProject",
 				Namespace:    "someNamespace",
-				BucketName:   "concourse-up-aProject-eu-west-1-config",
+				BucketName:   "control-tower-aProject-eu-west-1-config",
 				BucketExists: true,
 				BucketError:  nil,
 			},
 			FakeBucketExists: func(name string) (bool, error) {
-				if name == "concourse-up-aProject-eu-west-1-config" {
+				if name == "control-tower-aProject-eu-west-1-config" {
 					return true, nil
 				}
 				return false, nil
@@ -132,12 +132,12 @@ func TestNew(t *testing.T) {
 				Iaas:         provider,
 				Project:      "aProject",
 				Namespace:    "someNamespace",
-				BucketName:   "concourse-up-aProject-someNamespace-config",
+				BucketName:   "control-tower-aProject-someNamespace-config",
 				BucketExists: true,
 				BucketError:  nil,
 			},
 			FakeBucketExists: func(name string) (bool, error) {
-				if name == "concourse-up-aProject-someNamespace-config" {
+				if name == "control-tower-aProject-someNamespace-config" {
 					return true, nil
 				}
 				return false, nil
@@ -154,7 +154,7 @@ func TestNew(t *testing.T) {
 				Iaas:         provider,
 				Project:      "aProject",
 				Namespace:    "eu-west-1",
-				BucketName:   "concourse-up-aProject-eu-west-1-config",
+				BucketName:   "control-tower-aProject-eu-west-1-config",
 				BucketExists: true,
 				BucketError:  nil,
 			},

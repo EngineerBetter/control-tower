@@ -12,7 +12,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/util/bincache"
+	"github.com/EngineerBetter/control-tower/util/bincache"
 	"github.com/stretchr/testify/require"
 )
 

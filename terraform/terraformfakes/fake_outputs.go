@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/terraform"
 )
 
 type FakeOutputs struct {

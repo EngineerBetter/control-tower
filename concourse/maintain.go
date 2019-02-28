@@ -6,11 +6,11 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/EngineerBetter/concourse-up/resource"
-	"github.com/EngineerBetter/concourse-up/util/yaml"
+	"github.com/EngineerBetter/control-tower/resource"
+	"github.com/EngineerBetter/control-tower/util/yaml"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/commands/maintain"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/commands/maintain"
 )
 
 type tasks struct {

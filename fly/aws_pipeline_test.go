@@ -1,8 +1,8 @@
 package fly_test
 
 import (
-	. "github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/util"
+	. "github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -12,11 +12,11 @@ var _ = Describe("AWSPipeline", func() {
 		var expected = `
 ---
 resources:
-- name: concourse-up-release
+- name: control-tower-release
   type: github-release
   source:
     user: engineerbetter
-    repository: concourse-up
+    repository: control-tower
     pre_release: true
 - name: every-day
   type: time
@@ -27,7 +27,7 @@ jobs:
   serial_groups: [cup]
   serial: true
   plan:
-  - get: concourse-up-release
+  - get: control-tower-release
     trigger: true
   - task: update
     params:
@@ -44,7 +44,7 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up-release
+      - name: control-tower-release
       run:
         path: bash
         args:
@@ -52,15 +52,15 @@ jobs:
         - |
           set -eux
 
-          cd concourse-up-release
-          chmod +x concourse-up-linux-amd64
-          ./concourse-up-linux-amd64 deploy $DEPLOYMENT
+          cd control-tower-release
+          chmod +x control-tower-linux-amd64
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 - name: renew-https-cert
   serial_groups: [cup]
   serial: true
   plan:
-  - get: concourse-up-release
-    version: {tag: COMPILE_TIME_VARIABLE_fly_concourse_up_version }
+  - get: control-tower-release
+    version: {tag: COMPILE_TIME_VARIABLE_fly_control_tower_version }
   - get: every-day
     trigger: true
   - task: update
@@ -78,15 +78,15 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up-release
+      - name: control-tower-release
       run:
         path: bash
         args:
         - -c
         - |
           set -euxo pipefail
-          cd concourse-up-release
-          chmod +x concourse-up-linux-amd64
+          cd control-tower-release
+          chmod +x control-tower-linux-amd64
 
           now_seconds=$(date +%s)
           not_after=$(echo | openssl s_client -connect ci.engineerbetter.com:443 2>/dev/null | openssl x509 -noout -enddate)
@@ -100,7 +100,7 @@ jobs:
           fi
 
           echo Certificates expire in $days_until_expiry days, redeploying to renew them
-          ./concourse-up-linux-amd64 deploy $DEPLOYMENT
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 `
 
 		It("Generates something sensible", func() {

@@ -4,7 +4,7 @@ package workingdirfakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/workingdir"
+	"github.com/EngineerBetter/control-tower/bosh/internal/workingdir"
 )
 
 type FakeIClient struct {

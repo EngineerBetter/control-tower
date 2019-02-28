@@ -124,9 +124,9 @@ func (client *GCPClient) buildTagsYaml(project interface{}, component string) (s
 			return "", err
 		}
 	}
-	cProjectTag := fmt.Sprintf("concourse-up-project: %v,", project)
+	cProjectTag := fmt.Sprintf("control-tower-project: %v,", project)
 	b.WriteString(cProjectTag)
-	cComponentTag := fmt.Sprintf("concourse-up-component: %s", component)
+	cComponentTag := fmt.Sprintf("control-tower-component: %s", component)
 	b.WriteString(cComponentTag)
 	return fmt.Sprintf("{%s}", b.String()), nil
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/pipeline.sh
+source control-tower/ci/tasks/lib/pipeline.sh
 
 function assertPipelinesCanReadFromCredhub() {
   echo "About to test that pipelines can get values from Credhub"

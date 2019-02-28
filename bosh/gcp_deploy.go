@@ -3,8 +3,8 @@ package bosh
 import (
 	"net"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/boshcli"
-	"github.com/EngineerBetter/concourse-up/bosh/internal/gcp"
+	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
+	"github.com/EngineerBetter/control-tower/bosh/internal/gcp"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 
@@ -60,8 +60,8 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 	if err != nil {
 		return state, creds, err
 	}
-	tags["concourse-up-project"] = client.config.Project
-	tags["concourse-up-component"] = "concourse"
+	tags["control-tower-project"] = client.config.Project
+	tags["control-tower-component"] = "concourse"
 	//TODO(px): pull up this so that we use aws.Store
 	store := temporaryStore{
 		"vars.yaml":  creds,

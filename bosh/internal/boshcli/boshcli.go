@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/resource"
-	"github.com/EngineerBetter/concourse-up/util/yaml"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/resource"
+	"github.com/EngineerBetter/control-tower/util/yaml"
 )
 
 //go:generate counterfeiter . ICLI

@@ -2,13 +2,13 @@
 
 function recordDeployedState() {
     echo "Record ids of Concourse components"
-    vpc_id=$(aws ec2 describe-vpcs --filter "Name=tag:Name,Values=concourse-up-$deployment" --region us-east-1 | jq -r '.Vpcs[0].VpcId')
+    vpc_id=$(aws ec2 describe-vpcs --filter "Name=tag:Name,Values=control-tower-$deployment" --region us-east-1 | jq -r '.Vpcs[0].VpcId')
     instances=$(aws ec2 describe-instances --filter "Name=vpc-id,Values=$vpc_id" --region us-east-1)
     volume_ids=$(echo "$instances" | jq -r '.Reservations[].Instances[].BlockDeviceMappings[].Ebs.VolumeId' | tr '\n' ',' | sed 's/,$//')
 
 
     echo "Get terraform state out of S3"
-    config_bucket="concourse-up-$deployment-us-east-1-config"
+    config_bucket="control-tower-$deployment-us-east-1-config"
     aws s3 cp "s3://$config_bucket/terraform.tfstate" .
 
     echo "Record name of RDS instance"
@@ -29,7 +29,7 @@ function assertEverythingDeleted() {
     [ "$instances_count" -eq 0 ]
 
     echo "Check that NAT gateway has been deleted"
-    nat_gateway_count=$(aws ec2 describe-nat-gateways --region eu-west-2 --filter "Name=tag:concourse-up-project,Values=$deployment" | jq '.NatGateways | length')
+    nat_gateway_count=$(aws ec2 describe-nat-gateways --region eu-west-2 --filter "Name=tag:control-tower-project,Values=$deployment" | jq '.NatGateways | length')
     [ "$nat_gateway_count" -eq 0 ]
 
     echo "Check that the RDS instance has been deleted"

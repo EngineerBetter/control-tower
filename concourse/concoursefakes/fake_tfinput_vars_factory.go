@@ -4,9 +4,9 @@ package concoursefakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/concourse"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/concourse"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/terraform"
 )
 
 type FakeTFInputVarsFactory struct {

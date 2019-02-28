@@ -10,8 +10,8 @@ import (
 	"os/exec"
 	"path"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/resource"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/resource"
 )
 
 // InputVars exposes ConfigureDirectorManifestCPI

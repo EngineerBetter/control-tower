@@ -2,11 +2,11 @@ package terraform_test
 
 import (
 	"bytes"
-	"github.com/EngineerBetter/concourse-up/iaas"
+	"github.com/EngineerBetter/control-tower/iaas"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/internal/fakeexec"
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/internal/fakeexec"
+	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/stretchr/testify/require"
 )
 

@@ -4,8 +4,8 @@ package flyfakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/fly"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/fly"
 )
 
 type FakeIClient struct {

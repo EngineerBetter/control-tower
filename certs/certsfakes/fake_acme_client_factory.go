@@ -1,7 +1,7 @@
 package certsfakes
 
 import (
-	"github.com/EngineerBetter/concourse-up/certs"
+	"github.com/EngineerBetter/control-tower/certs"
 	"github.com/xenolf/lego/lego"
 )
 

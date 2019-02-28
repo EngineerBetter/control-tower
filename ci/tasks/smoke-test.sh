@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/test-setup.sh
+source control-tower/ci/tasks/lib/test-setup.sh
 
 handleVerboseMode
 setDeploymentName smk

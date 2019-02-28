@@ -13,11 +13,11 @@ import (
 
 	"strings"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/certs"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/certs"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/xenolf/lego/lego"
 	"gopkg.in/yaml.v2"
 )
@@ -40,7 +40,7 @@ type BoshParams struct {
 func stripVersion(tags []string) []string {
 	output := []string{}
 	for _, tag := range tags {
-		if !strings.HasPrefix(tag, "concourse-up-version") {
+		if !strings.HasPrefix(tag, "control-tower-version") {
 			output = append(output, tag)
 		}
 	}
@@ -81,7 +81,7 @@ func (client *Client) Deploy() error {
 		return err
 	}
 	conf.Tags = stripVersion(conf.Tags)
-	conf.Tags = append([]string{fmt.Sprintf("concourse-up-version=%s", client.version)}, conf.Tags...)
+	conf.Tags = append([]string{fmt.Sprintf("control-tower-version=%s", client.version)}, conf.Tags...)
 
 	conf.Version = client.version
 
@@ -565,7 +565,7 @@ fly --target {{.Project}} login{{if not .ConcourseUserProvidedCert}} --insecure{
 Metrics available at https://{{.Domain}}:3000 using the same username and password
 
 Log into credhub with:
-eval "$(concourse-up info --region {{.Region}} {{ if ne .Namespace .Region }} --namespace {{ .Namespace }} {{ end }} --iaas {{ .IAAS }} --env {{.Project}})"
+eval "$(control-tower info --region {{.Region}} {{ if ne .Namespace .Region }} --namespace {{ .Namespace }} {{ end }} --iaas {{ .IAAS }} --env {{.Project}})"
 `
 
 func writeDeploySuccessMessage(config config.Config, stdout io.Writer) error {

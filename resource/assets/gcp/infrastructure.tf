@@ -228,7 +228,7 @@ resource "google_compute_firewall" "atc-https" {
 
 resource "google_compute_firewall" "from-public" {
   name = "${var.deployment}-public"
-  description = "Concourse UP VMs firewall"
+  description = "Control-Tower VMs firewall"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["web", "external", "internal", "worker"]
   source_ranges = ["${var.public_cidr}"]
@@ -247,7 +247,7 @@ resource "google_compute_firewall" "from-public" {
 
 resource "google_compute_firewall" "from-private" {
   name = "${var.deployment}-private"
-  description = "Concourse UP VMs firewall"
+  description = "Control-Tower VMs firewall"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["web", "external", "internal", "worker"]
   source_ranges = ["${var.private_cidr}"]

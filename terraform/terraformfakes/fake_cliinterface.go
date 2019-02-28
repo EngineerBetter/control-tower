@@ -4,7 +4,7 @@ package terraformfakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/terraform"
+	"github.com/EngineerBetter/control-tower/terraform"
 )
 
 type FakeCLIInterface struct {

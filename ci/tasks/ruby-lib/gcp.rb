@@ -5,7 +5,7 @@ creds_path = pwd+'googlecreds.json'
 File.write(creds_path, ENV.fetch('GOOGLE_APPLICATION_CREDENTIALS_CONTENTS'))
 ENV['GOOGLE_APPLICATION_CREDENTIALS'] = creds_path
 `gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"`
-ENV['CLOUDSDK_CORE_PROJECT'] = 'concourse-up'
+ENV['CLOUDSDK_CORE_PROJECT'] = 'control-tower-233017'
 
 class GCP
   private
@@ -42,8 +42,8 @@ class GCP
       bucket.delete_empty
     else
       found_components = 0
-      found_components += delete_components('compute instances', "labels.deployment:bosh AND labels.concourse-up-project:#{orphan.project}", 'name')
-      found_components += delete_components('compute instances', "labels.concourse-up-project:#{orphan.project}", 'name')
+      found_components += delete_components('compute instances', "labels.deployment:bosh AND labels.control-tower-project:#{orphan.project}", 'name')
+      found_components += delete_components('compute instances', "labels.control-tower-project:#{orphan.project}", 'name')
       found_components += delete_components('compute instances', "name:'#{orphan.deployment}-nat-instance'", 'name')
       found_components += delete_regional_components('compute networks subnets', "name~'.*#{orphan.project}.*'", 'name', orphan.region)
       found_components += delete_components('compute routes', "network~'.*#{orphan.deployment}.*'", 'name')

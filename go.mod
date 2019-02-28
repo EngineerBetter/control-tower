@@ -1,52 +1,35 @@
-module github.com/EngineerBetter/concourse-up
+module github.com/EngineerBetter/control-tower
 
 require (
-	cloud.google.com/go v0.31.0
-	github.com/GoogleCloudPlatform/cloudsql-proxy v0.0.0-20181129011958-60b5f58da796
+	cloud.google.com/go v0.36.0
+	github.com/GoogleCloudPlatform/cloudsql-proxy v0.0.0-20190129172621-c8b1d7a94ddf
 	github.com/apparentlymart/go-cidr v1.0.0
-	github.com/asaskevich/govalidator v0.0.0-20171111151018-521b25f4b05f
-	github.com/aws/aws-sdk-go v1.15.31
+	github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf
+	github.com/aws/aws-sdk-go v1.17.7
 	github.com/bmatcuk/doublestar v1.1.1 // indirect
+	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/charlievieth/fs v0.0.0-20170613215519-7dc373669fa1 // indirect
-	github.com/cloudfoundry/bosh-cli v5.2.2+incompatible
-	github.com/cloudfoundry/bosh-utils v0.0.0-20180725223622-407dd7546455 // indirect
-	github.com/cppforlife/go-patch v0.0.0-20171006213518-250da0e0e68c
-	github.com/davecgh/go-spew v1.1.0 // indirect
-	github.com/fatih/color v1.5.0
+	github.com/cloudfoundry/bosh-cli v5.4.0+incompatible
+	github.com/cloudfoundry/bosh-utils v0.0.0-20190206192830-9a0affed2bf1 // indirect
+	github.com/cppforlife/go-patch v0.2.0
+	github.com/fatih/color v1.7.0
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-ini/ini v1.32.0 // indirect
-	github.com/google/go-cmp v0.2.0 // indirect
-	github.com/google/martian v2.1.0+incompatible // indirect
-	github.com/googleapis/gax-go v2.0.0+incompatible // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20180628210949-0892b62f0d9f // indirect
-	github.com/jtolds/gls v4.2.1+incompatible // indirect
-	github.com/kr/pretty v0.1.0 // indirect
-	github.com/lib/pq v0.0.0-20171126050459-83612a56d3dd
-	github.com/mattn/go-colorable v0.0.9 // indirect
-	github.com/mattn/go-isatty v0.0.3 // indirect
-	github.com/miekg/dns v1.0.3 // indirect
+	github.com/lib/pq v1.0.0
+	github.com/mattn/go-colorable v0.1.1 // indirect
+	github.com/mattn/go-isatty v0.0.6 // indirect
+	github.com/miekg/dns v1.1.4 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/onsi/ginkgo v1.7.0
 	github.com/onsi/gomega v1.4.3
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/smartystreets/assertions v0.0.0-20180803164922-886ec427f6b9 // indirect
-	github.com/smartystreets/goconvey v0.0.0-20180222194500-ef6db91d284a // indirect
 	github.com/square/certstrap v1.1.1
-	github.com/stretchr/testify v1.2.2
+	github.com/stretchr/testify v1.3.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
-	github.com/xenolf/lego v2.1.0+incompatible
-	go.opencensus.io v0.17.0 // indirect
-	golang.org/x/crypto v0.0.0-20180111101123-5f55bce93ad2
-	golang.org/x/net v0.0.0-20190206173232-65e2d4e15006
-	golang.org/x/oauth2 v0.0.0-20181017192945-9dcd33a902f4
-	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
-	golang.org/x/sys v0.0.0-20190209173611-3b5209105503 // indirect
-	google.golang.org/api v0.0.0-20181114235557-83a9d304b1e6
-	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
-	google.golang.org/grpc v1.15.0 // indirect
-	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
-	gopkg.in/ini.v1 v1.38.1 // indirect
-	gopkg.in/square/go-jose.v2 v2.2.2 // indirect
+	github.com/xenolf/lego v2.2.0+incompatible
+	golang.org/x/crypto v0.0.0-20190228050851-31a38585487a
+	golang.org/x/net v0.0.0-20190227160552-c95aed5357e7
+	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421
+	google.golang.org/api v0.1.0
+	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.2.2
 )

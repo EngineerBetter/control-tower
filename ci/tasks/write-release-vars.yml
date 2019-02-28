@@ -3,12 +3,12 @@ platform: linux
 
 inputs:
 - name: version
-- name: concourse-up
-- name: concourse-up-ops
+- name: control-tower
+- name: control-tower-ops
 - name: ops-version
 
 outputs:
 - name: release-vars
 
 run:
-  path: concourse-up/ci/tasks/write-release-vars.sh
+  path: control-tower/ci/tasks/write-release-vars.sh

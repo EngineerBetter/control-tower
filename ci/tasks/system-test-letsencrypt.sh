@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/test-setup.sh
+source control-tower/ci/tasks/lib/test-setup.sh
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/letsencrypt.sh
+source control-tower/ci/tasks/lib/letsencrypt.sh
 
 handleVerboseMode
 
@@ -17,7 +17,7 @@ trapDefaultCleanup
 
 echo "DEPLOY WITH LETSENCRYPT STAGING CERT, AND CUSTOM DOMAIN"
 
-custom_domain="$deployment-auto-2.concourse-up.engineerbetter.com"
+custom_domain="$deployment-auto-2.control-tower.engineerbetter.com"
 
 if [ "$IAAS" = "GCP" ]
 then

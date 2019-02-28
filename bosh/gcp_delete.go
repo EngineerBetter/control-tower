@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/gcp"
+	"github.com/EngineerBetter/control-tower/bosh/internal/gcp"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 

@@ -8,11 +8,11 @@ image_resource:
     tag: latest
 
 inputs:
-- name: concourse-up
+- name: control-tower
 - name: binary-linux
 
 run:
-  path: concourse-up/ci/tasks/cleanup-tests.rb
+  path: control-tower/ci/tasks/cleanup-tests.rb
 
 params:
   AWS_ACCESS_KEY_ID:

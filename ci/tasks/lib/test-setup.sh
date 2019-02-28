@@ -3,10 +3,10 @@
 
 # Disabling SC1091 because shellcheck can't find our sourced files
 
-source concourse-up/ci/tasks/lib/set-flags.sh
-source concourse-up/ci/tasks/lib/assert-iaas.sh
-source concourse-up/ci/tasks/lib/verbose.sh
-source concourse-up/ci/tasks/lib/id.sh
-source concourse-up/ci/tasks/lib/pipeline.sh
-source concourse-up/ci/tasks/lib/trap.sh
-source concourse-up/ci/tasks/lib/credhub.sh
+source control-tower/ci/tasks/lib/set-flags.sh
+source control-tower/ci/tasks/lib/assert-iaas.sh
+source control-tower/ci/tasks/lib/verbose.sh
+source control-tower/ci/tasks/lib/id.sh
+source control-tower/ci/tasks/lib/pipeline.sh
+source control-tower/ci/tasks/lib/trap.sh
+source control-tower/ci/tasks/lib/credhub.sh

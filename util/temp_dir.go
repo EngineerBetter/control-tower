@@ -13,7 +13,7 @@ type TempDir struct {
 
 // NewTempDir returns a new temporary directory
 func NewTempDir() (*TempDir, error) {
-	path, err := ioutil.TempDir("", "concourse-up")
+	path, err := ioutil.TempDir("", "control-tower")
 	if err != nil {
 		return nil, err
 	}

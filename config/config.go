@@ -1,6 +1,6 @@
 package config
 
-// Config represents a concourse-up configuration file
+// Config represents a control-tower configuration file
 type Config struct {
 	AllowIPs                  string   `json:"allow_ips"`
 	AvailabilityZone          string   `json:"availability_zone"`

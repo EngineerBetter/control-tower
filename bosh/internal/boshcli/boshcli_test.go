@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/bosh/internal/boshcli"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/internal/fakeexec"
+	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/internal/fakeexec"
 	"github.com/stretchr/testify/require"
 )
 

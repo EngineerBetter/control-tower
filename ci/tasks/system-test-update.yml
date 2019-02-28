@@ -6,12 +6,12 @@ image_resource:
     repository: engineerbetter/pcf-ops
     tag: latest
 inputs:
-- name: concourse-up
+- name: control-tower
 - name: binary-linux
 - name: release
 
 run:
-  path: concourse-up/ci/tasks/system-test-update.sh
+  path: control-tower/ci/tasks/system-test-update.sh
 
 params:
   AWS_ACCESS_KEY_ID:

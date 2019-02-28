@@ -7,7 +7,7 @@ type Pipeline interface {
 }
 
 type PipelineTemplateParams struct {
-	ConcourseUpVersion string
+	ControlTowerVersion string
 	Deployment         string
 	Domain             string
 	Namespace          string
@@ -16,11 +16,11 @@ type PipelineTemplateParams struct {
 
 const selfUpdateResources = `
 resources:
-- name: concourse-up-release
+- name: control-tower-release
   type: github-release
   source:
     user: engineerbetter
-    repository: concourse-up
+    repository: control-tower
     pre_release: true
 - name: every-day
   type: time

@@ -22,12 +22,12 @@ func NewGCPPipeline(credsPath string) (Pipeline, error) {
 	}, nil
 }
 
-//BuildPipelineParams builds params for AWS concourse-up self update pipeline
+//BuildPipelineParams builds params for AWS control-tower self update pipeline
 func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain string) (Pipeline, error) {
 	return GCPPipeline{
 		PipelineTemplateParams: PipelineTemplateParams{
-			ConcourseUpVersion: ConcourseUpVersion,
-			Deployment:         strings.TrimPrefix(deployment, "concourse-up-"),
+			ControlTowerVersion: ControlTowerVersion,
+			Deployment:         strings.TrimPrefix(deployment, "control-tower-"),
 			Domain:             domain,
 			Namespace:          namespace,
 			Region:             region,
@@ -36,7 +36,7 @@ func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain s
 	}, nil
 }
 
-// GetConfigTemplate returns template for AWS Concourse Up self update pipeline
+// GetConfigTemplate returns template for AWS Control-Tower self update pipeline
 func (a GCPPipeline) GetConfigTemplate() string {
 	return gcpPipelineTemplate
 
@@ -57,7 +57,7 @@ jobs:
   serial_groups: [cup]
   serial: true
   plan:
-  - get: concourse-up-release
+  - get: control-tower-release
     trigger: true
   - task: update
     params:
@@ -74,24 +74,24 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up-release
+      - name: control-tower-release
       run:
         path: bash
         args:
         - -c
         - |
-          cd concourse-up-release
+          cd control-tower-release
           echo "${GCPCreds}" > googlecreds.json
           export GOOGLE_APPLICATION_CREDENTIALS=$PWD/googlecreds.json
           set -eux
-          chmod +x concourse-up-linux-amd64
-          ./concourse-up-linux-amd64 deploy $DEPLOYMENT
+          chmod +x control-tower-linux-amd64
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 - name: renew-https-cert
   serial_groups: [cup]
   serial: true
   plan:
-  - get: concourse-up-release
-    version: {tag: "{{ .ConcourseUpVersion }}" }
+  - get: control-tower-release
+    version: {tag: "{{ .ControlTowerVersion }}" }
   - get: every-day
     trigger: true
   - task: update
@@ -109,7 +109,7 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up-release
+      - name: control-tower-release
       run:
         path: bash
         args:
@@ -118,9 +118,9 @@ jobs:
           echo "${GCPCreds}" > googlecreds.json
           export GOOGLE_APPLICATION_CREDENTIALS=$PWD/googlecreds.json
           set -euxo pipefail
-          cd concourse-up-release
-          chmod +x concourse-up-linux-amd64
+          cd control-tower-release
+          chmod +x control-tower-linux-amd64
 ` + renewCertsDateCheck + `
           echo Certificates expire in $days_until_expiry days, redeploying to renew them
-          ./concourse-up-linux-amd64 deploy $DEPLOYMENT
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 `

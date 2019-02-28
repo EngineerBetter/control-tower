@@ -4,7 +4,7 @@ package iaasfakes
 import (
 	"sync"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
+	"github.com/EngineerBetter/control-tower/iaas"
 )
 
 type FakeProvider struct {

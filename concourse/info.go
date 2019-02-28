@@ -3,7 +3,6 @@ package concourse
 import (
 	"bytes"
 	"fmt"
-	"github.com/EngineerBetter/concourse-up/iaas"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -11,9 +10,11 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/util/yaml"
+	"github.com/EngineerBetter/control-tower/iaas"
+
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/util/yaml"
 	"github.com/fatih/color"
 )
 
@@ -178,7 +179,7 @@ Bosh credentials:
 
 BOSH-generated NAT certs will expire on: {{ .CertExpiry }}
 
-Uses Concourse-Up version {{.Config.Version}}
+Uses Control-Tower version {{.Config.Version}}
 
 Built by {{"EngineerBetter http://engineerbetter.com" | blue}}
 `

@@ -13,11 +13,11 @@ var (
 	cliPath string
 )
 
-var _ = Describe("concourse-up", func() {
+var _ = Describe("control-tower", func() {
 	BeforeSuite(func() {
 		var err error
 
-		cliPath, err = Build("github.com/EngineerBetter/concourse-up")
+		cliPath, err = Build("github.com/EngineerBetter/control-tower")
 		Expect(err).ToNot(HaveOccurred(), "Error building source")
 	})
 
@@ -30,10 +30,10 @@ var _ = Describe("concourse-up", func() {
 		session, err := Start(command, GinkgoWriter, GinkgoWriter)
 		Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
 		Eventually(session).Should(Exit(0))
-		Expect(session.Out).To(Say("Concourse-Up - A CLI tool to deploy Concourse CI"))
+		Expect(session.Out).To(Say("Control-Tower - A CLI tool to deploy Concourse CI"))
 		Expect(session.Out).To(Say("deploy, d    Deploys or updates a Concourse"))
 		Expect(session.Out).To(Say("destroy, x   Destroys a Concourse"))
 		Expect(session.Out).To(Say("info, i      Fetches information on a deployed environment"))
-		Expect(session.Out).To(Say("maintain, m  Handles maintenance operations in concourse-up"))
+		Expect(session.Out).To(Say("maintain, m  Handles maintenance operations in control-tower"))
 	})
 })

@@ -8,11 +8,11 @@ if [ "$IAAS" = "AWS" ]; then
 elif [ "$IAAS" = "GCP" ]; then
     [[ -n "$GOOGLE_APPLICATION_CREDENTIALS_CONTENTS" ]]
     # shellcheck disable=SC1091
-    source concourse-up/ci/tasks/lib/gcreds.sh
+    source control-tower/ci/tasks/lib/gcreds.sh
     setGoogleCreds
     # shellcheck disable=SC2034
     region=europe-west1
 
     gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-    export CLOUDSDK_CORE_PROJECT=concourse-up
+    export CLOUDSDK_CORE_PROJECT=control-tower-233017
 fi

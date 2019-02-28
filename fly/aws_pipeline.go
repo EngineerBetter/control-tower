@@ -34,7 +34,7 @@ var getCredsFromSession = func() (string, string, error) {
 	return creds.AccessKeyID, creds.SecretAccessKey, nil
 }
 
-//BuildPipelineParams builds params for AWS concourse-up self update pipeline
+//BuildPipelineParams builds params for AWS control-tower self update pipeline
 func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain string) (Pipeline, error) {
 	accessKeyID, secretAccessKey, err := a.credsGetter()
 	if err != nil {
@@ -43,8 +43,8 @@ func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain s
 
 	return AWSPipeline{
 		PipelineTemplateParams: PipelineTemplateParams{
-			ConcourseUpVersion: ConcourseUpVersion,
-			Deployment:         strings.TrimPrefix(deployment, "concourse-up-"),
+			ControlTowerVersion: ControlTowerVersion,
+			Deployment:         strings.TrimPrefix(deployment, "control-tower-"),
 			Domain:             domain,
 			Namespace:          namespace,
 			Region:             region,
@@ -54,7 +54,7 @@ func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain s
 	}, nil
 }
 
-// GetConfigTemplate returns template for AWS Concourse Up self update pipeline
+// GetConfigTemplate returns template for AWS Control-Tower self update pipeline
 func (a AWSPipeline) GetConfigTemplate() string {
 	return awsPipelineTemplate
 
@@ -67,7 +67,7 @@ jobs:
   serial_groups: [cup]
   serial: true
   plan:
-  - get: concourse-up-release
+  - get: control-tower-release
     trigger: true
   - task: update
     params:
@@ -84,7 +84,7 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up-release
+      - name: control-tower-release
       run:
         path: bash
         args:
@@ -92,15 +92,15 @@ jobs:
         - |
           set -eux
 
-          cd concourse-up-release
-          chmod +x concourse-up-linux-amd64
-          ./concourse-up-linux-amd64 deploy $DEPLOYMENT
+          cd control-tower-release
+          chmod +x control-tower-linux-amd64
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 - name: renew-https-cert
   serial_groups: [cup]
   serial: true
   plan:
-  - get: concourse-up-release
-    version: {tag: {{ .ConcourseUpVersion }} }
+  - get: control-tower-release
+    version: {tag: {{ .ControlTowerVersion }} }
   - get: every-day
     trigger: true
   - task: update
@@ -118,16 +118,16 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up-release
+      - name: control-tower-release
       run:
         path: bash
         args:
         - -c
         - |
           set -euxo pipefail
-          cd concourse-up-release
-          chmod +x concourse-up-linux-amd64
+          cd control-tower-release
+          chmod +x control-tower-linux-amd64
 ` + renewCertsDateCheck + `
           echo Certificates expire in $days_until_expiry days, redeploying to renew them
-          ./concourse-up-linux-amd64 deploy $DEPLOYMENT
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 `

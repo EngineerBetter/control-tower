@@ -6,21 +6,21 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/EngineerBetter/concourse-up/bosh"
-	"github.com/EngineerBetter/concourse-up/bosh/boshfakes"
-	"github.com/EngineerBetter/concourse-up/certs"
-	"github.com/EngineerBetter/concourse-up/certs/certsfakes"
-	"github.com/EngineerBetter/concourse-up/commands/deploy"
-	"github.com/EngineerBetter/concourse-up/concourse"
-	"github.com/EngineerBetter/concourse-up/concourse/concoursefakes"
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/config/configfakes"
-	"github.com/EngineerBetter/concourse-up/fly"
-	"github.com/EngineerBetter/concourse-up/fly/flyfakes"
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/iaas/iaasfakes"
-	"github.com/EngineerBetter/concourse-up/terraform"
-	"github.com/EngineerBetter/concourse-up/terraform/terraformfakes"
+	"github.com/EngineerBetter/control-tower/bosh"
+	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
+	"github.com/EngineerBetter/control-tower/certs"
+	"github.com/EngineerBetter/control-tower/certs/certsfakes"
+	"github.com/EngineerBetter/control-tower/commands/deploy"
+	"github.com/EngineerBetter/control-tower/concourse"
+	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/config/configfakes"
+	"github.com/EngineerBetter/control-tower/fly"
+	"github.com/EngineerBetter/control-tower/fly/flyfakes"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
+	"github.com/EngineerBetter/control-tower/terraform"
+	"github.com/EngineerBetter/control-tower/terraform/terraformfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -152,7 +152,7 @@ var _ = Describe("client", func() {
 		configInBucket = config.Config{
 			ConcoursePassword: "s3cret",
 			ConcourseUsername: "admin",
-			Deployment:        "concourse-up-happymeal",
+			Deployment:        "control-tower-happymeal",
 			DirectorPassword:  "secret123",
 			DirectorUsername:  "admin",
 			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
@@ -320,7 +320,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 					configAfterCreateEnv.Domain = "77.77.77.77"
-					configAfterCreateEnv.Tags = []string{"concourse-up-version=some version"}
+					configAfterCreateEnv.Tags = []string{"control-tower-version=some version"}
 					configAfterCreateEnv.Version = "some version"
 
 					// Mutations we expect to have been done after deploying Concourse
@@ -381,8 +381,8 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					Expect(terraformCLI).To(HaveReceived("BuildOutput").With(terraformInputVars))
 					Expect(configClient).To(HaveReceived("Update").With(configAfterLoad))
 
-					Expect(certGenerationActions[0]).To(Equal("generating cert ca: concourse-up-happymeal, cn: [99.99.99.99 10.0.0.6]"))
-					Expect(certGenerationActions[1]).To(Equal("generating cert ca: concourse-up-happymeal, cn: [77.77.77.77]"))
+					Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-happymeal, cn: [99.99.99.99 10.0.0.6]"))
+					Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-happymeal, cn: [77.77.77.77]"))
 
 					Expect(configClient).To(HaveReceived("HasAsset").With("director-state.json"))
 					Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
@@ -539,7 +539,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterCreateEnv.ConcourseUserProvidedCert = true
 					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
-					configAfterCreateEnv.Tags = append([]string{"concourse-up-version=some version"}, args.Tags...)
+					configAfterCreateEnv.Tags = append([]string{"control-tower-version=some version"}, args.Tags...)
 					configAfterCreateEnv.Version = "some version"
 
 					configAfterConcourseDeploy = configAfterCreateEnv
@@ -599,11 +599,11 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					ConcourseWebSize:         "small",
 					ConcourseWorkerCount:     1,
 					ConcourseWorkerSize:      "xlarge",
-					ConfigBucket:             "concourse-up-initial-deployment-eu-west-1-config",
+					ConfigBucket:             "control-tower-initial-deployment-eu-west-1-config",
 					DirectorHMUserPassword:   "generatedPassword20",
 					DirectorMbusPassword:     "generatedPassword20",
 					DirectorNATSPassword:     "generatedPassword20",
-					Deployment:               "concourse-up-initial-deployment",
+					Deployment:               "control-tower-initial-deployment",
 					DirectorPassword:         "generatedPassword20",
 					DirectorRegistryPassword: "generatedPassword20",
 					DirectorUsername:         "admin",
@@ -639,7 +639,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 				configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 				configAfterCreateEnv.Domain = "77.77.77.77"
-				configAfterCreateEnv.Tags = []string{"concourse-up-version=some version"}
+				configAfterCreateEnv.Tags = []string{"control-tower-version=some version"}
 				configAfterCreateEnv.Version = "some version"
 
 				// Mutations we expect to have been done after deploying Concourse
@@ -680,8 +680,8 @@ wEW5QkylaPEkbVDhJWeR1I8=
 
 			JustBeforeEach(func() {
 				configClient.NewConfigReturns(config.Config{
-					ConfigBucket: "concourse-up-initial-deployment-eu-west-1-config",
-					Deployment:   "concourse-up-initial-deployment",
+					ConfigBucket: "control-tower-initial-deployment-eu-west-1-config",
+					Deployment:   "control-tower-initial-deployment",
 					Namespace:    "",
 					Project:      "initial-deployment",
 					Region:       "eu-west-1",
@@ -730,8 +730,8 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				Expect(terraformCLI).To(HaveReceived("BuildOutput").With(terraformInputVars))
 				Expect(configClient).To(HaveReceived("Update").With(configAfterLoad))
 
-				Expect(certGenerationActions[0]).To(Equal("generating cert ca: concourse-up-initial-deployment, cn: [99.99.99.99 10.0.0.6]"))
-				Expect(certGenerationActions[1]).To(Equal("generating cert ca: concourse-up-initial-deployment, cn: [77.77.77.77]"))
+				Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-initial-deployment, cn: [99.99.99.99 10.0.0.6]"))
+				Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-initial-deployment, cn: [77.77.77.77]"))
 
 				Expect(configClient).To(HaveReceived("HasAsset").With("director-state.json"))
 				Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
@@ -778,7 +778,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				err := client.Deploy()
 				Expect(err).ToNot(HaveOccurred())
 
-				Expect(certGenerationActions).To(ContainElement("generating cert ca: concourse-up-happymeal, cn: [ci.google.com]"))
+				Expect(certGenerationActions).To(ContainElement("generating cert ca: control-tower-happymeal, cn: [ci.google.com]"))
 			})
 
 			Context("and a custom cert is provided", func() {

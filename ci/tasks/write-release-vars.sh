@@ -5,10 +5,10 @@
 # Disabling SC2006 above because ``` code blocks are misinterpretted as shell execution
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/set-flags.sh
+source control-tower/ci/tasks/lib/set-flags.sh
 
 version=$(cat version/version)
-pushd concourse-up-ops
+pushd control-tower-ops
   bin_bosh_cli_version=$(                jq -r '."bosh-cli".linux' director-versions-aws.json)
   bin_terraform_version=$(               jq -r '.terraform.linux' director-versions-aws.json)
   deployment_concourse_release_url=$(    jq -r '.[] | select(.value.name? == "concourse") | .value.url' ops/versions-aws.json)
@@ -64,7 +64,7 @@ pushd ops-version
   ops_version=$(cat version)
 popd
 
-name="concourse-up $version"
+name="control-tower $version"
 
 echo "$name" > release-vars/name
 
@@ -108,10 +108,10 @@ Deploys:
 - BOSH CLI $bin_bosh_cli_version_gcp
 - Terraform $bin_terraform_version_gcp
 
->Note to build locally you will need to clone [concourse-up-ops](https://github.com/EngineerBetter/concourse-up-ops/tree/$ops_version) (version $ops_version) to the same level as concourse-up to get the required manifests and ops files.
+>Note to build locally you will need to clone [control-tower-ops](https://github.com/EngineerBetter/control-tower-ops/tree/$ops_version) (version $ops_version) to the same level as control-tower to get the required manifests and ops files.
 EOF
 
-pushd concourse-up
+pushd control-tower
   commit=$(git rev-parse HEAD)
 popd
 

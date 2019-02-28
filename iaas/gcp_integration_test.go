@@ -11,8 +11,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/util"
 )
 
 func TestGCPProvider_CreateDatabases(t *testing.T) {
@@ -81,7 +81,7 @@ func setupCreateDatabases(dbName string, t *testing.T) {
 		opRe, _ := regexp.Compile(opStr)
 		op := opRe.FindAllStringSubmatch(errStr, -1)
 		opName := op[0][1]
-		_, _, err = runCommand("gcloud", "beta", "sql", "operations", "wait", "--project=concourse-up", opName)
+		_, _, err = runCommand("gcloud", "beta", "sql", "operations", "wait", "--project=control-tower-233017", opName)
 		failIfErr(t, err, "Failed with err %v  waiting for the operation %v to finish", op)
 	}
 }

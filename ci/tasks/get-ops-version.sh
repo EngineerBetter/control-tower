@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/set-flags.sh
+source control-tower/ci/tasks/lib/set-flags.sh
 
 fly -t ebci login \
   --insecure \
@@ -18,6 +18,6 @@ export ATC_BEARER_TOKEN="${atc_bearer_token}"
 job=$(cat build-metadata/build-job-name)
 team=$(cat build-metadata/build-team-name)
 
-stopover https://ci.engineerbetter.com "${team}" concourse-up "${job}" "$(cat build-metadata/build-name)" > versions.yml
+stopover https://ci.engineerbetter.com "${team}" control-tower "${job}" "$(cat build-metadata/build-name)" > versions.yml
 
-bosh int --path /resource_version_concourse-up-ops/ref versions.yml > ops-version/version
+bosh int --path /resource_version_control-tower-ops/ref versions.yml > ops-version/version

@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"runtime"
 
-	"github.com/EngineerBetter/concourse-up/resource/internal/file"
-	"github.com/EngineerBetter/concourse-up/util/bincache"
+	"github.com/EngineerBetter/control-tower/resource/internal/file"
+	"github.com/EngineerBetter/control-tower/util/bincache"
 )
 
-//go:generate go-bindata -o internal/file/file.go -ignore (\.go$)|(\.git)|(bosh/assets) -nometadata -pkg file ../../concourse-up-ops/... assets/...
+//go:generate go-bindata -o internal/file/file.go -ignore (\.go$)|(\.git)|(bosh/assets) -nometadata -pkg file ../../control-tower-ops/... assets/...
 
 // Resource safely exposes the json parameters of a resource
 type Resource struct {
@@ -66,10 +66,10 @@ var (
 	AWSDirectorCustomOps = mustAssetString("assets/aws/custom-ops.yml")
 
 	// AWSReleaseVersions carries all versions of releases
-	AWSReleaseVersions = mustAssetString("../../concourse-up-ops/ops/versions-aws.json")
+	AWSReleaseVersions = mustAssetString("../../control-tower-ops/ops/versions-aws.json")
 
 	// GCPReleaseVersions carries all versions of releases
-	GCPReleaseVersions = mustAssetString("../../concourse-up-ops/ops/versions-gcp.json")
+	GCPReleaseVersions = mustAssetString("../../control-tower-ops/ops/versions-gcp.json")
 
 	// AddNewCa carries the ops file that adds a new CA required for cert rotation
 	AddNewCa = mustAssetString("assets/maintenance/add-new-ca.yml")
@@ -96,7 +96,7 @@ func Get(id ID) Resource {
 }
 
 func init() {
-	p := file.MustAsset("../../concourse-up-ops/director-versions.json")
+	p := file.MustAsset("../../control-tower-ops/director-versions.json")
 	err := json.Unmarshal(p, &resources)
 	if err != nil {
 		panic(err)

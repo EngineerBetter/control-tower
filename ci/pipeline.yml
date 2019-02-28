@@ -81,19 +81,19 @@ resources:
       AWS_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
       AWS_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
 
-- name: concourse-up
+- name: control-tower
   type: git
   source:
-    uri: git@github.com:EngineerBetter/concourse-up.git
+    uri: git@github.com:EngineerBetter/control-tower.git
     branch: ((branch))
     private_key: ((github_private_key))
     ignore_paths:
     - README.md
 
-- name: concourse-up-ops
+- name: control-tower-ops
   type: git
   source:
-    uri: git@github.com:EngineerBetter/concourse-up-ops.git
+    uri: git@github.com:EngineerBetter/control-tower-ops.git
     branch: master
     tag_filter: 0.*.*
     private_key: ((github_private_key))
@@ -112,7 +112,7 @@ resources:
   source:
     initial_version: 0.0.0
     driver: s3
-    bucket: concourse-up-ci-artifacts
+    bucket: control-tower-ci-artifacts
     key: version
     access_key_id: ((concourse_ci_s3_access_key))
     secret_access_key: ((concourse_ci_s3_secret_key))
@@ -121,7 +121,7 @@ resources:
 - name: binary-linux
   type: s3
   source:
-    bucket: concourse-up-ci-artifacts
+    bucket: control-tower-ci-artifacts
     versioned_file: ((binary-name))-linux-amd64
     access_key_id: ((concourse_ci_s3_access_key))
     secret_access_key: ((concourse_ci_s3_secret_key))
@@ -130,7 +130,7 @@ resources:
 - name: binary-darwin
   type: s3
   source:
-    bucket: concourse-up-ci-artifacts
+    bucket: control-tower-ci-artifacts
     versioned_file: ((binary-name))-darwin-amd64
     access_key_id: ((concourse_ci_s3_access_key))
     secret_access_key: ((concourse_ci_s3_secret_key))
@@ -140,14 +140,14 @@ resources:
   type: github-release
   source:
     user: engineerbetter
-    repository: concourse-up
+    repository: control-tower
     access_token: ((github_access_token))
 
 - name: release-drafts
   type: github-release
   source:
     user: engineerbetter
-    repository: concourse-up
+    repository: control-tower
     access_token: ((github_access_token))
     drafts: true
 
@@ -167,14 +167,14 @@ jobs:
 - name: set-pipeline
   serial: true
   plan:
-  - get: concourse-up
+  - get: control-tower
     trigger: true
   - put: this-pipeline
     params:
       pipelines:
       - name: ((pipeline-name))
         team: main
-        config_file: concourse-up/ci/pipeline.yml
+        config_file: control-tower/ci/pipeline.yml
         vars:
           binary-name: ((binary-name))
           branch: ((branch))
@@ -184,51 +184,51 @@ jobs:
 - name: setup-ci-bucket
   serial: true
   plan:
-  - get: concourse-up
+  - get: control-tower
     passed: [set-pipeline]
     trigger: true
   - put: ci-bucket
     params:
-      terraform_source: concourse-up/ci/tf
+      terraform_source: control-tower/ci/tf
       env_name: ((branch))
 
 - name: unit-tests
   plan:
   - aggregate:
     - get: pcf-ops
-    - get: concourse-up
+    - get: control-tower
       trigger: true
       passed: [set-pipeline]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
   - task: lint
     image: pcf-ops
-    file: concourse-up/ci/tasks/lint.yml
+    file: control-tower/ci/tasks/lint.yml
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *lint* failure!
+          <!channel> Control-Tower *((branch))* branch *lint* failure!
   - task: unit-test
     image: pcf-ops
-    file: concourse-up/ci/tasks/unit-test.yml
+    file: control-tower/ci/tasks/unit-test.yml
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *unit-test* failure!
+          <!channel> Control-Tower *((branch))* branch *unit-test* failure!
 
 - name: build
   plan:
   - aggregate:
     - get: pcf-ops
       passed: [unit-tests]
-    - get: concourse-up
+    - get: control-tower
       trigger: true
       passed: [unit-tests, setup-ci-bucket]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
       passed: [unit-tests]
     - get: version
@@ -240,7 +240,7 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           OUTPUT_FILE: ((binary-name))-linux-amd64
-        file: concourse-up/ci/tasks/build_linux.yml
+        file: control-tower/ci/tasks/build_linux.yml
       - put: binary-linux
         params:
           file: build-linux/((binary-name))-linux-amd64
@@ -251,7 +251,7 @@ jobs:
           GOOS: darwin
           GOARCH: amd64
           OUTPUT_FILE: ((binary-name))-darwin-amd64
-        file: concourse-up/ci/tasks/build_darwin.yml
+        file: control-tower/ci/tasks/build_darwin.yml
       - put: binary-darwin
         params:
           file: build-darwin/((binary-name))-darwin-amd64
@@ -270,29 +270,29 @@ jobs:
     - get: binary-darwin
       trigger: true
       passed: [build]
-    - get: concourse-up
+    - get: control-tower
       trigger: true
       passed: [build]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
       passed: [build]
     - get: pcf-ops
       passed: [build]
     - get: release
       params:
-        globs: [concourse-up-linux-amd64]
+        globs: [control-tower-linux-amd64]
   - task: smoke-test
-    file: concourse-up/ci/tasks/smoke-test.yml
+    file: control-tower/ci/tasks/smoke-test.yml
     params:
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *smoke-test* failure!
+          <!channel> Control-Tower *((branch))* branch *smoke-test* failure!
 
 - name: smoke-test-gcp
   serial_groups:
@@ -301,7 +301,7 @@ jobs:
   plan:
   - aggregate: *smoke-test-gets
   - task: smoke-test
-    file: concourse-up/ci/tasks/smoke-test.yml
+    file: control-tower/ci/tasks/smoke-test.yml
     params:
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
@@ -311,7 +311,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *smoke-test-gcp* failure!
+          <!channel> Control-Tower *((branch))* branch *smoke-test-gcp* failure!
 
 - name: system-test
   serial_groups:
@@ -327,22 +327,22 @@ jobs:
     - get: binary-darwin
       trigger: true
       passed: [smoke-test]
-    - get: concourse-up
+    - get: control-tower
       trigger: true
       passed: [smoke-test]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
       passed: [smoke-test]
     - get: pcf-ops
       passed: [smoke-test]
     - get: release
       params:
-        globs: [concourse-up-linux-amd64]
+        globs: [control-tower-linux-amd64]
   - task: system-test
-    file: concourse-up/ci/tasks/system-test.yml
+    file: control-tower/ci/tasks/system-test.yml
     params:
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       IAAS: AWS
     on_failure:
@@ -350,7 +350,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test* failure!
 
 - name: system-test-gcp
   serial_groups:
@@ -366,19 +366,19 @@ jobs:
     - get: binary-darwin
       trigger: true
       passed: [smoke-test-gcp]
-    - get: concourse-up
+    - get: control-tower
       trigger: true
       passed: [smoke-test-gcp]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
       passed: [smoke-test-gcp]
     - get: pcf-ops
       passed: [smoke-test-gcp]
     - get: release
       params:
-        globs: [concourse-up-linux-amd64]
+        globs: [control-tower-linux-amd64]
   - task: system-test
-    file: concourse-up/ci/tasks/system-test.yml
+    file: control-tower/ci/tasks/system-test.yml
     params:
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
@@ -388,7 +388,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-gcp* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-gcp* failure!
 
 - name: system-test-update
   serial_groups:
@@ -397,10 +397,10 @@ jobs:
   plan:
   - aggregate: *system-test-gets
   - task: run-system-test-update
-    file: concourse-up/ci/tasks/system-test-update.yml
+    file: control-tower/ci/tasks/system-test-update.yml
     params:
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       IAAS: AWS
     on_failure:
@@ -408,7 +408,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-update* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-update* failure!
 
 - name: system-test-update-gcp
   serial_groups:
@@ -417,7 +417,7 @@ jobs:
   plan:
   - aggregate: *system-test-gets-gcp
   - task: run-system-test-update
-    file: concourse-up/ci/tasks/system-test-update.yml
+    file: control-tower/ci/tasks/system-test-update.yml
     params:
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
@@ -427,7 +427,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-update-gcp* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-update-gcp* failure!
 
 - name: system-test-m5
   serial_groups:
@@ -436,17 +436,17 @@ jobs:
   plan:
   - aggregate: *system-test-gets
   - task: system-test-m5
-    file: concourse-up/ci/tasks/system-test-m5.yml
+    file: control-tower/ci/tasks/system-test-m5.yml
     params:
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-m5* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-m5* failure!
 
 - name: system-test-letsencrypt
   serial_groups:
@@ -455,18 +455,18 @@ jobs:
   plan:
   - aggregate: *system-test-gets
   - task: system-test-letsencrypt
-    file: concourse-up/ci/tasks/system-test-letsencrypt.yml
+    file: control-tower/ci/tasks/system-test-letsencrypt.yml
     params:
       IAAS: AWS
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-letsencrypt* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-letsencrypt* failure!
 
 - name: system-test-letsencrypt-gcp
   serial_groups:
@@ -475,7 +475,7 @@ jobs:
   plan:
   - aggregate: *system-test-gets-gcp
   - task: system-test-letsencrypt
-    file: concourse-up/ci/tasks/system-test-letsencrypt.yml
+    file: control-tower/ci/tasks/system-test-letsencrypt.yml
     params:
       IAAS: GCP
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
@@ -485,7 +485,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-letsencrypt-gcp* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
 
 - name: system-test-options-and-destroy
   serial_groups:
@@ -494,11 +494,11 @@ jobs:
   plan:
   - aggregate: *system-test-gets
   - task: system-test-options-and-destroy
-    file: concourse-up/ci/tasks/system-test-options-and-destroy.yml
+    file: control-tower/ci/tasks/system-test-options-and-destroy.yml
     params:
       IAAS: AWS
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
@@ -509,7 +509,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-options-and-destroy* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-options-and-destroy* failure!
 - name: system-test-options-and-destroy-gcp
   serial_groups:
   - system-test-options-and-destroy-gcp
@@ -517,7 +517,7 @@ jobs:
   plan:
   - aggregate: *system-test-gets-gcp
   - task: system-test-options-and-destroy
-    file: concourse-up/ci/tasks/system-test-options-and-destroy.yml
+    file: control-tower/ci/tasks/system-test-options-and-destroy.yml
     params:
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
@@ -531,7 +531,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Concourse Up *((branch))* branch *system-test-options-and-destroy-gcp* failure!
+          <!channel> Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
 
 - name: release-notification
   serial: true
@@ -551,10 +551,10 @@ jobs:
       - system-test-update-gcp
     - get: pcf-ops
       passed: *system-tests
-    - get: concourse-up
+    - get: control-tower
       trigger: true
       passed: *system-tests
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
       passed: *system-tests
   - task: write-release-notification
@@ -565,8 +565,8 @@ jobs:
         source:
           repository: engineerbetter/pcf-ops
       inputs:
-      - name: concourse-up
-      - name: concourse-up-ops
+      - name: control-tower
+      - name: control-tower-ops
       outputs:
       - name: slack-message
       run:
@@ -574,17 +574,17 @@ jobs:
         args:
         - -c
         - |
-          CUP_REF="$(cat concourse-up/.git/ref)"
-          OPS_REF="$(cat concourse-up-ops/.git/ref)"
-          CUP_MESSAGE="$(cat concourse-up/.git/commit_message)"
-          OPS_MESSAGE="$(cat concourse-up-ops/.git/commit_message)"
+          CUP_REF="$(cat control-tower/.git/ref)"
+          OPS_REF="$(cat control-tower-ops/.git/ref)"
+          CUP_MESSAGE="$(cat control-tower/.git/commit_message)"
+          OPS_MESSAGE="$(cat control-tower-ops/.git/commit_message)"
           cat << EOF > slack-message/text
-          Concourse-up is ready for a new release, all system tests passed.
+          Control-Tower is ready for a new release, all system tests passed.
 
-          Latest commit in *concourse-up* repository: \`$CUP_REF\`
+          Latest commit in *control-tower* repository: \`$CUP_REF\`
           \`\`\`$CUP_MESSAGE\`\`\`
 
-          Latest commit in *concourse-up-ops* repository: \`$OPS_REF\`
+          Latest commit in *control-tower-ops* repository: \`$OPS_REF\`
           \`\`\`$OPS_MESSAGE\`\`\`
           EOF
   - put: slack-alert
@@ -598,9 +598,9 @@ jobs:
   - aggregate:
     - get: pcf-ops
       passed: [release-notification]
-    - get: concourse-up
+    - get: control-tower
       passed: [release-notification]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       trigger: true
       passed: [release-notification]
     - get: version
@@ -613,23 +613,23 @@ jobs:
       image: pcf-ops
       params:
         GOARCH: amd64
-        OUTPUT_FILE: concourse-up-linux-amd64
-      file: concourse-up/ci/tasks/build_linux_from_version_file.yml
+        OUTPUT_FILE: control-tower-linux-amd64
+      file: control-tower/ci/tasks/build_linux_from_version_file.yml
     - task: build-darwin
       image: pcf-ops
       params:
         GOARCH: amd64
-        OUTPUT_FILE: concourse-up-darwin-amd64
-      file: concourse-up/ci/tasks/build_darwin_from_version_file.yml
+        OUTPUT_FILE: control-tower-darwin-amd64
+      file: control-tower/ci/tasks/build_darwin_from_version_file.yml
   - task: get-ops-version
     image: pcf-ops
-    file: concourse-up/ci/tasks/get-ops-version.yml
+    file: control-tower/ci/tasks/get-ops-version.yml
     params:
       CONCOURSE_PASSWORD: ((ebci_password))
       CONCOURSE_URL: https://ci.engineerbetter.com
   - task: write-release-vars
     image: pcf-ops
-    file: concourse-up/ci/tasks/write-release-vars.yml
+    file: control-tower/ci/tasks/write-release-vars.yml
   - put: release
     params:
       name: release-vars/name
@@ -637,8 +637,8 @@ jobs:
       body: release-vars/body
       tag: version/version
       globs:
-      - build-linux/concourse-up-linux-amd64
-      - build-darwin/concourse-up-darwin-amd64
+      - build-linux/control-tower-linux-amd64
+      - build-darwin/control-tower-darwin-amd64
   - put: version
     resource: version
     params:
@@ -654,21 +654,21 @@ jobs:
       passed: [release-notification]
     - get: pcf-ops
       passed: [release-notification]
-    - get: concourse-up
+    - get: control-tower
       passed: [release-notification]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       passed: [release-notification]
     - get: build-metadata
   - aggregate: *build_binaries
   - task: get-ops-version
     image: pcf-ops
-    file: concourse-up/ci/tasks/get-ops-version.yml
+    file: control-tower/ci/tasks/get-ops-version.yml
     params:
       CONCOURSE_PASSWORD: ((ebci_password))
       CONCOURSE_URL: https://ci.engineerbetter.com
   - task: write-release-vars
     image: pcf-ops
-    file: concourse-up/ci/tasks/write-release-vars.yml
+    file: control-tower/ci/tasks/write-release-vars.yml
   - put: release-drafts
     params:
       name: release-vars/name
@@ -676,8 +676,8 @@ jobs:
       body: release-vars/body
       tag: version/version
       globs:
-      - build-linux/concourse-up-linux-amd64
-      - build-darwin/concourse-up-darwin-amd64
+      - build-linux/control-tower-linux-amd64
+      - build-darwin/control-tower-darwin-amd64
   - put: version
     resource: version
     params:
@@ -693,21 +693,21 @@ jobs:
       passed: [release-notification]
     - get: pcf-ops
       passed: [release-notification]
-    - get: concourse-up
+    - get: control-tower
       passed: [release-notification]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       passed: [release-notification]
     - get: build-metadata
   - aggregate: *build_binaries
   - task: get-ops-version
     image: pcf-ops
-    file: concourse-up/ci/tasks/get-ops-version.yml
+    file: control-tower/ci/tasks/get-ops-version.yml
     params:
       CONCOURSE_PASSWORD: ((ebci_password))
       CONCOURSE_URL: https://ci.engineerbetter.com
   - task: write-release-vars
     image: pcf-ops
-    file: concourse-up/ci/tasks/write-release-vars.yml
+    file: control-tower/ci/tasks/write-release-vars.yml
   - put: release-drafts
     params:
       name: release-vars/name
@@ -715,8 +715,8 @@ jobs:
       body: release-vars/body
       tag: version/version
       globs:
-      - build-linux/concourse-up-linux-amd64
-      - build-darwin/concourse-up-darwin-amd64
+      - build-linux/control-tower-linux-amd64
+      - build-darwin/control-tower-darwin-amd64
   - put: version
     resource: version
     params:
@@ -732,21 +732,21 @@ jobs:
         bump: major
     - get: pcf-ops
       passed: [release-notification]
-    - get: concourse-up
+    - get: control-tower
       passed: [release-notification]
-    - get: concourse-up-ops
+    - get: control-tower-ops
       passed: [release-notification]
     - get: build-metadata
   - aggregate: *build_binaries
   - task: get-ops-version
     image: pcf-ops
-    file: concourse-up/ci/tasks/get-ops-version.yml
+    file: control-tower/ci/tasks/get-ops-version.yml
     params:
       CONCOURSE_PASSWORD: ((ebci_password))
       CONCOURSE_URL: https://ci.engineerbetter.com
   - task: write-release-vars
     image: pcf-ops
-    file: concourse-up/ci/tasks/write-release-vars.yml
+    file: control-tower/ci/tasks/write-release-vars.yml
   - put: release-drafts
     params:
       name: release-vars/name
@@ -754,8 +754,8 @@ jobs:
       body: release-vars/body
       tag: version/version
       globs:
-      - build-linux/concourse-up-linux-amd64
-      - build-darwin/concourse-up-darwin-amd64
+      - build-linux/control-tower-linux-amd64
+      - build-darwin/control-tower-darwin-amd64
   - put: version
     resource: version
     params:
@@ -772,22 +772,22 @@ jobs:
   - system-test-options-and-destroy
   plan:
   - aggregate:
-    - get: concourse-up
+    - get: control-tower
     - get: once-daily
       trigger: true
     - get: binary-linux
   - task: cleanup
-    file: concourse-up/ci/tasks/cleanup-tests.yml
+    file: control-tower/ci/tasks/cleanup-tests.yml
     params:
-      AWS_ACCESS_KEY_ID: ((concourse_up_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((concourse_up_test_secret_key))
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
       IAAS: AWS
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
-          Concourse-Up AWS cleanup failure!
+          Control-Tower AWS cleanup failure!
 
 - name: cleanup-gcp
   serial: true
@@ -799,12 +799,12 @@ jobs:
   - system-test-options-and-destroy-gcp
   plan:
   - aggregate:
-    - get: concourse-up
+    - get: control-tower
     - get: once-daily
       trigger: true
     - get: binary-linux
   - task: cleanup
-    file: concourse-up/ci/tasks/cleanup-tests.yml
+    file: control-tower/ci/tasks/cleanup-tests.yml
     params:
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
@@ -813,4 +813,4 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          Concourse-Up GCP cleanup failure!
+          Control-Tower GCP cleanup failure!

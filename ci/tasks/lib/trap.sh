@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source concourse-up/ci/tasks/lib/cleanup.sh
+source control-tower/ci/tasks/lib/cleanup.sh
 
 # if skip teardown not set, calls default cleanup
 function trapDefaultCleanup() {

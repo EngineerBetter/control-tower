@@ -54,10 +54,10 @@ class Cleaner
       end
     end
 
-    cleanup_with_concourse_up(destroyable_orphans) unless destroyable_orphans.empty?
+    cleanup_with_control_tower(destroyable_orphans) unless destroyable_orphans.empty?
   end
 
-  def cleanup_with_concourse_up(orphans_with_state_files)
+  def cleanup_with_control_tower(orphans_with_state_files)
     threads = []
 
     orphans_with_state_files.each do |orphan|
@@ -67,7 +67,7 @@ class Cleaner
         puts "Attempting to run #{command}"
         `yes yes | #{command}`
         if !($?.success?)
-          puts "concourse-up destroy #{orphan.project} failed, attempting IAAS cleanup"
+          puts "control-tower destroy #{orphan.project} failed, attempting IAAS cleanup"
           iaas.cleanup(orphan)
         end
       end
@@ -77,8 +77,8 @@ class Cleaner
   end
 end
 
-`cp binary-linux/concourse-up-linux-amd64 ./cup`
+`cp binary-linux/control-tower-linux-amd64 ./cup`
 `chmod +x ./cup`
 
-cleaner = Cleaner.new(IAAS.new('concourse-up-ts'))
+cleaner = Cleaner.new(IAAS.new('control-tower-ts'))
 cleaner.clean

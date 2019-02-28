@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
-	"github.com/EngineerBetter/concourse-up/testsupport"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/testsupport"
 
-	"github.com/EngineerBetter/concourse-up/commands/deploy"
+	"github.com/EngineerBetter/control-tower/commands/deploy"
 )
 
 func Test_regionFromZone(t *testing.T) {

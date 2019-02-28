@@ -11,7 +11,7 @@ import (
 	"text/template"
 	"text/template/parse"
 
-	"github.com/EngineerBetter/concourse-up/resource"
+	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"

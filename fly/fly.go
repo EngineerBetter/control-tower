@@ -14,14 +14,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/EngineerBetter/concourse-up/iaas"
+	"github.com/EngineerBetter/control-tower/iaas"
 
-	"github.com/EngineerBetter/concourse-up/config"
-	"github.com/EngineerBetter/concourse-up/util"
+	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/util"
 )
 
-// ConcourseUpVersion is a compile-time variable set with -ldflags
-var ConcourseUpVersion = "COMPILE_TIME_VARIABLE_fly_concourse_up_version"
+// ControlTowerVersion is a compile-time variable set with -ldflags
+var ControlTowerVersion = "COMPILE_TIME_VARIABLE_fly_control_tower_version"
 
 //go:generate counterfeiter . IClient
 type IClient interface {
@@ -178,7 +178,7 @@ func (client *Client) SetDefaultPipeline(config config.Config, allowFlyVersionDi
 	}
 
 	pipelinePath := client.tempDir.Path("default-pipeline.yml")
-	pipelineName := "concourse-up-self-update"
+	pipelineName := "control-tower-self-update"
 
 	if err := client.writePipelineConfig(pipelinePath, config); err != nil {
 		return err
