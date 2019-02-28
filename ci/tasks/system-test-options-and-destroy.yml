@@ -8,7 +8,6 @@ image_resource:
 inputs:
 - name: control-tower
 - name: binary-linux
-- name: release
 
 run:
   path: control-tower/ci/tasks/system-test-options-and-destroy.sh

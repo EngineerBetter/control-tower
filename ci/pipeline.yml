@@ -334,7 +334,6 @@ jobs:
       passed: [smoke-test]
     - get: pcf-ops
       passed: [smoke-test]
-    - get: release
       params:
         globs: [control-tower-linux-amd64]
   - task: system-test
@@ -373,7 +372,6 @@ jobs:
       passed: [smoke-test-gcp]
     - get: pcf-ops
       passed: [smoke-test-gcp]
-    - get: release
       params:
         globs: [control-tower-linux-amd64]
   - task: system-test
@@ -395,6 +393,7 @@ jobs:
   serial: true
   plan:
   - aggregate: *system-test-gets
+  - get: release
   - task: run-system-test-update
     file: control-tower/ci/tasks/system-test-update.yml
     params:
@@ -415,6 +414,7 @@ jobs:
   serial: true
   plan:
   - aggregate: *system-test-gets-gcp
+  - get: release
   - task: run-system-test-update
     file: control-tower/ci/tasks/system-test-update.yml
     params:
