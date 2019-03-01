@@ -10,7 +10,7 @@ source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 
 handleVerboseMode
 
-setDeploymentName updt
+setDeploymentName upt
 
 trapDefaultCleanup
 
