@@ -335,6 +335,8 @@ resource "google_sql_database_instance" "director" {
   database_version = "POSTGRES_9_6"
   region       = "${var.region}"
 
+  depends_on = ["google_compute_instance.nat-instance"]
+
   settings {
     tier = "${var.db_tier}"
     user_labels {
