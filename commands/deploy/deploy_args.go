@@ -133,13 +133,6 @@ var WebSizes = []string{"small", "medium", "large", "xlarge", "2xlarge"}
 // AllowedDBSizes contains the valid values for --db-size flag
 var AllowedDBSizes = []string{"small", "medium", "large", "xlarge", "2xlarge", "4xlarge"}
 
-// ModifyGithub allows mutation of github related fields
-func (a *Args) ModifyGithub(GithubAuthClientID, GithubAuthClientSecret string, GithubAuthIsSet bool) {
-	a.GithubAuthClientID = GithubAuthClientID
-	a.GithubAuthClientSecret = GithubAuthClientSecret
-	a.GithubAuthIsSet = GithubAuthIsSet
-}
-
 // Validate validates that flag interdependencies
 func (a Args) Validate() error {
 	if !a.IAASIsSet {
