@@ -423,10 +423,10 @@ var deployCmd = cli.Command{
 		if err != nil {
 			return fmt.Errorf("Error mapping to supported IAASes on deploy: [%v]", err)
 		}
-		provider, err := iaas.New(iaasName, initialDeployArgs.Region)
+		provider, err := iaas.New(iaasName, deployArgs.Region)
 		if err != nil {
 			return fmt.Errorf("Error creating IAAS provider on deploy: [%v]", err)
 		}
-		return deployAction(c, initialDeployArgs, provider)
+		return deployAction(c, deployArgs, provider)
 	},
 }
