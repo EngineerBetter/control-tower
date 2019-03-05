@@ -3,8 +3,9 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"github.com/EngineerBetter/control-tower/commands/maintain"
 	"os"
+
+	"github.com/EngineerBetter/control-tower/commands/maintain"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/certs"
@@ -34,9 +35,8 @@ var maintainFlags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:        "iaas",
-		Usage:       "(optional) IAAS, can be AWS or GCP",
+		Usage:       "(required) IAAS, can be AWS or GCP",
 		EnvVar:      "IAAS",
-		Value:       "AWS",
 		Destination: &initialMaintainArgs.IAAS,
 	},
 	cli.StringFlag{
@@ -61,11 +61,6 @@ func maintainAction(c *cli.Context, maintainArgs maintain.Args, provider iaas.Pr
 
 	version := c.App.Version
 
-	err := maintainArgs.MarkSetFlags(c)
-	if err != nil {
-		return err
-	}
-
 	client, err := buildMaintainClient(name, version, maintainArgs, provider)
 	if err != nil {
 		return err
@@ -76,6 +71,19 @@ func maintainAction(c *cli.Context, maintainArgs maintain.Args, provider iaas.Pr
 	}
 	//this will never run
 	return nil
+}
+
+func validateMaintainArgs(c *cli.Context, maintainArgs maintain.Args) (maintain.Args, error) {
+	err := maintainArgs.MarkSetFlags(c)
+	if err != nil {
+		return maintainArgs, fmt.Errorf("failed to mark set Maintain flags: [%v]", err)
+	}
+
+	if err = maintainArgs.Validate(); err != nil {
+		return maintainArgs, fmt.Errorf("failed to validate Maintain flags: [%v]", err)
+	}
+
+	return maintainArgs, nil
 }
 
 func buildMaintainClient(name, version string, maintainArgs maintain.Args, provider iaas.Provider) (*concourse.Client, error) {
@@ -118,15 +126,18 @@ var maintainCmd = cli.Command{
 	ArgsUsage: "<name>",
 	Flags:     maintainFlags,
 	Action: func(c *cli.Context) error {
-		iaasName, err := iaas.Assosiate(initialMaintainArgs.IAAS)
+		maintainArgs, err := validateMaintainArgs(c, initialMaintainArgs)
 		if err != nil {
-			return err
+			return fmt.Errorf("Error validating args on maintain: [%v]", err)
 		}
-		provider, err := iaas.New(iaasName, initialMaintainArgs.Region)
+		iaasName, err := iaas.Assosiate(maintainArgs.IAAS)
+		if err != nil {
+			return fmt.Errorf("Error mapping to supported IAASes on maintain: [%v]", err)
+		}
+		provider, err := iaas.New(iaasName, maintainArgs.Region)
 		if err != nil {
 			return fmt.Errorf("Error creating IAAS provider on maintain: [%v]", err)
 		}
-
-		return maintainAction(c, initialMaintainArgs, provider)
+		return maintainAction(c, maintainArgs, provider)
 	},
 }

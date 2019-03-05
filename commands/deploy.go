@@ -82,9 +82,8 @@ var deployFlags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:        "iaas",
-		Usage:       "(optional) IAAS, can be AWS or GCP",
+		Usage:       "(required) IAAS, can be AWS or GCP",
 		EnvVar:      "IAAS",
-		Value:       "AWS",
 		Destination: &initialDeployArgs.IAAS,
 	},
 	cli.BoolFlag{
@@ -189,12 +188,7 @@ func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider
 
 	version := c.App.Version
 
-	deployArgs, err := validateDeployArgs(c, deployArgs)
-	if err != nil {
-		return err
-	}
-
-	deployArgs, err = setZoneAndRegion(provider.Region(), deployArgs)
+	deployArgs, err := setZoneAndRegion(provider.Region(), deployArgs)
 	if err != nil {
 		return err
 	}
@@ -220,11 +214,11 @@ func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider
 func validateDeployArgs(c *cli.Context, deployArgs deploy.Args) (deploy.Args, error) {
 	err := deployArgs.MarkSetFlags(c)
 	if err != nil {
-		return deployArgs, err
+		return deployArgs, fmt.Errorf("failed to mark set Deploy flags: [%v]", err)
 	}
 
 	if err = deployArgs.Validate(); err != nil {
-		return deployArgs, err
+		return deployArgs, fmt.Errorf("failed to validate Deploy flags: [%v]", err)
 	}
 
 	return deployArgs, nil
@@ -421,9 +415,13 @@ var deployCmd = cli.Command{
 	ArgsUsage: "<name>",
 	Flags:     deployFlags,
 	Action: func(c *cli.Context) error {
-		iaasName, err := iaas.Assosiate(initialDeployArgs.IAAS)
+		deployArgs, err := validateDeployArgs(c, initialDeployArgs)
 		if err != nil {
-			return err
+			return fmt.Errorf("Error validating args on deploy: [%v]", err)
+		}
+		iaasName, err := iaas.Assosiate(deployArgs.IAAS)
+		if err != nil {
+			return fmt.Errorf("Error mapping to supported IAASes on deploy: [%v]", err)
 		}
 		provider, err := iaas.New(iaasName, initialDeployArgs.Region)
 		if err != nil {

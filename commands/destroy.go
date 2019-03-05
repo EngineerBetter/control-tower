@@ -30,9 +30,8 @@ var destroyFlags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:        "iaas",
-		Usage:       "(optional) IAAS, can be AWS or GCP",
+		Usage:       "(required) IAAS, can be AWS or GCP",
 		EnvVar:      "IAAS",
-		Value:       "AWS",
 		Destination: &initialDestroyArgs.IAAS,
 	},
 	cli.StringFlag{
@@ -63,21 +62,23 @@ func destroyAction(c *cli.Context, destroyArgs destroy.Args, provider iaas.Provi
 
 	version := c.App.Version
 
-	destroyArgs, err := markSetFlags(c, destroyArgs)
-	if err != nil {
-		return err
-	}
 	client, err := buildDestroyClient(name, version, destroyArgs, provider)
 	if err != nil {
 		return err
 	}
 	return client.Destroy()
 }
-func markSetFlags(c *cli.Context, destroyArgs destroy.Args) (destroy.Args, error) {
+
+func validateDestroyArgs(c *cli.Context, destroyArgs destroy.Args) (destroy.Args, error) {
 	err := destroyArgs.MarkSetFlags(c)
 	if err != nil {
-		return destroyArgs, err
+		return destroyArgs, fmt.Errorf("failed to mark set Destroy  flags: [%v]", err)
 	}
+
+	if err = destroyArgs.Validate(); err != nil {
+		return destroyArgs, fmt.Errorf("failed to validate Destroy flags: [%v]", err)
+	}
+
 	return destroyArgs, nil
 }
 
@@ -121,14 +122,18 @@ var destroyCmd = cli.Command{
 	ArgsUsage: "<name>",
 	Flags:     destroyFlags,
 	Action: func(c *cli.Context) error {
-		iaasName, err := iaas.Assosiate(initialDestroyArgs.IAAS)
+		destroyArgs, err := validateDestroyArgs(c, initialDestroyArgs)
 		if err != nil {
-			return err
+			return fmt.Errorf("Error validating args on destroy: [%v]", err)
 		}
-		provider, err := iaas.New(iaasName, initialDestroyArgs.Region)
+		iaasName, err := iaas.Assosiate(destroyArgs.IAAS)
+		if err != nil {
+			return fmt.Errorf("Error mapping to supported IAASes on destroy: [%v]", err)
+		}
+		provider, err := iaas.New(iaasName, destroyArgs.Region)
 		if err != nil {
 			return fmt.Errorf("Error creating IAAS provider on destroy: [%v]", err)
 		}
-		return destroyAction(c, initialDestroyArgs, provider)
+		return destroyAction(c, destroyArgs, provider)
 	},
 }

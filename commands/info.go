@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/certs"
 	"github.com/EngineerBetter/control-tower/commands/info"
@@ -14,7 +16,6 @@ import (
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
 	"gopkg.in/urfave/cli.v1"
-	"os"
 )
 
 var initialInfoArgs info.Args
@@ -44,9 +45,8 @@ var infoFlags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:        "iaas",
-		Usage:       "(optional) IAAS, can be AWS or GCP",
+		Usage:       "(required) IAAS, can be AWS or GCP",
 		EnvVar:      "IAAS",
-		Value:       "AWS",
 		Destination: &initialInfoArgs.IAAS,
 	},
 	cli.StringFlag{
@@ -64,11 +64,6 @@ func infoAction(c *cli.Context, infoArgs info.Args, provider iaas.Provider) erro
 	}
 
 	version := c.App.Version
-
-	err := infoArgs.MarkSetFlags(c)
-	if err != nil {
-		return err
-	}
 
 	client, err := buildInfoClient(name, version, infoArgs, provider)
 	if err != nil {
@@ -95,8 +90,19 @@ func infoAction(c *cli.Context, infoArgs info.Args, provider iaas.Provider) erro
 		_, err := fmt.Fprint(os.Stdout, i)
 		return err
 	}
-	//this will never run
-	return nil
+}
+
+func validateInfoArgs(c *cli.Context, infoArgs info.Args) (info.Args, error) {
+	err := infoArgs.MarkSetFlags(c)
+	if err != nil {
+		return infoArgs, fmt.Errorf("failed to mark set Info flags: [%v]", err)
+	}
+
+	if err = infoArgs.Validate(); err != nil {
+		return infoArgs, fmt.Errorf("failed to validate Info flags: [%v]", err)
+	}
+
+	return infoArgs, nil
 }
 
 func buildInfoClient(name, version string, infoArgs info.Args, provider iaas.Provider) (*concourse.Client, error) {
@@ -139,14 +145,18 @@ var infoCmd = cli.Command{
 	ArgsUsage: "<name>",
 	Flags:     infoFlags,
 	Action: func(c *cli.Context) error {
-		iaasName, err := iaas.Assosiate(initialInfoArgs.IAAS)
+		infoArgs, err := validateInfoArgs(c, initialInfoArgs)
 		if err != nil {
-			return err
+			return fmt.Errorf("Error validating args on info: [%v]", err)
 		}
-		provider, err := iaas.New(iaasName, initialInfoArgs.Region)
+		iaasName, err := iaas.Assosiate(infoArgs.IAAS)
+		if err != nil {
+			return fmt.Errorf("Error mapping to supported IAASes on info: [%v]", err)
+		}
+		provider, err := iaas.New(iaasName, infoArgs.Region)
 		if err != nil {
 			return fmt.Errorf("Error creating IAAS provider on info: [%v]", err)
 		}
-		return infoAction(c, initialInfoArgs, provider)
+		return infoAction(c, infoArgs, provider)
 	},
 }

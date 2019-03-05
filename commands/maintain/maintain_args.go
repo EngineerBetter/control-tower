@@ -15,6 +15,7 @@ type Args struct {
 	Namespace          string
 	NamespaceIsSet     bool
 	IAAS               string
+	IAASIsSet          bool
 	Stage              int
 	StageIsSet         bool
 }
@@ -33,11 +34,18 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 			case "stage":
 				a.StageIsSet = true
 			case "iaas":
-				//do nothing
+				a.IAASIsSet = true
 			default:
 				return fmt.Errorf("flag %q is not supported by maintain flags", f)
 			}
 		}
+	}
+	return nil
+}
+
+func (a *Args) Validate() error {
+	if !a.IAASIsSet {
+		return fmt.Errorf("--iaas flag not set")
 	}
 	return nil
 }

@@ -35,6 +35,13 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 	return nil
 }
 
+func (a *Args) Validate() error {
+	if !a.IAASIsSet {
+		return fmt.Errorf("--iaas flag not set")
+	}
+	return nil
+}
+
 // FlagSetChecker allows us to find out if flags were set, adn what the names of all flags are
 type FlagSetChecker interface {
 	IsSet(name string) bool

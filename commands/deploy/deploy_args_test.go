@@ -18,6 +18,7 @@ func TestDeployArgs_Validate(t *testing.T) {
 		GithubAuthClientID:     "",
 		GithubAuthClientSecret: "",
 		IAAS:                   "AWS",
+		IAASIsSet:              true,
 		SelfUpdate:             false,
 		TLSCert:                "",
 		TLSKey:                 "",
@@ -60,6 +61,16 @@ func TestDeployArgs_Validate(t *testing.T) {
 			},
 			wantErr:     true,
 			expectedErr: "--tls-cert requires --tls-key to also be provided",
+		},
+		{
+			name: "IAAS not set",
+			modification: func() Args {
+				args := defaultFields
+				args.IAASIsSet = false
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "--iaas flag not set",
 		},
 		{
 			name: "TLSKey cannot be set without TLSCert",

@@ -101,11 +101,11 @@ Download the [latest release](https://github.com/EngineerBetter/control-tower/re
 
 #### Choosing an IAAS
 
-The default IAAS for Control-Tower is AWS. To choose a different IAAS use the `--iaas` flag. For every IAAS provider apart from AWS this flag is required for all commands.
+Control-Tower can deploy to AWS or GCP. To choose an IAAS use the `--iaas` flag. This is required for all commands.
 
 Supported IAAS values: AWS, GCP
 
-- `--iaas value` (optional) IAAS, can be AWS or GCP (default: "AWS") [$IAAS]
+- `--iaas value` (required) IAAS, can be AWS or GCP [$IAAS]
 
 ### Deploy
 

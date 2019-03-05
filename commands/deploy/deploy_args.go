@@ -142,6 +142,10 @@ func (a *Args) ModifyGithub(GithubAuthClientID, GithubAuthClientSecret string, G
 
 // Validate validates that flag interdependencies
 func (a Args) Validate() error {
+	if !a.IAASIsSet {
+		return fmt.Errorf("--iaas flag not set")
+	}
+
 	if err := a.validateCertFields(); err != nil {
 		return err
 	}

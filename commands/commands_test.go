@@ -45,9 +45,20 @@ var _ = Describe("commands", func() {
 			})
 		})
 
+		Context("When the IAAS is not specified", func() {
+			It("Should show a meaningful error", func() {
+				command := exec.Command(cliPath, "deploy", "abc")
+				session, err := Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).ToNot(HaveOccurred())
+				Eventually(session).Should(Exit(1))
+				// Say takes a regexp so `[` and `]` need to be escaped
+				Expect(session.Err).To(Say("Error validating args on deploy: \\[failed to validate Deploy flags: \\[--iaas flag not set\\]\\]"))
+			})
+		})
+
 		Context("When no name is passed in", func() {
 			It("should display correct usage", func() {
-				command := exec.Command(cliPath, "deploy")
+				command := exec.Command(cliPath, "deploy", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -57,7 +68,7 @@ var _ = Describe("commands", func() {
 
 		Context("When there is a key but no cert", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--domain", "abc.engineerbetter.com", "--tls-key", "-- BEGIN RSA PRIVATE KEY --")
+				command := exec.Command(cliPath, "deploy", "abc", "--domain", "abc.engineerbetter.com", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -67,7 +78,7 @@ var _ = Describe("commands", func() {
 
 		Context("When there is a cert but no key", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--domain", "abc.engineerbetter.com", "--tls-cert", "-- BEGIN CERTIFICATE --")
+				command := exec.Command(cliPath, "deploy", "abc", "--domain", "abc.engineerbetter.com", "--tls-cert", "-- BEGIN CERTIFICATE --", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -77,7 +88,7 @@ var _ = Describe("commands", func() {
 
 		Context("When there is a cert and key but no domain", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--tls-cert", "-- BEGIN RSA PRIVATE KEY --")
+				command := exec.Command(cliPath, "deploy", "abc", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--tls-cert", "-- BEGIN RSA PRIVATE KEY --", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -87,7 +98,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid worker count is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--workers", "0")
+				command := exec.Command(cliPath, "deploy", "abc", "--workers", "0", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -97,7 +108,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid worker size is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--worker-size", "small")
+				command := exec.Command(cliPath, "deploy", "abc", "--worker-size", "small", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -107,7 +118,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid web size is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--web-size", "tiny")
+				command := exec.Command(cliPath, "deploy", "abc", "--web-size", "tiny", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -117,7 +128,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid db size is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "abc", "--db-size", "huge")
+				command := exec.Command(cliPath, "deploy", "abc", "--db-size", "huge", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -129,7 +140,7 @@ var _ = Describe("commands", func() {
 	Describe("destroy", func() {
 		Context("When using --help", func() {
 			It("should display usage details", func() {
-				command := exec.Command(cliPath, "destroy", "--help")
+				command := exec.Command(cliPath, "destroy", "--help", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
 				Eventually(session).Should(Exit(0))
@@ -137,9 +148,20 @@ var _ = Describe("commands", func() {
 			})
 		})
 
+		Context("When the IAAS is not specified", func() {
+			It("Should show a meaningful error", func() {
+				command := exec.Command(cliPath, "destroy", "abc")
+				session, err := Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).ToNot(HaveOccurred())
+				Eventually(session).Should(Exit(1))
+				// Say takes a regexp so `[` and `]` need to be escaped
+				Expect(session.Err).To(Say("Error validating args on destroy: \\[failed to validate Destroy flags: \\[--iaas flag not set\\]\\]"))
+			})
+		})
+
 		Context("When no name is passed in", func() {
 			It("should display correct usage", func() {
-				command := exec.Command(cliPath, "destroy")
+				command := exec.Command(cliPath, "destroy", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -159,13 +181,57 @@ var _ = Describe("commands", func() {
 			})
 		})
 
+		Context("When the IAAS is not specified", func() {
+			It("Should show a meaningful error", func() {
+				command := exec.Command(cliPath, "info", "abc")
+				session, err := Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).ToNot(HaveOccurred())
+				Eventually(session).Should(Exit(1))
+				// Say takes a regexp so `[` and `]` need to be escaped
+				Expect(session.Err).To(Say("Error validating args on info: \\[failed to validate Info flags: \\[--iaas flag not set\\]\\]"))
+			})
+		})
+
 		Context("When no name is passed in", func() {
 			It("should display correct usage", func() {
-				command := exec.Command(cliPath, "info")
+				command := exec.Command(cliPath, "info", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
 				Expect(session.Err).To(Say("Usage is `control-tower info <name>`"))
+			})
+		})
+	})
+
+	Describe("maintain", func() {
+		Context("When using --help", func() {
+			It("should display usage details", func() {
+				command := exec.Command(cliPath, "maintain", "--help", "--iaas", "AWS")
+				session, err := Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
+				Eventually(session).Should(Exit(0))
+				Expect(session.Out).To(Say("control-tower maintain - Handles maintenance operations in control-tower"))
+			})
+		})
+
+		Context("When the IAAS is not specified", func() {
+			It("Should show a meaningful error", func() {
+				command := exec.Command(cliPath, "maintain", "abc")
+				session, err := Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).ToNot(HaveOccurred())
+				Eventually(session).Should(Exit(1))
+				// Say takes a regexp so `[` and `]` need to be escaped
+				Expect(session.Err).To(Say("Error validating args on maintain: \\[failed to validate Maintain flags: \\[--iaas flag not set\\]\\]"))
+			})
+		})
+
+		Context("When no name is passed in", func() {
+			It("should display correct usage", func() {
+				command := exec.Command(cliPath, "maintain", "--iaas", "AWS")
+				session, err := Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).ToNot(HaveOccurred())
+				Eventually(session).Should(Exit(1))
+				Expect(session.Err).To(Say("Usage is `control-tower maintain <name>`"))
 			})
 		})
 	})
