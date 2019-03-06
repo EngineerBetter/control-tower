@@ -12,6 +12,12 @@ jobs:
       run:
         path: bash
         args:
-        - -c
+        - -exc
         - |
           [[ "$PASSWORD" = "c1oudc0w" ]]
+          apt-get update 2>&1 > /dev/null
+          apt-get install -y --no-install-recommends curl 2>&1 > /dev/null
+          credhub_status=$(curl --max-time 5 -kLso/dev/null -w "%{http_code}" https://((domain)):8844)
+          uaa_status=$(curl --max-time 5 -kLso/dev/null -w "%{http_code}" https://((domain)):8443)
+          [[ "$credhub_status" = 401 ]]
+          [[ "$uaa_status" = 200 ]]

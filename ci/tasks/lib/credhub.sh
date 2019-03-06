@@ -21,8 +21,12 @@ function assertPipelinesCanReadFromCredhub() {
   credhub api
   credhub set -n /concourse/main/password -t password -w c1oudc0w
 
+  bosh interpolate "$(dirname "$0")/credhub.yml" \
+    --var domain="$domain" \
+    > "$(dirname "$0")/credhub_interpolated.yml"
+
   # shellcheck disable=SC2034
-  manifest="$(dirname "$0")/credhub.yml"
+  manifest="$(dirname "$0")/credhub_interpolated.yml"
   # shellcheck disable=SC2034
   job="credhub"
   # shellcheck disable=SC2034
