@@ -164,7 +164,7 @@ func (e Environment) ConfigureConcourseStemcell() (string, error) {
 	if version == "" {
 		return "", errors.New("did not find stemcell version in versions.json")
 	}
-	return fmt.Sprintf("https://s3.amazonaws.com/bosh-aws-light-stemcells/light-bosh-stemcell-%s-aws-xen-hvm-ubuntu-xenial-go_agent.tgz", version), nil
+	return fmt.Sprintf("https://s3.amazonaws.com/bosh-aws-light-stemcells/%s/light-bosh-stemcell-%s-aws-xen-hvm-ubuntu-xenial-go_agent.tgz", version, version), nil
 }
 
 // Store holds the abstraction of a aws storage artifact
