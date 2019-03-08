@@ -264,7 +264,7 @@ func TestEnvironment_ConfigureConcourseStemcell(t *testing.T) {
 	}{
 		{
 			name:    "parse versions and provide a valid stemcell url",
-			want:    fmt.Sprintf("https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-5-google-kvm-ubuntu-xenial-go_agent.tgz"),
+			want:    "https://s3.amazonaws.com/bosh-gce-light-stemcells/5/light-bosh-stemcell-5-google-kvm-ubuntu-xenial-go_agent.tgz",
 			wantErr: false,
 			fixture: "stemcell_version",
 		},
