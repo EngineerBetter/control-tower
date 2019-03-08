@@ -30,7 +30,7 @@ function assertGitHubAuthConfigured() {
 
   pkill -9 fly
 
-  url=$(grep redirect fly_out | sed 's/ //g')
+  url=$(grep '/login?fly_port=' fly_out | sed 's/ //g')
 
   curl -sL --cacert "$cert" "$url" | grep -q '/sky/issuer/auth/github'
 
