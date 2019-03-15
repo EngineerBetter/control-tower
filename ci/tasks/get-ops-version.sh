@@ -18,6 +18,6 @@ export ATC_BEARER_TOKEN="${atc_bearer_token}"
 job=$(cat build-metadata/build-job-name)
 team=$(cat build-metadata/build-team-name)
 
-stopover-v2 https://ci.engineerbetter.com "${team}" control-tower "${job}" "$(cat build-metadata/build-name)" > versions.yml
+stopover.v2 https://ci.engineerbetter.com "${team}" control-tower "${job}" "$(cat build-metadata/build-name)" > versions.yml
 
 bosh int --path /resource_version_control-tower-ops/ref versions.yml > ops-version/version
