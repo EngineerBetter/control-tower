@@ -2,6 +2,8 @@ package iaas
 
 import (
 	"bytes"
+	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
 	"io/ioutil"
 
 	"time"
@@ -80,7 +82,26 @@ func (client *AWSProvider) CreateBucket(name string) error {
 	}
 
 	_, err := s3Client.CreateBucket(bucketInput)
-	return err
+
+	if err != nil {
+		return fmt.Errorf("error creating S3 bucket [%v]: [%v]", name, err)
+	}
+
+	versioningConfig := &s3.VersioningConfiguration{
+		Status: aws.String(s3.BucketVersioningStatusEnabled),
+	}
+
+	versioningInput := &s3.PutBucketVersioningInput{
+		Bucket: &name,
+		VersioningConfiguration: versioningConfig,
+	}
+
+	_, err = s3Client.PutBucketVersioning(versioningInput)
+	if err != nil {
+		return fmt.Errorf("error enabling versioning on S3 bucket [%v]: [%v]", name, err)
+	}
+
+	return nil
 }
 
 // BucketExists checks if the named bucket exists

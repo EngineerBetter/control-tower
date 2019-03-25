@@ -152,9 +152,14 @@ func (g *GCPProvider) CreateBucket(name string) error {
 	if err != nil {
 		return err
 	}
-	if err := g.storage.Bucket(name).Create(g.ctx, project, nil); err != nil {
+
+	attrs := &storage.BucketAttrs{
+		VersioningEnabled: true,
+	}
+	if err := g.storage.Bucket(name).Create(g.ctx, project, attrs); err != nil {
 		return err
 	}
+
 	return nil
 }
 

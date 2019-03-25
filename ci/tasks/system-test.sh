@@ -7,6 +7,8 @@ handleVerboseMode
 setDeploymentName sys
 
 # shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/check-config-bucket-versioned.sh
+# shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-db.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
@@ -69,9 +71,8 @@ fi
 
 # Check RDS instance class is db.t2.small
 assertDbCorrect
-
-# Check CIDR ranges correct
 assertNetworkCidrsCorrect
+assertConfigBucketVersioned
 
 # shellcheck disable=SC2034
 cert="generated-ca-cert.pem"
