@@ -114,33 +114,24 @@ func (g *GCPProvider) Choose(c Choice) interface{} {
 
 // DeleteVersionedBucket deletes a bucket and its content from GCP
 func (g *GCPProvider) DeleteVersionedBucket(name string) error {
-	err := g.DeleteFile(name, "config.json")
-	if err != nil {
-		return err
+	bucket := g.storage.Bucket(name)
+	it := bucket.Objects(g.ctx, &storage.Query{Versions: true})
+
+	for {
+		objAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("error iterating over contents of bucket [%v]: [%v]", name, err)
+		}
+
+		bucket.Object(objAttrs.Name).Generation(objAttrs.Generation).Delete(g.ctx)
 	}
-	err = g.DeleteFile(name, "default.tfstate")
-	if err != nil {
-		return err
-	}
-	err = g.DeleteFile(name, "director-creds.yml")
-	if err != nil {
-		return err
-	}
-	err = g.DeleteFile(name, "director-state.json")
-	if err != nil {
-		return err
-	}
-	err = g.DeleteFile(name, "maintenance.json")
-	if err != nil && err.Error() != "storage: object doesn't exist" {
-		return err
-	}
-	err = g.DeleteFile(name, "director-creds-backup.yml")
-	if err != nil && err.Error() != "storage: object doesn't exist" {
-		return err
-	}
+
 	time.Sleep(time.Second)
 	if err := g.storage.Bucket(name).Delete(g.ctx); err != nil {
-		return err
+		return fmt.Errorf("error deleting bucket [%v]: [%v]", name, err)
 	}
 
 	return nil
