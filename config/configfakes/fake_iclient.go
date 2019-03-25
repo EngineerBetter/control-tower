@@ -31,6 +31,16 @@ type FakeIClient struct {
 	deleteAllReturnsOnCall map[int]struct {
 		result1 error
 	}
+	EnsureBucketExistsStub        func() error
+	ensureBucketExistsMutex       sync.RWMutex
+	ensureBucketExistsArgsForCall []struct {
+	}
+	ensureBucketExistsReturns struct {
+		result1 error
+	}
+	ensureBucketExistsReturnsOnCall map[int]struct {
+		result1 error
+	}
 	HasAssetStub        func(string) (bool, error)
 	hasAssetMutex       sync.RWMutex
 	hasAssetArgsForCall []struct {
@@ -217,6 +227,58 @@ func (fake *FakeIClient) DeleteAllReturnsOnCall(i int, result1 error) {
 		})
 	}
 	fake.deleteAllReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeIClient) EnsureBucketExists() error {
+	fake.ensureBucketExistsMutex.Lock()
+	ret, specificReturn := fake.ensureBucketExistsReturnsOnCall[len(fake.ensureBucketExistsArgsForCall)]
+	fake.ensureBucketExistsArgsForCall = append(fake.ensureBucketExistsArgsForCall, struct {
+	}{})
+	fake.recordInvocation("EnsureBucketExists", []interface{}{})
+	fake.ensureBucketExistsMutex.Unlock()
+	if fake.EnsureBucketExistsStub != nil {
+		return fake.EnsureBucketExistsStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.ensureBucketExistsReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeIClient) EnsureBucketExistsCallCount() int {
+	fake.ensureBucketExistsMutex.RLock()
+	defer fake.ensureBucketExistsMutex.RUnlock()
+	return len(fake.ensureBucketExistsArgsForCall)
+}
+
+func (fake *FakeIClient) EnsureBucketExistsCalls(stub func() error) {
+	fake.ensureBucketExistsMutex.Lock()
+	defer fake.ensureBucketExistsMutex.Unlock()
+	fake.EnsureBucketExistsStub = stub
+}
+
+func (fake *FakeIClient) EnsureBucketExistsReturns(result1 error) {
+	fake.ensureBucketExistsMutex.Lock()
+	defer fake.ensureBucketExistsMutex.Unlock()
+	fake.EnsureBucketExistsStub = nil
+	fake.ensureBucketExistsReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeIClient) EnsureBucketExistsReturnsOnCall(i int, result1 error) {
+	fake.ensureBucketExistsMutex.Lock()
+	defer fake.ensureBucketExistsMutex.Unlock()
+	fake.EnsureBucketExistsStub = nil
+	if fake.ensureBucketExistsReturnsOnCall == nil {
+		fake.ensureBucketExistsReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.ensureBucketExistsReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -587,6 +649,8 @@ func (fake *FakeIClient) Invocations() map[string][][]interface{} {
 	defer fake.configExistsMutex.RUnlock()
 	fake.deleteAllMutex.RLock()
 	defer fake.deleteAllMutex.RUnlock()
+	fake.ensureBucketExistsMutex.RLock()
+	defer fake.ensureBucketExistsMutex.RUnlock()
 	fake.hasAssetMutex.RLock()
 	defer fake.hasAssetMutex.RUnlock()
 	fake.loadMutex.RLock()

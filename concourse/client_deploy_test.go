@@ -374,6 +374,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 
 					tfInputVarsFactory.NewInputVarsReturns(terraformInputVars)
 
+					Expect(configClient).To(HaveReceived("EnsureBucketExists"))
 					Expect(configClient).To(HaveReceived("ConfigExists"))
 					Expect(configClient).To(HaveReceived("Load"))
 					Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configAfterLoad))
@@ -722,6 +723,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 
 				tfInputVarsFactory.NewInputVarsReturns(terraformInputVars)
 
+				Expect(configClient).To(HaveReceived("EnsureBucketExists"))
 				Expect(configClient).To(HaveReceived("ConfigExists"))
 				Expect(configClient).ToNot(HaveReceived("Load"))
 				Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(defaultGeneratedConfig))

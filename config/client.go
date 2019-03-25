@@ -20,6 +20,7 @@ type IClient interface {
 	ConfigExists() (bool, error)
 	LoadAsset(filename string) ([]byte, error)
 	NewConfig() Config
+	EnsureBucketExists() error
 }
 
 // Client is a client for loading the config file  from S3
@@ -36,10 +37,6 @@ type Client struct {
 func New(iaas iaas.Provider, project, namespace string) *Client {
 	namespace = determineNamespace(namespace, iaas.Region())
 	bucketName, exists, err := determineBucketName(iaas, namespace, project)
-
-	if !exists && err == nil {
-		err = iaas.CreateBucket(bucketName)
-	}
 
 	return &Client{
 		iaas,
@@ -126,6 +123,24 @@ func (client *Client) NewConfig() Config {
 		Region:       client.Iaas.Region(),
 		TFStatePath:  terraformStateFileName,
 	}
+}
+
+func (client *Client) EnsureBucketExists() error {
+	exists, err := client.Iaas.BucketExists(client.BucketName)
+
+	if err != nil {
+		return fmt.Errorf("error determining if bucket [%v] exists: [%v]", client.BucketName, err)
+	}
+
+	if !exists {
+		err = client.Iaas.CreateBucket(client.BucketName)
+
+		if err != nil {
+			return fmt.Errorf("error creating config bucket [%v]: [%v]", client.BucketName, err)
+		}
+	}
+
+	return nil
 }
 
 func (client *Client) configBucket() string {

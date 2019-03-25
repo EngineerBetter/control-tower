@@ -49,6 +49,11 @@ func stripVersion(tags []string) []string {
 
 // Deploy deploys a concourse instance
 func (client *Client) Deploy() error {
+	err := client.configClient.EnsureBucketExists()
+	if err != nil {
+		return fmt.Errorf("error ensuring config bucket exists before deploy: [%v]", err)
+	}
+
 	conf, isDomainUpdated, err := client.getInitialConfig()
 	if err != nil {
 		return fmt.Errorf("error getting initial config before deploy: [%v]", err)

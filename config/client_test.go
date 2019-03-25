@@ -39,6 +39,52 @@ var _ = Describe("Client", func() {
 			Expect(conf.TFStatePath).To(Equal("terraform.tfstate"))
 		})
 	})
+
+	Describe("EnsureBucketExists", func(){
+		BeforeEach(func() {
+			provider = &iaasfakes.FakeProvider{}
+			provider.RegionReturns("eu-west-1")
+			client = New(provider, "test", "")
+		})
+
+		Context("when the bucket exists", func(){
+			JustBeforeEach(func(){
+				provider.BucketExistsReturns(false, nil)
+			})
+
+			It("no-ops and returns no error", func(){
+				err := client.EnsureBucketExists()
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+
+		Context("when the bucket does not exist", func(){
+			JustBeforeEach(func(){
+				provider.BucketExistsReturns(false, nil)
+				provider.CreateBucketReturns(nil)
+			})
+
+			It("creates it", func(){
+				err := client.EnsureBucketExists()
+				Expect(err).ToNot(HaveOccurred())
+				// Will be 1 once we remove invocation from New()
+				Expect(provider.CreateBucketCallCount()).To(Equal(1))
+			})
+
+			Context("and it cannot be created", func(){
+				JustBeforeEach(func(){
+					provider.BucketExistsReturns(false, nil)
+					provider.CreateBucketReturns(fmt.Errorf("SOME IAAS ERROR"))
+				})
+
+				It("returns a useful error message", func(){
+					err := client.EnsureBucketExists()
+					Expect(err).To(HaveOccurred())
+					Expect(err.Error()).To(Equal("error creating config bucket [control-tower-test-eu-west-1-config]: [SOME IAAS ERROR]"))
+				})
+			})
+		})
+	})
 })
 
 func TestNew(t *testing.T) {
