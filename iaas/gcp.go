@@ -96,17 +96,6 @@ func (g *GCPProvider) Attr(key string) (string, error) {
 	return v, nil
 }
 
-// DeleteFile deletes a file from GCP bucket
-func (g *GCPProvider) DeleteFile(bucket, path string) error {
-	o := g.storage.Bucket(bucket).Object(path)
-
-	if err := o.Delete(g.ctx); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // Choose for the consumer the appropriate output based on the provider
 func (g *GCPProvider) Choose(c Choice) interface{} {
 	return c.GCP

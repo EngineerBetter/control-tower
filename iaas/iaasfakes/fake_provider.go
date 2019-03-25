@@ -94,18 +94,6 @@ type FakeProvider struct {
 	dBTypeReturnsOnCall map[int]struct {
 		result1 string
 	}
-	DeleteFileStub        func(string, string) error
-	deleteFileMutex       sync.RWMutex
-	deleteFileArgsForCall []struct {
-		arg1 string
-		arg2 string
-	}
-	deleteFileReturns struct {
-		result1 error
-	}
-	deleteFileReturnsOnCall map[int]struct {
-		result1 error
-	}
 	DeleteVMsInDeploymentStub        func(string, string, string) error
 	deleteVMsInDeploymentMutex       sync.RWMutex
 	deleteVMsInDeploymentArgsForCall []struct {
@@ -697,67 +685,6 @@ func (fake *FakeProvider) DBTypeReturnsOnCall(i int, result1 string) {
 	}
 	fake.dBTypeReturnsOnCall[i] = struct {
 		result1 string
-	}{result1}
-}
-
-func (fake *FakeProvider) DeleteFile(arg1 string, arg2 string) error {
-	fake.deleteFileMutex.Lock()
-	ret, specificReturn := fake.deleteFileReturnsOnCall[len(fake.deleteFileArgsForCall)]
-	fake.deleteFileArgsForCall = append(fake.deleteFileArgsForCall, struct {
-		arg1 string
-		arg2 string
-	}{arg1, arg2})
-	fake.recordInvocation("DeleteFile", []interface{}{arg1, arg2})
-	fake.deleteFileMutex.Unlock()
-	if fake.DeleteFileStub != nil {
-		return fake.DeleteFileStub(arg1, arg2)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.deleteFileReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakeProvider) DeleteFileCallCount() int {
-	fake.deleteFileMutex.RLock()
-	defer fake.deleteFileMutex.RUnlock()
-	return len(fake.deleteFileArgsForCall)
-}
-
-func (fake *FakeProvider) DeleteFileCalls(stub func(string, string) error) {
-	fake.deleteFileMutex.Lock()
-	defer fake.deleteFileMutex.Unlock()
-	fake.DeleteFileStub = stub
-}
-
-func (fake *FakeProvider) DeleteFileArgsForCall(i int) (string, string) {
-	fake.deleteFileMutex.RLock()
-	defer fake.deleteFileMutex.RUnlock()
-	argsForCall := fake.deleteFileArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
-}
-
-func (fake *FakeProvider) DeleteFileReturns(result1 error) {
-	fake.deleteFileMutex.Lock()
-	defer fake.deleteFileMutex.Unlock()
-	fake.DeleteFileStub = nil
-	fake.deleteFileReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeProvider) DeleteFileReturnsOnCall(i int, result1 error) {
-	fake.deleteFileMutex.Lock()
-	defer fake.deleteFileMutex.Unlock()
-	fake.DeleteFileStub = nil
-	if fake.deleteFileReturnsOnCall == nil {
-		fake.deleteFileReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.deleteFileReturnsOnCall[i] = struct {
-		result1 error
 	}{result1}
 }
 
@@ -1558,8 +1485,6 @@ func (fake *FakeProvider) Invocations() map[string][][]interface{} {
 	defer fake.createDatabasesMutex.RUnlock()
 	fake.dBTypeMutex.RLock()
 	defer fake.dBTypeMutex.RUnlock()
-	fake.deleteFileMutex.RLock()
-	defer fake.deleteFileMutex.RUnlock()
 	fake.deleteVMsInDeploymentMutex.RLock()
 	defer fake.deleteVMsInDeploymentMutex.RUnlock()
 	fake.deleteVMsInVPCMutex.RLock()

@@ -31,15 +31,9 @@ type FakeIClient struct {
 	deleteAllReturnsOnCall map[int]struct {
 		result1 error
 	}
-	DeleteAssetStub        func(string) error
-	deleteAssetMutex       sync.RWMutex
-	deleteAssetArgsForCall []struct {
-		arg1 string
 	}
-	deleteAssetReturns struct {
 		result1 error
 	}
-	deleteAssetReturnsOnCall map[int]struct {
 		result1 error
 	}
 	HasAssetStub        func(string) (bool, error)
@@ -232,62 +226,24 @@ func (fake *FakeIClient) DeleteAllReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeIClient) DeleteAsset(arg1 string) error {
-	fake.deleteAssetMutex.Lock()
-	ret, specificReturn := fake.deleteAssetReturnsOnCall[len(fake.deleteAssetArgsForCall)]
-	fake.deleteAssetArgsForCall = append(fake.deleteAssetArgsForCall, struct {
-		arg1 string
-	}{arg1})
-	fake.recordInvocation("DeleteAsset", []interface{}{arg1})
-	fake.deleteAssetMutex.Unlock()
-	if fake.DeleteAssetStub != nil {
-		return fake.DeleteAssetStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteAssetReturns
 	return fakeReturns.result1
 }
 
-func (fake *FakeIClient) DeleteAssetCallCount() int {
-	fake.deleteAssetMutex.RLock()
-	defer fake.deleteAssetMutex.RUnlock()
-	return len(fake.deleteAssetArgsForCall)
 }
 
-func (fake *FakeIClient) DeleteAssetCalls(stub func(string) error) {
-	fake.deleteAssetMutex.Lock()
-	defer fake.deleteAssetMutex.Unlock()
-	fake.DeleteAssetStub = stub
 }
 
-func (fake *FakeIClient) DeleteAssetArgsForCall(i int) string {
-	fake.deleteAssetMutex.RLock()
-	defer fake.deleteAssetMutex.RUnlock()
-	argsForCall := fake.deleteAssetArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeIClient) DeleteAssetReturns(result1 error) {
-	fake.deleteAssetMutex.Lock()
-	defer fake.deleteAssetMutex.Unlock()
-	fake.DeleteAssetStub = nil
-	fake.deleteAssetReturns = struct {
 		result1 error
 	}{result1}
 }
 
-func (fake *FakeIClient) DeleteAssetReturnsOnCall(i int, result1 error) {
-	fake.deleteAssetMutex.Lock()
-	defer fake.deleteAssetMutex.Unlock()
-	fake.DeleteAssetStub = nil
-	if fake.deleteAssetReturnsOnCall == nil {
-		fake.deleteAssetReturnsOnCall = make(map[int]struct {
 			result1 error
 		})
 	}
-	fake.deleteAssetReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -658,8 +614,6 @@ func (fake *FakeIClient) Invocations() map[string][][]interface{} {
 	defer fake.configExistsMutex.RUnlock()
 	fake.deleteAllMutex.RLock()
 	defer fake.deleteAllMutex.RUnlock()
-	fake.deleteAssetMutex.RLock()
-	defer fake.deleteAssetMutex.RUnlock()
 	fake.hasAssetMutex.RLock()
 	defer fake.hasAssetMutex.RUnlock()
 	fake.loadMutex.RLock()

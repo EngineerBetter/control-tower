@@ -48,7 +48,6 @@ type Provider interface {
 	CheckForWhitelistedIP(ip, securityGroup string) (bool, error)
 	CreateBucket(name string) error
 	CreateDatabases(name, username, password string) error
-	DeleteFile(bucket, path string) error
 	DeleteVersionedBucket(name string) error
 	DeleteVMsInDeployment(zone, project, deployment string) error
 	DeleteVMsInVPC(vpcID string) ([]string, error)

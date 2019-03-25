@@ -90,10 +90,6 @@ var _ = Describe("client", func() {
 			actions = append(actions, "loading config file")
 			return configInBucket, nil
 		}
-		configClient.DeleteAssetStub = func(filename string) error {
-			actions = append(actions, fmt.Sprintf("deleting config asset: %s", filename))
-			return nil
-		}
 		configClient.UpdateStub = func(config config.Config) error {
 			actions = append(actions, "updating config file")
 			return nil

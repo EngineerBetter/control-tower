@@ -19,7 +19,6 @@ type IClient interface {
 	HasAsset(filename string) (bool, error)
 	ConfigExists() (bool, error)
 	LoadAsset(filename string) ([]byte, error)
-	DeleteAsset(filename string) error
 	NewConfig() Config
 }
 
@@ -63,14 +62,6 @@ func (client *Client) StoreAsset(filename string, contents []byte) error {
 // LoadAsset loads an associated configuration file
 func (client *Client) LoadAsset(filename string) ([]byte, error) {
 	return client.Iaas.LoadFile(
-		client.configBucket(),
-		filename,
-	)
-}
-
-// DeleteAsset deletes an associated configuration file
-func (client *Client) DeleteAsset(filename string) error {
-	return client.Iaas.DeleteFile(
 		client.configBucket(),
 		filename,
 	)
