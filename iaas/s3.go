@@ -38,10 +38,10 @@ func (client *AWSProvider) DeleteVersionedBucket(name string) error {
 	s3Client := s3.New(client.sess)
 
 	// Delete all objects
-	objects := []*s3.Object{}
-	err := s3Client.ListObjectsPages(&s3.ListObjectsInput{Bucket: &name},
-		func(output *s3.ListObjectsOutput, _ bool) bool {
-			objects = append(objects, output.Contents...)
+	objects := []*s3.ObjectVersion{}
+	err := s3Client.ListObjectVersionsPages(&s3.ListObjectVersionsInput{Bucket: &name},
+		func(output *s3.ListObjectVersionsOutput, _ bool) bool {
+			objects = append(objects, output.Versions...)
 
 			return true
 		})
@@ -53,6 +53,7 @@ func (client *AWSProvider) DeleteVersionedBucket(name string) error {
 		_, err = s3Client.DeleteObject(&s3.DeleteObjectInput{
 			Bucket: &name,
 			Key:    object.Key,
+			VersionId: object.VersionId,
 		})
 		if err != nil {
 			return nil
