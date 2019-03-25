@@ -31,11 +31,6 @@ type FakeIClient struct {
 	deleteAllReturnsOnCall map[int]struct {
 		result1 error
 	}
-	}
-		result1 error
-	}
-		result1 error
-	}
 	HasAssetStub        func(string) (bool, error)
 	hasAssetMutex       sync.RWMutex
 	hasAssetArgsForCall []struct {
@@ -222,28 +217,6 @@ func (fake *FakeIClient) DeleteAllReturnsOnCall(i int, result1 error) {
 		})
 	}
 	fake.deleteAllReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fakeReturns.result1
-}
-
-}
-
-}
-
-		result1 error
-	}{result1}
-}
-
-			result1 error
-		})
-	}
 		result1 error
 	}{result1}
 }
