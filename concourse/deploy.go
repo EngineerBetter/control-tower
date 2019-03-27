@@ -309,13 +309,13 @@ type Requirements struct {
 	Certs            Certs
 }
 
-func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*lego.Client, error), isDomainUpdated bool, cfg config.Config, tfOutputs terraform.Outputs) (Requirements, error) {
+func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*lego.Client, error), isDomainUpdated bool, cfg config.ConfigView, tfOutputs terraform.Outputs) (Requirements, error) {
 	cr := Requirements{
-		Domain:           cfg.Domain,
-		DirectorPublicIP: cfg.DirectorPublicIP,
+		Domain:           cfg.GetDomain(),
+		DirectorPublicIP: cfg.GetDirectorPublicIP(),
 	}
 
-	if cfg.Domain == "" {
+	if cfg.GetDomain() == "" {
 		domain, err := tfOutputs.Get("ATCPublicIP")
 		if err != nil {
 			return cr, err
@@ -324,12 +324,12 @@ func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*l
 	}
 
 	dc := DirectorCerts{
-		DirectorCACert: cfg.DirectorCACert,
-		DirectorCert:   cfg.DirectorCert,
-		DirectorKey:    cfg.DirectorKey,
+		DirectorCACert: cfg.GetDirectorCACert(),
+		DirectorCert:   cfg.GetDirectorCert(),
+		DirectorKey:    cfg.GetDirectorKey(),
 	}
 
-	dc, err := client.ensureDirectorCerts(c, dc, cfg.Deployment, tfOutputs, cfg.PublicCIDR)
+	dc, err := client.ensureDirectorCerts(c, dc, cfg.GetDeployment(), tfOutputs, cfg.GetPublicCIDR())
 	if err != nil {
 		return cr, err
 	}
@@ -337,13 +337,13 @@ func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*l
 	cr.DirectorCerts = dc
 
 	cc := Certs{
-		ConcourseCert:             cfg.ConcourseCert,
-		ConcourseKey:              cfg.ConcourseKey,
-		ConcourseUserProvidedCert: cfg.ConcourseUserProvidedCert,
-		ConcourseCACert:           cfg.ConcourseCACert,
+		ConcourseCert:             cfg.GetConcourseCert(),
+		ConcourseKey:              cfg.GetConcourseKey(),
+		ConcourseUserProvidedCert: cfg.GetConcourseUserProvidedCert(),
+		ConcourseCACert:           cfg.GetConcourseCACert(),
 	}
 
-	cc, err = client.ensureConcourseCerts(c, isDomainUpdated, cc, cfg.Deployment, cr.Domain)
+	cc, err = client.ensureConcourseCerts(c, isDomainUpdated, cc, cfg.GetDeployment(), cr.Domain)
 	if err != nil {
 		return cr, err
 	}
