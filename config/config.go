@@ -60,3 +60,231 @@ type Config struct {
 	Version                   string   `json:"version"`
 	WorkerType                string   `json:"worker_type"`
 }
+
+func (c Config) GetAllowIPs() string {
+	return c.AllowIPs
+}
+
+func (c Config) GetAvailabilityZone() string {
+	return c.AvailabilityZone
+}
+
+func (c Config) GetConcourseCACert() string {
+	return c.ConcourseCACert
+}
+
+func (c Config) GetConcourseCert() string {
+	return c.ConcourseCert
+}
+
+func (c Config) GetConcourseKey() string {
+	return c.ConcourseKey
+}
+
+func (c Config) GetConcoursePassword() string {
+	return c.ConcoursePassword
+}
+
+func (c Config) GetConcourseUsername() string {
+	return c.ConcourseUsername
+}
+
+func (c Config) GetConcourseUserProvidedCert() bool {
+	return c.ConcourseUserProvidedCert
+}
+
+func (c Config) GetConcourseWebSize() string {
+	return c.ConcourseWebSize
+}
+
+func (c Config) GetConcourseWorkerCount() int {
+	return c.ConcourseWorkerCount
+}
+
+func (c Config) GetConcourseWorkerSize() string {
+	return c.ConcourseWorkerSize
+}
+
+func (c Config) GetConfigBucket() string {
+	return c.ConfigBucket
+}
+
+func (c Config) GetCredhubAdminClientSecret() string {
+	return c.CredhubAdminClientSecret
+}
+
+func (c Config) GetCredhubCACert() string {
+	return c.CredhubCACert
+}
+
+func (c Config) GetCredhubPassword() string {
+	return c.CredhubPassword
+}
+
+func (c Config) GetCredhubURL() string {
+	return c.CredhubURL
+}
+
+func (c Config) GetCredhubUsername() string {
+	return c.CredhubUsername
+}
+
+func (c Config) GetDeployment() string {
+	return c.Deployment
+}
+
+func (c Config) GetDirectorCACert() string {
+	return c.DirectorCACert
+}
+
+func (c Config) GetDirectorCert() string {
+	return c.DirectorCert
+}
+
+func (c Config) GetDirectorHMUserPassword() string {
+	return c.DirectorHMUserPassword
+}
+
+func (c Config) GetDirectorKey() string {
+	return c.DirectorKey
+}
+
+func (c Config) GetDirectorMbusPassword() string {
+	return c.DirectorMbusPassword
+}
+
+func (c Config) GetDirectorNATSPassword() string {
+	return c.DirectorNATSPassword
+}
+
+func (c Config) GetDirectorPassword() string {
+	return c.DirectorPassword
+}
+
+func (c Config) GetDirectorPublicIP() string {
+	return c.DirectorPublicIP
+}
+
+func (c Config) GetDirectorRegistryPassword() string {
+	return c.DirectorRegistryPassword
+}
+
+func (c Config) GetDirectorUsername() string {
+	return c.DirectorUsername
+}
+
+func (c Config) GetDomain() string {
+	return c.Domain
+}
+
+func (c Config) GetEncryptionKey() string {
+	return c.EncryptionKey
+}
+
+func (c Config) GetGithubAuthIsSet() bool {
+	return c.GithubAuthIsSet
+}
+
+func (c Config) GetGithubClientID() string {
+	return c.GithubClientID
+}
+
+func (c Config) GetGithubClientSecret() string {
+	return c.GithubClientSecret
+}
+
+func (c Config) GetGrafanaPassword() string {
+	return c.GrafanaPassword
+}
+
+func (c Config) GetHostedZoneID() string {
+	return c.HostedZoneID
+}
+
+func (c Config) GetHostedZoneRecordPrefix() string {
+	return c.HostedZoneRecordPrefix
+}
+
+func (c Config) GetIAAS() string {
+	return c.IAAS
+}
+
+func (c Config) GetNamespace() string {
+	return c.Namespace
+}
+
+func (c Config) GetNetworkCIDR() string {
+	return c.NetworkCIDR
+}
+
+func (c Config) GetPrivateCIDR() string {
+	return c.PrivateCIDR
+}
+
+func (c Config) GetPrivateKey() string {
+	return c.PrivateKey
+}
+
+func (c Config) GetProject() string {
+	return c.Project
+}
+
+func (c Config) GetPublicCIDR() string {
+	return c.PublicCIDR
+}
+
+func (c Config) GetPublicKey() string {
+	return c.PublicKey
+}
+
+func (c Config) GetRDS1CIDR() string {
+	return c.RDS1CIDR
+}
+
+func (c Config) GetRDS2CIDR() string {
+	return c.RDS2CIDR
+}
+
+func (c Config) GetRDSDefaultDatabaseName() string {
+	return c.RDSDefaultDatabaseName
+}
+
+func (c Config) GetRDSInstanceClass() string {
+	return c.RDSInstanceClass
+}
+
+func (c Config) GetRDSPassword() string {
+	return c.RDSPassword
+}
+
+func (c Config) GetRDSUsername() string {
+	return c.RDSUsername
+}
+
+func (c Config) GetRegion() string {
+	return c.Region
+}
+
+func (c Config) GetSourceAccessIP() string {
+	return c.SourceAccessIP
+}
+
+func (c Config) GetSpot() bool {
+	return c.Spot
+}
+
+func (c Config) GetTags() []string {
+	return c.Tags
+}
+
+func (c Config) GetTFStatePath() string {
+	return c.TFStatePath
+}
+
+func (c Config) GetVersion() string {
+	return c.Version
+}
+
+func (c Config) GetWorkerType() string {
+	return c.WorkerType
+}

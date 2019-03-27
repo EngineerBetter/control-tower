@@ -248,19 +248,19 @@ type TerraformRequirements struct {
 	Domain                 string
 }
 
-func (client *Client) checkPreTerraformConfigRequirements(conf config.Config, selfUpdate bool) (TerraformRequirements, error) {
+func (client *Client) checkPreTerraformConfigRequirements(conf config.ConfigView, selfUpdate bool) (TerraformRequirements, error) {
 	r := TerraformRequirements{
-		Region:                 conf.Region,
-		SourceAccessIP:         conf.SourceAccessIP,
-		HostedZoneID:           conf.HostedZoneID,
-		HostedZoneRecordPrefix: conf.HostedZoneRecordPrefix,
-		Domain:                 conf.Domain,
+		Region:                 conf.GetRegion(),
+		SourceAccessIP:         conf.GetSourceAccessIP(),
+		HostedZoneID:           conf.GetHostedZoneID(),
+		HostedZoneRecordPrefix: conf.GetHostedZoneRecordPrefix(),
+		Domain:                 conf.GetDomain(),
 	}
 
 	region := client.provider.Region()
-	if conf.Region != "" {
-		if conf.Region != region {
-			return r, fmt.Errorf("found previous deployment in %s. Refusing to deploy to %s as changing regions for existing deployments is not supported", conf.Region, region)
+	if conf.GetRegion() != "" {
+		if conf.GetRegion() != region {
+			return r, fmt.Errorf("found previous deployment in %s. Refusing to deploy to %s as changing regions for existing deployments is not supported", conf.GetRegion(), region)
 		}
 	}
 
@@ -275,7 +275,7 @@ func (client *Client) checkPreTerraformConfigRequirements(conf config.Config, se
 		}
 	}
 
-	zone, err := client.setHostedZone(conf, conf.Domain)
+	zone, err := client.setHostedZone(conf, conf.GetDomain())
 	if err != nil {
 		return r, err
 	}
@@ -511,8 +511,8 @@ func (client *Client) deployBosh(config config.Config, tfOutputs terraform.Outpu
 	return bp, nil
 }
 
-func (client *Client) setUserIP(c config.Config) (string, error) {
-	sourceAccessIP := c.SourceAccessIP
+func (client *Client) setUserIP(c config.ConfigView) (string, error) {
+	sourceAccessIP := c.GetSourceAccessIP()
 	userIP, err := client.ipChecker()
 	if err != nil {
 		return sourceAccessIP, err
@@ -537,11 +537,11 @@ type HostedZone struct {
 	Domain                 string
 }
 
-func (client *Client) setHostedZone(c config.Config, domain string) (HostedZone, error) {
+func (client *Client) setHostedZone(c config.ConfigView, domain string) (HostedZone, error) {
 	zone := HostedZone{
-		HostedZoneID:           c.HostedZoneID,
-		HostedZoneRecordPrefix: c.HostedZoneRecordPrefix,
-		Domain:                 c.Domain,
+		HostedZoneID:           c.GetHostedZoneID(),
+		HostedZoneRecordPrefix: c.GetHostedZoneRecordPrefix(),
+		Domain:                 c.GetDomain(),
 	}
 	if domain == "" {
 		return zone, nil
