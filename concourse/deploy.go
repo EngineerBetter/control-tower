@@ -563,7 +563,6 @@ func (client *Client) setHostedZone(c config.ConfigView, domain string) (HostedZ
 	return zone, err
 }
 
-//Temporarily sets the IAAS flag just for GCP as we are still defaulting to AWS
 const deployMsg = `DEPLOY SUCCESSFUL. Log in with:
 fly --target {{.Project}} login{{if not .ConcourseUserProvidedCert}} --insecure{{end}} --concourse-url https://{{.Domain}} --username {{.ConcourseUsername}} --password {{.ConcoursePassword}}
 
