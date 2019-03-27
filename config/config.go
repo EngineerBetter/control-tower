@@ -61,6 +61,66 @@ type Config struct {
 	WorkerType                string   `json:"worker_type"`
 }
 
+type ConfigView interface {
+	GetAllowIPs() string
+	GetAvailabilityZone() string
+	GetConcourseCACert() string
+	GetConcourseCert() string
+	GetConcourseKey() string
+	GetConcoursePassword() string
+	GetConcourseUsername() string
+	GetConcourseUserProvidedCert() bool
+	GetConcourseWebSize() string
+	GetConcourseWorkerCount() int
+	GetConcourseWorkerSize() string
+	GetConfigBucket() string
+	GetCredhubAdminClientSecret() string
+	GetCredhubCACert() string
+	GetCredhubPassword() string
+	GetCredhubURL() string
+	GetCredhubUsername() string
+	GetDeployment() string
+	GetDirectorCACert() string
+	GetDirectorCert() string
+	GetDirectorHMUserPassword() string
+	GetDirectorKey() string
+	GetDirectorMbusPassword() string
+	GetDirectorNATSPassword() string
+	GetDirectorPassword() string
+	GetDirectorPublicIP() string
+	GetDirectorRegistryPassword() string
+	GetDirectorUsername() string
+	GetDomain() string
+	GetEncryptionKey() string
+	GetGithubAuthIsSet() bool
+	GetGithubClientID() string
+	GetGithubClientSecret() string
+	GetGrafanaPassword() string
+	GetHostedZoneID() string
+	GetHostedZoneRecordPrefix() string
+	GetIAAS() string
+	GetNamespace() string
+	GetNetworkCIDR() string
+	GetPrivateCIDR() string
+	GetPrivateKey() string
+	GetProject() string
+	GetPublicCIDR() string
+	GetPublicKey() string
+	GetRDS1CIDR() string
+	GetRDS2CIDR() string
+	GetRDSDefaultDatabaseName() string
+	GetRDSInstanceClass() string
+	GetRDSPassword() string
+	GetRDSUsername() string
+	GetRegion() string
+	GetSourceAccessIP() string
+	GetSpot() bool
+	GetTags() []string
+	GetTFStatePath() string
+	GetVersion() string
+	GetWorkerType() string
+}
+
 func (c Config) GetAllowIPs() string {
 	return c.AllowIPs
 }
