@@ -536,7 +536,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterCreateEnv = configAfterLoad
 					configAfterCreateEnv.ConcourseCert = args.TLSCert
 					configAfterCreateEnv.ConcourseKey = args.TLSKey
-					configAfterCreateEnv.ConcourseUserProvidedCert = true
 					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 					configAfterCreateEnv.Tags = append([]string{"control-tower-version=some version"}, args.Tags...)
@@ -785,7 +784,9 @@ wEW5QkylaPEkbVDhJWeR1I8=
 			Context("and a custom cert is provided", func() {
 				BeforeEach(func() {
 					args.TLSCert = "--- CERTIFICATE ---"
+					args.TLSCertIsSet = true
 					args.TLSKey = "--- KEY ---"
+					args.TLSKeyIsSet = true
 				})
 
 				It("Prints the correct domain and not suggest using --insecure", func() {

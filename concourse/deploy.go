@@ -102,7 +102,6 @@ func (client *Client) Deploy() error {
 	conf.DirectorKey = cr.DirectorCerts.DirectorKey
 	conf.ConcourseCert = cr.Certs.ConcourseCert
 	conf.ConcourseKey = cr.Certs.ConcourseKey
-	conf.ConcourseUserProvidedCert = cr.Certs.ConcourseUserProvidedCert
 	conf.ConcourseCACert = cr.Certs.ConcourseCACert
 
 	var bp BoshParams
@@ -176,7 +175,7 @@ func (client *Client) deployBoshAndPipeline(c config.ConfigView, tfOutputs terra
 	params := deployMessageParams{
 		ConcoursePassword:         bp.ConcoursePassword,
 		ConcourseUsername:         bp.ConcourseUsername,
-		ConcourseUserProvidedCert: c.GetConcourseUserProvidedCert(),
+		ConcourseUserProvidedCert: client.deployArgs.TLSCertIsSet && client.deployArgs.TLSKeyIsSet,
 		Domain:                    c.GetDomain(),
 		IAAS:                      c.GetIAAS(),
 		Namespace:                 c.GetNamespace(),
@@ -301,10 +300,9 @@ type DirectorCerts struct {
 
 // Certs represents the certificate of a Concourse
 type Certs struct {
-	ConcourseCert             string
-	ConcourseKey              string
-	ConcourseUserProvidedCert bool
-	ConcourseCACert           string
+	ConcourseCert   string
+	ConcourseKey    string
+	ConcourseCACert string
 }
 
 // Requirements represents the pre deployment requirements of a Concourse
@@ -343,10 +341,9 @@ func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*l
 	cr.DirectorCerts = dc
 
 	cc := Certs{
-		ConcourseCert:             cfg.GetConcourseCert(),
-		ConcourseKey:              cfg.GetConcourseKey(),
-		ConcourseUserProvidedCert: cfg.GetConcourseUserProvidedCert(),
-		ConcourseCACert:           cfg.GetConcourseCACert(),
+		ConcourseCert:   cfg.GetConcourseCert(),
+		ConcourseKey:    cfg.GetConcourseKey(),
+		ConcourseCACert: cfg.GetConcourseCACert(),
 	}
 
 	cc, err = client.ensureConcourseCerts(c, isDomainUpdated, cc, cfg.GetDeployment(), cr.Domain)
@@ -422,8 +419,6 @@ func (client *Client) ensureConcourseCerts(c func(u *certs.User) (*lego.Client, 
 	if client.deployArgs.TLSCert != "" {
 		certs.ConcourseCert = client.deployArgs.TLSCert
 		certs.ConcourseKey = client.deployArgs.TLSKey
-		certs.ConcourseUserProvidedCert = true
-
 		return certs, nil
 	}
 
