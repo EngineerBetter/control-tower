@@ -107,7 +107,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.PublicKey = strings.TrimSpace(string(publicKey))
 	conf.RDSPassword = passwordGenerator(defaultPasswordLength)
 	conf.RDSUsername = "admin" + passwordGenerator(7)
-	conf.Spot = true
+	conf.VMProvisioningType = config.SPOT
 	conf = populateConfigWithDefaultCIDRs(conf, provider)
 
 	return conf, nil
@@ -150,8 +150,8 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	if deployArgs.TagsIsSet {
 		conf.Tags = deployArgs.Tags
 	}
-	if newConfigCreated || deployArgs.SpotIsSet {
-		conf.Spot = deployArgs.Spot
+	if deployArgs.SpotIsSet {
+		conf.VMProvisioningType = config.ConvertSpotBoolToVMProvisioningType(deployArgs.Spot)
 	}
 	if newConfigCreated || deployArgs.WorkerTypeIsSet {
 		conf.WorkerType = deployArgs.WorkerType

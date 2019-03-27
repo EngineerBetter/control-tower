@@ -119,7 +119,7 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		ProjectID:          project,
 		GcpCredentialsJSON: credentialsPath,
 		ExternalIP:         directorPublicIP,
-		Spot:               client.config.GetSpot(),
+		Spot:               client.config.IsSpot(),
 		PublicKey:          client.config.GetPublicKey(),
 		CustomOperations:   customOps,
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
@@ -203,7 +203,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		PrivateCIDRGateway:  privateCIDRGateway,
 		PrivateCIDRReserved: privateCIDRReserved,
 		PrivateCIDR:         client.config.GetPrivateCIDR(),
-		Spot:                client.config.GetSpot(),
+		Spot:                client.config.IsSpot(),
 		PublicSubnetwork:    publicSubnetwork,
 		PrivateSubnetwork:   privateSubnetwork,
 		Zone:                zone,

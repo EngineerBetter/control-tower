@@ -174,7 +174,7 @@ func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		DBUsername:           client.config.GetRDSUsername(),
 		S3AWSAccessKeyID:     blobstoreUserAccessKeyID,
 		S3AWSSecretAccessKey: blobstoreSecretAccessKey,
-		Spot:                 client.config.GetSpot(),
+		Spot:                 client.config.IsSpot(),
 		WorkerType:           client.config.GetWorkerType(),
 		CustomOperations:     customOps,
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
@@ -246,7 +246,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		PrivateSubnetID:     privateSubnetID,
 		ATCSecurityGroup:    aTCSecurityGroupID,
 		VMSecurityGroup:     vMsSecurityGroupID,
-		Spot:                client.config.GetSpot(),
+		Spot:                client.config.IsSpot(),
 		ExternalIP:          directorPublicIP,
 		WorkerType:          client.config.GetWorkerType(),
 		PublicCIDR:          publicCIDR,

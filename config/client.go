@@ -111,6 +111,8 @@ func (client *Client) Load() (Config, error) {
 		return Config{}, err
 	}
 
+	conf = populateMandatoryFieldsAddedSinceLastSave(conf)
+
 	return conf, nil
 }
 
@@ -185,4 +187,13 @@ func determineNamespace(namespace, region string) string {
 		return region
 	}
 	return namespace
+}
+
+// Allow new mandatory fields to be populated based on old fields that are now deprecated
+func populateMandatoryFieldsAddedSinceLastSave(oldConf Config) Config {
+	if oldConf.VMProvisioningType == "" {
+		oldConf.VMProvisioningType = ConvertSpotBoolToVMProvisioningType(oldConf.Spot)
+	}
+
+	return oldConf
 }

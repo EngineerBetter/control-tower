@@ -40,44 +40,44 @@ var _ = Describe("Client", func() {
 		})
 	})
 
-	Describe("EnsureBucketExists", func(){
+	Describe("EnsureBucketExists", func() {
 		BeforeEach(func() {
 			provider = &iaasfakes.FakeProvider{}
 			provider.RegionReturns("eu-west-1")
 			client = New(provider, "test", "")
 		})
 
-		Context("when the bucket exists", func(){
-			JustBeforeEach(func(){
+		Context("when the bucket exists", func() {
+			JustBeforeEach(func() {
 				provider.BucketExistsReturns(false, nil)
 			})
 
-			It("no-ops and returns no error", func(){
+			It("no-ops and returns no error", func() {
 				err := client.EnsureBucketExists()
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
-		Context("when the bucket does not exist", func(){
-			JustBeforeEach(func(){
+		Context("when the bucket does not exist", func() {
+			JustBeforeEach(func() {
 				provider.BucketExistsReturns(false, nil)
 				provider.CreateBucketReturns(nil)
 			})
 
-			It("creates it", func(){
+			It("creates it", func() {
 				err := client.EnsureBucketExists()
 				Expect(err).ToNot(HaveOccurred())
 				// Will be 1 once we remove invocation from New()
 				Expect(provider.CreateBucketCallCount()).To(Equal(1))
 			})
 
-			Context("and it cannot be created", func(){
-				JustBeforeEach(func(){
+			Context("and it cannot be created", func() {
+				JustBeforeEach(func() {
 					provider.BucketExistsReturns(false, nil)
 					provider.CreateBucketReturns(fmt.Errorf("SOME IAAS ERROR"))
 				})
 
-				It("returns a useful error message", func(){
+				It("returns a useful error message", func() {
 					err := client.EnsureBucketExists()
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(Equal("error creating config bucket [control-tower-test-eu-west-1-config]: [SOME IAAS ERROR]"))
@@ -228,7 +228,7 @@ func TestClient_Load(t *testing.T) {
 		return defaultContents, true, nil
 	}
 	provider.LoadFileStub = func(bucket, path string) ([]byte, error) {
-		bytes, _ := json.Marshal(Config{})
+		bytes, _ := json.Marshal(Config{Spot: true})
 		return bytes, nil
 	}
 
@@ -265,7 +265,10 @@ func TestClient_Load(t *testing.T) {
 					BucketError:  nil,
 				}
 			},
-			want:    Config{},
+			want: Config{
+				Spot:               true,
+				VMProvisioningType: SPOT,
+			},
 			wantErr: false,
 		},
 	}
@@ -330,7 +333,9 @@ func TestClient_HasConfig(t *testing.T) {
 					BucketError:  nil,
 				}
 			},
-			want:    Config{},
+			want: Config{
+				VMProvisioningType: ON_DEMAND,
+			},
 			wantErr: false,
 		},
 	}

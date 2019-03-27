@@ -187,6 +187,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			RDSPassword:      "s3cret",
 			RDSUsername:      "admin",
 			Region:           "eu-west-1",
+			Spot:             true,
 			TFStatePath:      "example-path",
 			//These come from fixtures/director-creds.yml
 			CredhubUsername:          "credhub-cli",
@@ -503,9 +504,9 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterLoad.RDS2CIDR = "10.0.5.0/24"
 					configAfterLoad.RDSInstanceClass = "db.t2.4xlarge"
 					configAfterLoad.SourceAccessIP = "192.0.2.0"
-					configAfterLoad.Spot = false
 					configAfterLoad.Tags = args.Tags
 					configAfterLoad.WorkerType = args.WorkerType
+					configAfterLoad.VMProvisioningType = config.ON_DEMAND
 
 					terraformInputVars = &terraform.AWSInputVars{
 						AllowIPs:               configAfterLoad.AllowIPs,
@@ -620,9 +621,9 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					RDSUsername:              "admingeneratedPassword7",
 					Region:                   "eu-west-1",
 					SourceAccessIP:           "192.0.2.0",
-					Spot:                     true,
 					TFStatePath:              "terraform.tfstate",
 					WorkerType:               "m4",
+					VMProvisioningType:       config.SPOT,
 				}
 
 				//Mutations we expect to have been done after load

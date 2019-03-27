@@ -128,7 +128,7 @@ func (client *AWSClient) Delete(stateFileBytes []byte) ([]byte, error) {
 		DBUsername:           client.config.GetRDSUsername(),
 		S3AWSAccessKeyID:     blobstoreUserAccessKeyID,
 		S3AWSSecretAccessKey: blobstoreSecretAccessKey,
-		Spot:                 client.config.GetSpot(),
+		Spot:                 client.config.IsSpot(),
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), nil)
 	return store["state.json"], err
 }

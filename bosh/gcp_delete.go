@@ -78,7 +78,7 @@ func (client *GCPClient) Delete(stateFileBytes []byte) ([]byte, error) {
 		ProjectID:          project,
 		PublicKey:          client.config.GetPublicKey(),
 		PublicSubnetwork:   publicSubnetwork,
-		Spot:               client.config.GetSpot(),
+		Spot:               client.config.IsSpot(),
 		Zone:               client.provider.Zone(""),
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), nil)
 	return store["state.json"], err
