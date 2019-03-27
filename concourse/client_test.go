@@ -98,7 +98,7 @@ var _ = Describe("client", func() {
 			actions = append(actions, fmt.Sprintf("storing config asset: %s", filename))
 			return nil
 		}
-		configClient.DeleteAllStub = func(config config.Config) error {
+		configClient.DeleteAllStub = func(config config.ConfigView) error {
 			actions = append(actions, "deleting config")
 			return nil
 		}

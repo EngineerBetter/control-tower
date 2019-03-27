@@ -131,22 +131,22 @@ func (client *Client) Deploy() error {
 	return err
 }
 
-func (client *Client) deployBoshAndPipeline(c config.Config, tfOutputs terraform.Outputs) (BoshParams, error) {
+func (client *Client) deployBoshAndPipeline(c config.ConfigView, tfOutputs terraform.Outputs) (BoshParams, error) {
 	// When we are deploying for the first time rather than updating
 	// ensure that the pipeline is set _after_ the concourse is deployed
 
 	bp := BoshParams{
-		CredhubPassword:          c.CredhubPassword,
-		CredhubAdminClientSecret: c.CredhubAdminClientSecret,
-		CredhubCACert:            c.CredhubCACert,
-		CredhubURL:               c.CredhubURL,
-		CredhubUsername:          c.CredhubUsername,
-		ConcourseUsername:        c.ConcourseUsername,
-		ConcoursePassword:        c.ConcoursePassword,
-		GrafanaPassword:          c.GrafanaPassword,
-		DirectorUsername:         c.DirectorUsername,
-		DirectorPassword:         c.DirectorPassword,
-		DirectorCACert:           c.DirectorCACert,
+		CredhubPassword:          c.GetCredhubPassword(),
+		CredhubAdminClientSecret: c.GetCredhubAdminClientSecret(),
+		CredhubCACert:            c.GetCredhubCACert(),
+		CredhubURL:               c.GetCredhubURL(),
+		CredhubUsername:          c.GetCredhubUsername(),
+		ConcourseUsername:        c.GetConcourseUsername(),
+		ConcoursePassword:        c.GetConcoursePassword(),
+		GrafanaPassword:          c.GetGrafanaPassword(),
+		DirectorUsername:         c.GetDirectorUsername(),
+		DirectorPassword:         c.GetDirectorPassword(),
+		DirectorCACert:           c.GetDirectorCACert(),
 	}
 
 	bp, err := client.deployBosh(c, tfOutputs, false)
@@ -155,8 +155,8 @@ func (client *Client) deployBoshAndPipeline(c config.Config, tfOutputs terraform
 	}
 
 	flyClient, err := client.flyClientFactory(client.provider, fly.Credentials{
-		Target:   c.Deployment,
-		API:      fmt.Sprintf("https://%s", c.Domain),
+		Target:   c.GetDeployment(),
+		API:      fmt.Sprintf("https://%s", c.GetDomain()),
 		Username: bp.ConcourseUsername,
 		Password: bp.ConcoursePassword,
 	},

@@ -13,7 +13,7 @@ const configFilePath = "config.json"
 //go:generate counterfeiter . IClient
 type IClient interface {
 	Load() (Config, error)
-	DeleteAll(config Config) error
+	DeleteAll(config ConfigView) error
 	Update(Config) error
 	StoreAsset(filename string, contents []byte) error
 	HasAsset(filename string) (bool, error)
@@ -88,8 +88,8 @@ func (client *Client) Update(config Config) error {
 }
 
 // DeleteAll deletes the entire configuration bucket
-func (client *Client) DeleteAll(config Config) error {
-	return client.Iaas.DeleteVersionedBucket(config.ConfigBucket)
+func (client *Client) DeleteAll(config ConfigView) error {
+	return client.Iaas.DeleteVersionedBucket(config.GetConfigBucket())
 }
 
 // Load loads an existing config file from S3

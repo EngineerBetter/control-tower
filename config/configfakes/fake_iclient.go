@@ -20,10 +20,10 @@ type FakeIClient struct {
 		result1 bool
 		result2 error
 	}
-	DeleteAllStub        func(config.Config) error
+	DeleteAllStub        func(config.ConfigView) error
 	deleteAllMutex       sync.RWMutex
 	deleteAllArgsForCall []struct {
-		arg1 config.Config
+		arg1 config.ConfigView
 	}
 	deleteAllReturns struct {
 		result1 error
@@ -171,11 +171,11 @@ func (fake *FakeIClient) ConfigExistsReturnsOnCall(i int, result1 bool, result2 
 	}{result1, result2}
 }
 
-func (fake *FakeIClient) DeleteAll(arg1 config.Config) error {
+func (fake *FakeIClient) DeleteAll(arg1 config.ConfigView) error {
 	fake.deleteAllMutex.Lock()
 	ret, specificReturn := fake.deleteAllReturnsOnCall[len(fake.deleteAllArgsForCall)]
 	fake.deleteAllArgsForCall = append(fake.deleteAllArgsForCall, struct {
-		arg1 config.Config
+		arg1 config.ConfigView
 	}{arg1})
 	fake.recordInvocation("DeleteAll", []interface{}{arg1})
 	fake.deleteAllMutex.Unlock()
@@ -195,13 +195,13 @@ func (fake *FakeIClient) DeleteAllCallCount() int {
 	return len(fake.deleteAllArgsForCall)
 }
 
-func (fake *FakeIClient) DeleteAllCalls(stub func(config.Config) error) {
+func (fake *FakeIClient) DeleteAllCalls(stub func(config.ConfigView) error) {
 	fake.deleteAllMutex.Lock()
 	defer fake.deleteAllMutex.Unlock()
 	fake.DeleteAllStub = stub
 }
 
-func (fake *FakeIClient) DeleteAllArgsForCall(i int) config.Config {
+func (fake *FakeIClient) DeleteAllArgsForCall(i int) config.ConfigView {
 	fake.deleteAllMutex.RLock()
 	defer fake.deleteAllMutex.RUnlock()
 	argsForCall := fake.deleteAllArgsForCall[i]
