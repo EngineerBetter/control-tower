@@ -143,7 +143,7 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	if newConfigCreated || deployArgs.DBSizeIsSet {
 		conf.RDSInstanceClass = provider.DBType(deployArgs.DBSize)
 	}
-	if newConfigCreated || deployArgs.GithubAuthIsSet {
+	if deployArgs.GithubAuthIsSet {
 		conf.GithubClientID = deployArgs.GithubAuthClientID
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret
 		conf.GithubAuthIsSet = deployArgs.GithubAuthIsSet
