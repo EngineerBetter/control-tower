@@ -212,7 +212,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		configClient = &configfakes.FakeIClient{}
 		terraformCLI = setupFakeTerraformCLI(terraformOutputs)
 
-		boshClientFactory := func(config config.Config, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (bosh.IClient, error) {
+		boshClientFactory := func(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (bosh.IClient, error) {
 			boshClient = &boshfakes.FakeIClient{}
 			boshClient.DeployReturns(directorStateFixture, directorCredsFixture, nil)
 			boshClient.DeleteReturns(nil, deleteBoshDirectorError)

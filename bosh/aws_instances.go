@@ -12,7 +12,7 @@ func (client *AWSClient) Instances() ([]Instance, error) {
 	return instances(
 		client.boshCLI,
 		directorPublicIP,
-		client.config.DirectorPassword,
-		client.config.DirectorCACert,
+		client.config.GetDirectorPassword(),
+		client.config.GetDirectorCACert(),
 	)
 }

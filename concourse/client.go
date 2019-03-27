@@ -91,7 +91,7 @@ func NewClient(
 	}
 }
 
-func (client *Client) buildBoshClient(config config.Config, tfOutputs terraform.Outputs) (bosh.IClient, error) {
+func (client *Client) buildBoshClient(config config.ConfigView, tfOutputs terraform.Outputs) (bosh.IClient, error) {
 
 	return client.boshClientFactory(
 		config,

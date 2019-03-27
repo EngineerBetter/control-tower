@@ -52,15 +52,15 @@ func (client *GCPClient) Recreate() error {
 	}
 	return client.boshCLI.Recreate(gcp.Environment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 
 func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, customOps string) (newState, newCreds []byte, err error) {
-	tags, err := splitTags(client.config.Tags)
+	tags, err := splitTags(client.config.GetTags())
 	if err != nil {
 		return state, creds, err
 	}
-	tags["control-tower-project"] = client.config.Project
+	tags["control-tower-project"] = client.config.GetProject()
 	tags["control-tower-component"] = "concourse"
 	//TODO(px): pull up this so that we use aws.Store
 	store := temporaryStore{
@@ -93,7 +93,7 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		return state, creds, err1
 	}
 
-	publicCIDR := client.config.PublicCIDR
+	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err1 := net.ParseCIDR(publicCIDR)
 	if err1 != nil {
 		return state, creds, err1
@@ -107,7 +107,7 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		return state, creds, err1
 	}
 	err1 = bosh.CreateEnv(store, gcp.Environment{
-		InternalCIDR:       client.config.PublicCIDR,
+		InternalCIDR:       client.config.GetPublicCIDR(),
 		InternalGW:         internalGateway.String(),
 		InternalIP:         directorInternalIP.String(),
 		DirectorName:       "bosh",
@@ -119,10 +119,10 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		ProjectID:          project,
 		GcpCredentialsJSON: credentialsPath,
 		ExternalIP:         directorPublicIP,
-		Spot:               client.config.Spot,
-		PublicKey:          client.config.PublicKey,
+		Spot:               client.config.GetSpot(),
+		PublicKey:          client.config.GetPublicKey(),
 		CustomOperations:   customOps,
-	}, client.config.DirectorPassword, client.config.DirectorCert, client.config.DirectorKey, client.config.DirectorCACert, tags)
+	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
 	if err1 != nil {
 		return store["state.json"], store["vars.yaml"], err1
 	}
@@ -137,7 +137,7 @@ func (client *GCPClient) Locks() ([]byte, error) {
 	}
 	return client.boshCLI.Locks(gcp.Environment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 
 }
 
@@ -161,7 +161,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	}
 	zone := client.provider.Zone("")
 
-	publicCIDR := client.config.PublicCIDR
+	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err := net.ParseCIDR(publicCIDR)
 	if err != nil {
 		return err
@@ -181,7 +181,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 
-	privateCIDR := client.config.PrivateCIDR
+	privateCIDR := client.config.GetPrivateCIDR()
 	_, privCIDR, err := net.ParseCIDR(privateCIDR)
 	if err != nil {
 		return err
@@ -196,19 +196,19 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 	return bosh.UpdateCloudConfig(gcp.Environment{
-		PublicCIDR:          client.config.PublicCIDR,
+		PublicCIDR:          client.config.GetPublicCIDR(),
 		PublicCIDRGateway:   publicCIDRGateway,
 		PublicCIDRStatic:    publicCIDRStatic,
 		PublicCIDRReserved:  publicCIDRReserved,
 		PrivateCIDRGateway:  privateCIDRGateway,
 		PrivateCIDRReserved: privateCIDRReserved,
-		PrivateCIDR:         client.config.PrivateCIDR,
-		Spot:                client.config.Spot,
+		PrivateCIDR:         client.config.GetPrivateCIDR(),
+		Spot:                client.config.GetSpot(),
 		PublicSubnetwork:    publicSubnetwork,
 		PrivateSubnetwork:   privateSubnetwork,
 		Zone:                zone,
 		Network:             network,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
 	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
@@ -217,5 +217,5 @@ func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
 	}
 	return bosh.UploadConcourseStemcell(gcp.Environment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }

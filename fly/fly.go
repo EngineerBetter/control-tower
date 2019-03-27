@@ -26,7 +26,7 @@ var ControlTowerVersion = "COMPILE_TIME_VARIABLE_fly_control_tower_version"
 //go:generate counterfeiter . IClient
 type IClient interface {
 	CanConnect() (bool, error)
-	SetDefaultPipeline(config config.Config, allowFlyVersionDiscrepancy bool) error
+	SetDefaultPipeline(config config.ConfigView, allowFlyVersionDiscrepancy bool) error
 	Cleanup() error
 }
 
@@ -163,7 +163,7 @@ func (client *Client) CanConnect() (bool, error) {
 }
 
 // SetDefaultPipeline sets the default pipeline against a given concourse
-func (client *Client) SetDefaultPipeline(config config.Config, allowFlyVersionDiscrepancy bool) error {
+func (client *Client) SetDefaultPipeline(config config.ConfigView, allowFlyVersionDiscrepancy bool) error {
 	if err := client.login(); err != nil {
 		return err
 	}
@@ -199,14 +199,14 @@ func (client *Client) SetDefaultPipeline(config config.Config, allowFlyVersionDi
 	return client.run("unpause-pipeline", "--pipeline", pipelineName)
 }
 
-func (client *Client) writePipelineConfig(pipelinePath string, config config.Config) error {
+func (client *Client) writePipelineConfig(pipelinePath string, config config.ConfigView) error {
 	fileHandler, err := os.Create(pipelinePath)
 	if err != nil {
 		return err
 	}
 	defer fileHandler.Close()
 
-	params, err := client.pipeline.BuildPipelineParams(config.Deployment, config.Namespace, config.Region, config.Domain)
+	params, err := client.pipeline.BuildPipelineParams(config.GetDeployment(), config.GetNamespace(), config.GetRegion(), config.GetDomain())
 	if err != nil {
 		return err
 	}

@@ -31,10 +31,10 @@ type FakeIClient struct {
 	cleanupReturnsOnCall map[int]struct {
 		result1 error
 	}
-	SetDefaultPipelineStub        func(config.Config, bool) error
+	SetDefaultPipelineStub        func(config.ConfigView, bool) error
 	setDefaultPipelineMutex       sync.RWMutex
 	setDefaultPipelineArgsForCall []struct {
-		arg1 config.Config
+		arg1 config.ConfigView
 		arg2 bool
 	}
 	setDefaultPipelineReturns struct {
@@ -154,11 +154,11 @@ func (fake *FakeIClient) CleanupReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeIClient) SetDefaultPipeline(arg1 config.Config, arg2 bool) error {
+func (fake *FakeIClient) SetDefaultPipeline(arg1 config.ConfigView, arg2 bool) error {
 	fake.setDefaultPipelineMutex.Lock()
 	ret, specificReturn := fake.setDefaultPipelineReturnsOnCall[len(fake.setDefaultPipelineArgsForCall)]
 	fake.setDefaultPipelineArgsForCall = append(fake.setDefaultPipelineArgsForCall, struct {
-		arg1 config.Config
+		arg1 config.ConfigView
 		arg2 bool
 	}{arg1, arg2})
 	fake.recordInvocation("SetDefaultPipeline", []interface{}{arg1, arg2})
@@ -179,13 +179,13 @@ func (fake *FakeIClient) SetDefaultPipelineCallCount() int {
 	return len(fake.setDefaultPipelineArgsForCall)
 }
 
-func (fake *FakeIClient) SetDefaultPipelineCalls(stub func(config.Config, bool) error) {
+func (fake *FakeIClient) SetDefaultPipelineCalls(stub func(config.ConfigView, bool) error) {
 	fake.setDefaultPipelineMutex.Lock()
 	defer fake.setDefaultPipelineMutex.Unlock()
 	fake.SetDefaultPipelineStub = stub
 }
 
-func (fake *FakeIClient) SetDefaultPipelineArgsForCall(i int) (config.Config, bool) {
+func (fake *FakeIClient) SetDefaultPipelineArgsForCall(i int) (config.ConfigView, bool) {
 	fake.setDefaultPipelineMutex.RLock()
 	defer fake.setDefaultPipelineMutex.RUnlock()
 	argsForCall := fake.setDefaultPipelineArgsForCall[i]

@@ -115,7 +115,7 @@ func proxyConn(conn net.Conn, dialer proxy.Dialer, addr string) {
 }
 
 func (client *AWSClient) createDefaultDatabases() error {
-	db, err := client.db.Open(client.config.RDSDefaultDatabaseName)
+	db, err := client.db.Open(client.config.GetRDSDefaultDatabaseName())
 	if err != nil {
 		return err
 	}

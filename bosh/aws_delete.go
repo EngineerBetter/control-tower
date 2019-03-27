@@ -20,8 +20,8 @@ func (client *AWSClient) Delete(stateFileBytes []byte) ([]byte, error) {
 	if err = client.boshCLI.RunAuthenticatedCommand(
 		"delete-deployment",
 		directorPublicIP,
-		client.config.DirectorPassword,
-		client.config.DirectorCACert,
+		client.config.GetDirectorPassword(),
+		client.config.GetDirectorCACert(),
 		false,
 		os.Stdout,
 		"--force",
@@ -86,7 +86,7 @@ func (client *AWSClient) Delete(stateFileBytes []byte) ([]byte, error) {
 		return store["state.json"], err
 	}
 
-	publicCIDR := client.config.PublicCIDR
+	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err1 := net.ParseCIDR(publicCIDR)
 	if err1 != nil {
 		return store["state.json"], err
@@ -101,19 +101,19 @@ func (client *AWSClient) Delete(stateFileBytes []byte) ([]byte, error) {
 	}
 
 	err = client.boshCLI.DeleteEnv(store, aws.Environment{
-		InternalCIDR:    client.config.PublicCIDR,
+		InternalCIDR:    client.config.GetPublicCIDR(),
 		InternalGateway: internalGateway.String(),
 		InternalIP:      directorInternalIP.String(),
 		AccessKeyID:     boshUserAccessKeyID,
 		SecretAccessKey: boshSecretAccessKey,
-		Region:          client.config.Region,
-		AZ:              client.config.AvailabilityZone,
+		Region:          client.config.GetRegion(),
+		AZ:              client.config.GetAvailabilityZone(),
 		DefaultKeyName:  directorKeyPair,
 		DefaultSecurityGroups: []string{
 			directorSecurityGroup,
 			vmSecurityGroupID,
 		},
-		PrivateKey:           client.config.PrivateKey,
+		PrivateKey:           client.config.GetPrivateKey(),
 		PublicSubnetID:       publicSubnetID,
 		PrivateSubnetID:      privateSubnetID,
 		ExternalIP:           directorPublicIP,
@@ -122,13 +122,13 @@ func (client *AWSClient) Delete(stateFileBytes []byte) ([]byte, error) {
 		BlobstoreBucket:      blobstoreBucket,
 		DBCACert:             db.RDSRootCert,
 		DBHost:               boshDBAddress,
-		DBName:               client.config.RDSDefaultDatabaseName,
-		DBPassword:           client.config.RDSPassword,
+		DBName:               client.config.GetRDSDefaultDatabaseName(),
+		DBPassword:           client.config.GetRDSPassword(),
 		DBPort:               boshDbPort,
-		DBUsername:           client.config.RDSUsername,
+		DBUsername:           client.config.GetRDSUsername(),
 		S3AWSAccessKeyID:     blobstoreUserAccessKeyID,
 		S3AWSSecretAccessKey: blobstoreSecretAccessKey,
-		Spot:                 client.config.Spot,
-	}, client.config.DirectorPassword, client.config.DirectorCert, client.config.DirectorKey, client.config.DirectorCACert, nil)
+		Spot:                 client.config.GetSpot(),
+	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), nil)
 	return store["state.json"], err
 }

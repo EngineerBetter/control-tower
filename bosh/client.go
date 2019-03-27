@@ -41,10 +41,10 @@ type Instance struct {
 }
 
 // ClientFactory creates a new IClient
-type ClientFactory func(config config.Config, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (IClient, error)
+type ClientFactory func(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (IClient, error)
 
 //New returns an IAAS specific implementation of BOSH client
-func New(config config.Config, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (IClient, error) {
+func New(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (IClient, error) {
 	workingdir, err := workingdir.New()
 	if err != nil {
 		return nil, err

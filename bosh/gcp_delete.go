@@ -19,8 +19,8 @@ func (client *GCPClient) Delete(stateFileBytes []byte) ([]byte, error) {
 	if err = client.boshCLI.RunAuthenticatedCommand(
 		"delete-deployment",
 		directorPublicIP,
-		client.config.DirectorPassword,
-		client.config.DirectorCACert,
+		client.config.GetDirectorPassword(),
+		client.config.GetDirectorCACert(),
 		false,
 		os.Stdout,
 		"--force",
@@ -32,7 +32,7 @@ func (client *GCPClient) Delete(stateFileBytes []byte) ([]byte, error) {
 	store := temporaryStore{
 		"state.json": stateFileBytes,
 	}
-	publicCIDR := client.config.PublicCIDR
+	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err := net.ParseCIDR(publicCIDR)
 	if err != nil {
 		return store["state.json"], err
@@ -70,16 +70,16 @@ func (client *GCPClient) Delete(stateFileBytes []byte) ([]byte, error) {
 		DirectorName:       "bosh",
 		ExternalIP:         directorPublicIP,
 		GcpCredentialsJSON: credentialsPath,
-		InternalCIDR:       client.config.PublicCIDR,
+		InternalCIDR:       client.config.GetPublicCIDR(),
 		InternalGW:         internalGateway.String(),
 		InternalIP:         directorInternalIP.String(),
 		Network:            network,
 		PrivateSubnetwork:  privateSubnetwork,
 		ProjectID:          project,
-		PublicKey:          client.config.PublicKey,
+		PublicKey:          client.config.GetPublicKey(),
 		PublicSubnetwork:   publicSubnetwork,
-		Spot:               client.config.Spot,
+		Spot:               client.config.GetSpot(),
 		Zone:               client.provider.Zone(""),
-	}, client.config.DirectorPassword, client.config.DirectorCert, client.config.DirectorKey, client.config.DirectorCACert, nil)
+	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), nil)
 	return store["state.json"], err
 }

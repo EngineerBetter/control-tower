@@ -16,7 +16,7 @@ import (
 
 //AWSClient is an AWS specific implementation of IClient
 type AWSClient struct {
-	config     config.Config
+	config     config.ConfigView
 	outputs    terraform.Outputs
 	workingdir workingdir.IClient
 	db         Opener
@@ -27,13 +27,13 @@ type AWSClient struct {
 }
 
 //NewAWSClient returns a AWS specific implementation of IClient
-func NewAWSClient(config config.Config, outputs terraform.Outputs, workingdir workingdir.IClient, stdout, stderr io.Writer, provider iaas.Provider, boshCLI boshcli.ICLI) (IClient, error) {
+func NewAWSClient(config config.ConfigView, outputs terraform.Outputs, workingdir workingdir.IClient, stdout, stderr io.Writer, provider iaas.Provider, boshCLI boshcli.ICLI) (IClient, error) {
 	directorPublicIP, err := outputs.Get("DirectorPublicIP")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get DirectorPublicIP from terraform outputs: [%v]", err)
 	}
 	addr := net.JoinHostPort(directorPublicIP, "22")
-	key, err := ssh.ParsePrivateKey([]byte(config.PrivateKey))
+	key, err := ssh.ParsePrivateKey([]byte(config.GetPrivateKey()))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse private key for bosh: [%v]", err)
 	}
@@ -55,11 +55,11 @@ func NewAWSClient(config config.Config, outputs terraform.Outputs, workingdir wo
 
 	db, err := newProxyOpener(addr, conf, &pq.Driver{},
 		fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=require",
-			config.RDSUsername,
-			config.RDSPassword,
+			config.GetRDSUsername(),
+			config.GetRDSPassword(),
 			boshDBAddress,
 			boshDBPort,
-			config.RDSDefaultDatabaseName,
+			config.GetRDSDefaultDatabaseName(),
 		),
 	)
 	if err != nil {

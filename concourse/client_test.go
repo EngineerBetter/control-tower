@@ -145,7 +145,7 @@ var _ = Describe("client", func() {
 		configClient = setupFakeConfigClient()
 
 		flyClient = &flyfakes.FakeIClient{}
-		flyClient.SetDefaultPipelineStub = func(config config.Config, allowFlyVersionDiscrepancy bool) error {
+		flyClient.SetDefaultPipelineStub = func(config config.ConfigView, allowFlyVersionDiscrepancy bool) error {
 			actions = append(actions, "setting default pipeline")
 			return nil
 		}
@@ -243,7 +243,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 
 		terraformCLI = setupFakeTerraformCLI(terraformOutputs)
 
-		boshClientFactory := func(config config.Config, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (bosh.IClient, error) {
+		boshClientFactory := func(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (bosh.IClient, error) {
 			boshClient = &boshfakes.FakeIClient{}
 			boshClient.DeployStub = func(stateFileBytes, credsFileBytes []byte, detach bool) ([]byte, []byte, error) {
 				if detach {

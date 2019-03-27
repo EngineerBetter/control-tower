@@ -31,22 +31,22 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 
 	vmap := map[string]interface{}{
 		"deployment_name":          concourseDeploymentName,
-		"domain":                   client.config.Domain,
-		"project":                  client.config.Project,
+		"domain":                   client.config.GetDomain(),
+		"project":                  client.config.GetProject(),
 		"web_network_name":         "public",
 		"worker_network_name":      "private",
 		"postgres_host":            boshDBAddress,
 		"postgres_port":            boshDBPort,
-		"postgres_role":            client.config.RDSUsername,
-		"postgres_password":        client.config.RDSPassword,
+		"postgres_role":            client.config.GetRDSUsername(),
+		"postgres_password":        client.config.GetRDSPassword(),
 		"postgres_ca_cert":         db.RDSRootCert,
-		"web_vm_type":              "concourse-web-" + client.config.ConcourseWebSize,
-		"worker_vm_type":           "concourse-" + client.config.ConcourseWorkerSize,
-		"worker_count":             client.config.ConcourseWorkerCount,
+		"web_vm_type":              "concourse-web-" + client.config.GetConcourseWebSize(),
+		"worker_vm_type":           "concourse-" + client.config.GetConcourseWorkerSize(),
+		"worker_count":             client.config.GetConcourseWorkerCount(),
 		"atc_eip":                  atcPublicIP,
-		"external_tls.certificate": client.config.ConcourseCert,
-		"external_tls.private_key": client.config.ConcourseKey,
-		"atc_encryption_key":       client.config.EncryptionKey,
+		"external_tls.certificate": client.config.GetConcourseCert(),
+		"external_tls.private_key": client.config.GetConcourseKey(),
+		"atc_encryption_key":       client.config.GetEncryptionKey(),
 	}
 
 	flagFiles := []string{
@@ -63,13 +63,13 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		client.workingdir.PathInWorkingDir(concourseGrafanaFilename),
 	}
 
-	if client.config.ConcoursePassword != "" {
-		vmap["atc_password"] = client.config.ConcoursePassword
+	if client.config.GetConcoursePassword() != "" {
+		vmap["atc_password"] = client.config.GetConcoursePassword()
 	}
 
-	if client.config.GithubAuthIsSet {
-		vmap["github_client_id"] = client.config.GithubClientID
-		vmap["github_client_secret"] = client.config.GithubClientSecret
+	if client.config.GetGithubAuthIsSet() {
+		vmap["github_client_id"] = client.config.GetGithubClientID()
+		vmap["github_client_secret"] = client.config.GetGithubClientSecret()
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubAuthFilename))
 	}
 
@@ -90,8 +90,8 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 	err = client.boshCLI.RunAuthenticatedCommand(
 		"deploy",
 		directorPublicIP,
-		client.config.DirectorPassword,
-		client.config.DirectorCACert,
+		client.config.GetDirectorPassword(),
+		client.config.GetDirectorCACert(),
 		detach,
 		os.Stdout,
 		append(flagFiles, vs...)...)
@@ -105,7 +105,7 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 func (client *AWSClient) buildTagsYaml(project interface{}, component string) (string, error) {
 	var b strings.Builder
 
-	for _, e := range client.config.Tags {
+	for _, e := range client.config.GetTags() {
 		kv := strings.Join(strings.Split(e, "="), ": ")
 		_, err := fmt.Fprintf(&b, "%s,", kv)
 		if err != nil {

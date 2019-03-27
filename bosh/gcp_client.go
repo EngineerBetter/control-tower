@@ -12,7 +12,7 @@ import (
 
 //GCPClient is an GCP specific implementation of IClient
 type GCPClient struct {
-	config     config.Config
+	config     config.ConfigView
 	outputs    terraform.Outputs
 	workingdir workingdir.IClient
 	stdout     io.Writer
@@ -22,7 +22,7 @@ type GCPClient struct {
 }
 
 //NewGCPClient returns a GCP specific implementation of IClient
-func NewGCPClient(config config.Config, outputs terraform.Outputs, workingdir workingdir.IClient, stdout, stderr io.Writer, provider iaas.Provider, boshCLI boshcli.ICLI) (IClient, error) {
+func NewGCPClient(config config.ConfigView, outputs terraform.Outputs, workingdir workingdir.IClient, stdout, stderr io.Writer, provider iaas.Provider, boshCLI boshcli.ICLI) (IClient, error) {
 	return &GCPClient{
 		config:     config,
 		outputs:    outputs,

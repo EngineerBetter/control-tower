@@ -42,7 +42,7 @@ func (client *AWSClient) Locks() ([]byte, error) {
 	}
 	return client.boshCLI.Locks(aws.Environment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 
 }
 
@@ -59,15 +59,15 @@ func (client *AWSClient) Recreate() error {
 	}
 	return client.boshCLI.Recreate(aws.Environment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 
 func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, customOps string) (newState, newCreds []byte, err error) {
-	tags, err := splitTags(client.config.Tags)
+	tags, err := splitTags(client.config.GetTags())
 	if err != nil {
 		return state, creds, err
 	}
-	tags["control-tower-project"] = client.config.Project
+	tags["control-tower-project"] = client.config.GetProject()
 	tags["control-tower-component"] = "concourse"
 	//TODO(px): pull up this so that we use aws.Store
 	store := temporaryStore{
@@ -132,7 +132,7 @@ func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		return state, creds, err1
 	}
 
-	publicCIDR := client.config.PublicCIDR
+	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err1 := net.ParseCIDR(publicCIDR)
 	if err1 != nil {
 		return state, creds, err1
@@ -147,19 +147,19 @@ func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 	}
 
 	err1 = bosh.CreateEnv(store, aws.Environment{
-		InternalCIDR:    client.config.PublicCIDR,
+		InternalCIDR:    client.config.GetPublicCIDR(),
 		InternalGateway: internalGateway.String(),
 		InternalIP:      directorInternalIP.String(),
 		AccessKeyID:     boshUserAccessKeyID,
 		SecretAccessKey: boshSecretAccessKey,
-		Region:          client.config.Region,
-		AZ:              client.config.AvailabilityZone,
+		Region:          client.config.GetRegion(),
+		AZ:              client.config.GetAvailabilityZone(),
 		DefaultKeyName:  directorKeyPair,
 		DefaultSecurityGroups: []string{
 			directorSecurityGroup,
 			vmSecurityGroupID,
 		},
-		PrivateKey:           client.config.PrivateKey,
+		PrivateKey:           client.config.GetPrivateKey(),
 		PublicSubnetID:       publicSubnetID,
 		PrivateSubnetID:      privateSubnetID,
 		ExternalIP:           directorPublicIP,
@@ -168,16 +168,16 @@ func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		BlobstoreBucket:      blobstoreBucket,
 		DBCACert:             db.RDSRootCert,
 		DBHost:               boshDBAddress,
-		DBName:               client.config.RDSDefaultDatabaseName,
-		DBPassword:           client.config.RDSPassword,
+		DBName:               client.config.GetRDSDefaultDatabaseName(),
+		DBPassword:           client.config.GetRDSPassword(),
 		DBPort:               boshDbPort,
-		DBUsername:           client.config.RDSUsername,
+		DBUsername:           client.config.GetRDSUsername(),
 		S3AWSAccessKeyID:     blobstoreUserAccessKeyID,
 		S3AWSSecretAccessKey: blobstoreSecretAccessKey,
-		Spot:                 client.config.Spot,
-		WorkerType:           client.config.WorkerType,
+		Spot:                 client.config.GetSpot(),
+		WorkerType:           client.config.GetWorkerType(),
 		CustomOperations:     customOps,
-	}, client.config.DirectorPassword, client.config.DirectorCert, client.config.DirectorKey, client.config.DirectorCACert, tags)
+	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
 	if err1 != nil {
 		return store["state.json"], store["vars.yaml"], err1
 	}
@@ -206,7 +206,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 
-	publicCIDR := client.config.PublicCIDR
+	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err := net.ParseCIDR(publicCIDR)
 	if err != nil {
 		return err
@@ -225,7 +225,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 
-	privateCIDR := client.config.PrivateCIDR
+	privateCIDR := client.config.GetPrivateCIDR()
 	_, privCIDR, err := net.ParseCIDR(privateCIDR)
 	if err != nil {
 		return err
@@ -241,14 +241,14 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	}
 
 	return bosh.UpdateCloudConfig(aws.Environment{
-		AZ:                  client.config.AvailabilityZone,
+		AZ:                  client.config.GetAvailabilityZone(),
 		PublicSubnetID:      publicSubnetID,
 		PrivateSubnetID:     privateSubnetID,
 		ATCSecurityGroup:    aTCSecurityGroupID,
 		VMSecurityGroup:     vMsSecurityGroupID,
-		Spot:                client.config.Spot,
+		Spot:                client.config.GetSpot(),
 		ExternalIP:          directorPublicIP,
-		WorkerType:          client.config.WorkerType,
+		WorkerType:          client.config.GetWorkerType(),
 		PublicCIDR:          publicCIDR,
 		PublicCIDRGateway:   publicCIDRGateway,
 		PublicCIDRStatic:    publicCIDRStatic,
@@ -256,7 +256,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		PrivateCIDR:         privateCIDR,
 		PrivateCIDRGateway:  privateCIDRGateway,
 		PrivateCIDRReserved: privateCIDRReserved,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 func (client *AWSClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
 	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
@@ -265,5 +265,5 @@ func (client *AWSClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
 	}
 	return bosh.UploadConcourseStemcell(aws.Environment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.DirectorPassword, client.config.DirectorCACert)
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }

@@ -181,30 +181,30 @@ func (client *Client) deployBoshAndPipeline(c config.Config, tfOutputs terraform
 	return bp, writeDeploySuccessMessage(c, client.stdout)
 }
 
-func (client *Client) updateBoshAndPipeline(c config.Config, tfOutputs terraform.Outputs) (BoshParams, error) {
+func (client *Client) updateBoshAndPipeline(c config.ConfigView, tfOutputs terraform.Outputs) (BoshParams, error) {
 	// If concourse is already running this is an update rather than a fresh deploy
 	// When updating we need to deploy the BOSH as the final step in order to
 	// Detach from the update, so the update job can exit
 
 	bp := BoshParams{
-		CredhubPassword:          c.CredhubPassword,
-		CredhubAdminClientSecret: c.CredhubAdminClientSecret,
-		CredhubCACert:            c.CredhubCACert,
-		CredhubURL:               c.CredhubURL,
-		CredhubUsername:          c.CredhubUsername,
-		ConcourseUsername:        c.ConcourseUsername,
-		ConcoursePassword:        c.ConcoursePassword,
-		GrafanaPassword:          c.GrafanaPassword,
-		DirectorUsername:         c.DirectorUsername,
-		DirectorPassword:         c.DirectorPassword,
-		DirectorCACert:           c.DirectorCACert,
+		CredhubPassword:          c.GetCredhubPassword(),
+		CredhubAdminClientSecret: c.GetCredhubAdminClientSecret(),
+		CredhubCACert:            c.GetCredhubCACert(),
+		CredhubURL:               c.GetCredhubURL(),
+		CredhubUsername:          c.GetCredhubUsername(),
+		ConcourseUsername:        c.GetConcourseUsername(),
+		ConcoursePassword:        c.GetConcoursePassword(),
+		GrafanaPassword:          c.GetGrafanaPassword(),
+		DirectorUsername:         c.GetDirectorUsername(),
+		DirectorPassword:         c.GetDirectorPassword(),
+		DirectorCACert:           c.GetDirectorCACert(),
 	}
 
 	flyClient, err := client.flyClientFactory(client.provider, fly.Credentials{
-		Target:   c.Deployment,
-		API:      fmt.Sprintf("https://%s", c.Domain),
-		Username: c.ConcourseUsername,
-		Password: c.ConcoursePassword,
+		Target:   c.GetDeployment(),
+		API:      fmt.Sprintf("https://%s", c.GetDomain()),
+		Username: c.GetConcourseUsername(),
+		Password: c.GetConcoursePassword(),
 	},
 		client.stdout,
 		client.stderr,
@@ -440,19 +440,19 @@ func (client *Client) ensureConcourseCerts(c func(u *certs.User) (*lego.Client, 
 	return certs, nil
 }
 
-func (client *Client) deployBosh(config config.Config, tfOutputs terraform.Outputs, detach bool) (BoshParams, error) {
+func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.Outputs, detach bool) (BoshParams, error) {
 	bp := BoshParams{
-		CredhubPassword:          config.CredhubPassword,
-		CredhubAdminClientSecret: config.CredhubAdminClientSecret,
-		CredhubCACert:            config.CredhubCACert,
-		CredhubURL:               config.CredhubURL,
-		CredhubUsername:          config.CredhubUsername,
-		ConcourseUsername:        config.ConcourseUsername,
-		ConcoursePassword:        config.ConcoursePassword,
-		GrafanaPassword:          config.GrafanaPassword,
-		DirectorUsername:         config.DirectorUsername,
-		DirectorPassword:         config.DirectorPassword,
-		DirectorCACert:           config.DirectorCACert,
+		CredhubPassword:          config.GetCredhubPassword(),
+		CredhubAdminClientSecret: config.GetCredhubAdminClientSecret(),
+		CredhubCACert:            config.GetCredhubCACert(),
+		CredhubURL:               config.GetCredhubURL(),
+		CredhubUsername:          config.GetCredhubUsername(),
+		ConcourseUsername:        config.GetConcourseUsername(),
+		ConcoursePassword:        config.GetConcoursePassword(),
+		GrafanaPassword:          config.GetGrafanaPassword(),
+		DirectorUsername:         config.GetDirectorUsername(),
+		DirectorPassword:         config.GetDirectorPassword(),
+		DirectorCACert:           config.GetDirectorCACert(),
 	}
 
 	boshClient, err := client.buildBoshClient(config, tfOutputs)
@@ -500,7 +500,7 @@ func (client *Client) deployBosh(config config.Config, tfOutputs terraform.Outpu
 	bp.CredhubPassword = cc.CredhubPassword
 	bp.CredhubAdminClientSecret = cc.CredhubAdminClientSecret
 	bp.CredhubCACert = cc.InternalTLS.CA
-	bp.CredhubURL = fmt.Sprintf("https://%s:8844/", config.Domain)
+	bp.CredhubURL = fmt.Sprintf("https://%s:8844/", config.GetDomain())
 	bp.CredhubUsername = "credhub-cli"
 	bp.ConcourseUsername = "admin"
 	if len(cc.AtcPassword) > 0 {
