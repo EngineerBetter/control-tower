@@ -57,7 +57,7 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 
 func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider iaas.Provider, passwordGenerator func(int) string, eightRandomLetters func() string, sshGenerator func() ([]byte, []byte, string, error)) (config.Config, error) {
 	conf := configClient.NewConfig()
-	conf, err := populateConfigWithDefaults(conf, provider, passwordGenerator, sshGenerator)
+	conf, err := populateConfigWithDefaults(conf, provider, passwordGenerator, sshGenerator, eightRandomLetters)
 	if err != nil {
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
@@ -65,14 +65,6 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 	conf, _, err = populateConfigWithDefaultsOrProvidedArguments(conf, true, deployArgs, provider)
 	if err != nil {
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
-	}
-
-	// Stuff from concourse.Deploy()
-	switch provider.IAAS() {
-	case iaas.AWS: // nolint
-		conf.RDSDefaultDatabaseName = fmt.Sprintf("bosh_%s", eightRandomLetters())
-	case iaas.GCP: // nolint
-		conf.RDSDefaultDatabaseName = fmt.Sprintf("bosh-%s", eightRandomLetters())
 	}
 
 	// Why do we do this here?
@@ -83,7 +75,7 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 	return conf, nil
 }
 
-func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, passwordGenerator func(int) string, sshGenerator func() ([]byte, []byte, string, error)) (config.Config, error) {
+func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, passwordGenerator func(int) string, sshGenerator func() ([]byte, []byte, string, error), eightRandomLetters func() string) (config.Config, error) {
 	const defaultPasswordLength = 20
 
 	privateKey, publicKey, _, err := sshGenerator()
@@ -109,6 +101,13 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.RDSUsername = "admin" + passwordGenerator(7)
 	conf.VMProvisioningType = config.SPOT
 	conf = populateConfigWithDefaultCIDRs(conf, provider)
+
+	switch provider.IAAS() {
+	case iaas.AWS: // nolint
+		conf.RDSDefaultDatabaseName = fmt.Sprintf("bosh_%s", eightRandomLetters())
+	case iaas.GCP: // nolint
+		conf.RDSDefaultDatabaseName = fmt.Sprintf("bosh-%s", eightRandomLetters())
+	}
 
 	return conf, nil
 }
