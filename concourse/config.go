@@ -131,13 +131,13 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 		}
 		conf.AvailabilityZone = deployArgs.Zone
 	}
-	if newConfigCreated || deployArgs.WorkerCountIsSet {
+	if deployArgs.WorkerCountIsSet {
 		conf.ConcourseWorkerCount = deployArgs.WorkerCount
 	}
-	if newConfigCreated || deployArgs.WorkerSizeIsSet {
+	if deployArgs.WorkerSizeIsSet {
 		conf.ConcourseWorkerSize = deployArgs.WorkerSize
 	}
-	if newConfigCreated || deployArgs.WebSizeIsSet {
+	if deployArgs.WebSizeIsSet {
 		conf.ConcourseWebSize = deployArgs.WebSize
 	}
 	if newConfigCreated || deployArgs.DBSizeIsSet {
