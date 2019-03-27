@@ -46,7 +46,6 @@ type Args struct {
 	TagsIsSet        bool
 	Spot             bool
 	SpotIsSet        bool
-	Preemptible      bool
 	Zone             string
 	ZoneIsSet        bool
 	WorkerType       string

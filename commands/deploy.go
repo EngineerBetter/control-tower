@@ -110,7 +110,7 @@ var deployFlags = []cli.Flag{
 		Name:        "preemptible",
 		Usage:       "(optional) Use preemptible instances for workers. Can be true/false (default: true)",
 		EnvVar:      "PREEMPTIBLE",
-		Destination: &initialDeployArgs.Preemptible,
+		Destination: &initialDeployArgs.Spot,
 	},
 	cli.StringFlag{
 		Name:        "allow-ips",

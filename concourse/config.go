@@ -151,7 +151,7 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 		conf.Tags = deployArgs.Tags
 	}
 	if newConfigCreated || deployArgs.SpotIsSet {
-		conf.Spot = deployArgs.Spot && deployArgs.Preemptible
+		conf.Spot = deployArgs.Spot
 	}
 	if newConfigCreated || deployArgs.WorkerTypeIsSet {
 		conf.WorkerType = deployArgs.WorkerType

@@ -112,7 +112,6 @@ var _ = Describe("client", func() {
 			DBSizeIsSet:      false,
 			IAAS:             "AWS",
 			IAASIsSet:        false,
-			Preemptible:      true,
 			Spot:             true,
 			SpotIsSet:        false,
 			WebSize:          "small",
@@ -470,7 +469,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					args.GithubAuthClientSecret = "github-client-secret"
 					args.GithubAuthClientSecretIsSet = true
 					args.GithubAuthIsSet = true
-					args.Preemptible = false
 					args.Spot = false
 					args.SpotIsSet = true
 					args.Tags = []string{"env=prod", "team=foo"}
