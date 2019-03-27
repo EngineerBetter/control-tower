@@ -77,7 +77,7 @@ var _ = Describe("client", func() {
 		Expect(err).ToNot(HaveOccurred())
 		awsInputVarsFactory, err := concourse.NewTFInputVarsFactory(provider)
 		Expect(err).ToNot(HaveOccurred())
-		tfInputVarsFactory.NewInputVarsStub = func(i config.Config) terraform.InputVars {
+		tfInputVarsFactory.NewInputVarsStub = func(i config.ConfigView) terraform.InputVars {
 			actions = append(actions, "converting config.Config to TFInputVars")
 			return awsInputVarsFactory.NewInputVars(i)
 		}

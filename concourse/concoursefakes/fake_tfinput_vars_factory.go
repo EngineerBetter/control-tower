@@ -10,10 +10,10 @@ import (
 )
 
 type FakeTFInputVarsFactory struct {
-	NewInputVarsStub        func(config.Config) terraform.InputVars
+	NewInputVarsStub        func(config.ConfigView) terraform.InputVars
 	newInputVarsMutex       sync.RWMutex
 	newInputVarsArgsForCall []struct {
-		arg1 config.Config
+		arg1 config.ConfigView
 	}
 	newInputVarsReturns struct {
 		result1 terraform.InputVars
@@ -25,11 +25,11 @@ type FakeTFInputVarsFactory struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeTFInputVarsFactory) NewInputVars(arg1 config.Config) terraform.InputVars {
+func (fake *FakeTFInputVarsFactory) NewInputVars(arg1 config.ConfigView) terraform.InputVars {
 	fake.newInputVarsMutex.Lock()
 	ret, specificReturn := fake.newInputVarsReturnsOnCall[len(fake.newInputVarsArgsForCall)]
 	fake.newInputVarsArgsForCall = append(fake.newInputVarsArgsForCall, struct {
-		arg1 config.Config
+		arg1 config.ConfigView
 	}{arg1})
 	fake.recordInvocation("NewInputVars", []interface{}{arg1})
 	fake.newInputVarsMutex.Unlock()
@@ -49,13 +49,13 @@ func (fake *FakeTFInputVarsFactory) NewInputVarsCallCount() int {
 	return len(fake.newInputVarsArgsForCall)
 }
 
-func (fake *FakeTFInputVarsFactory) NewInputVarsCalls(stub func(config.Config) terraform.InputVars) {
+func (fake *FakeTFInputVarsFactory) NewInputVarsCalls(stub func(config.ConfigView) terraform.InputVars) {
 	fake.newInputVarsMutex.Lock()
 	defer fake.newInputVarsMutex.Unlock()
 	fake.NewInputVarsStub = stub
 }
 
-func (fake *FakeTFInputVarsFactory) NewInputVarsArgsForCall(i int) config.Config {
+func (fake *FakeTFInputVarsFactory) NewInputVarsArgsForCall(i int) config.ConfigView {
 	fake.newInputVarsMutex.RLock()
 	defer fake.newInputVarsMutex.RUnlock()
 	argsForCall := fake.newInputVarsArgsForCall[i]

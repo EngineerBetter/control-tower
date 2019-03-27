@@ -85,7 +85,7 @@ var _ = Describe("client", func() {
 		Expect(err).ToNot(HaveOccurred())
 		awsInputVarsFactory, err := concourse.NewTFInputVarsFactory(provider)
 		Expect(err).ToNot(HaveOccurred())
-		tfInputVarsFactory.NewInputVarsStub = func(i config.Config) terraform.InputVars {
+		tfInputVarsFactory.NewInputVarsStub = func(i config.ConfigView) terraform.InputVars {
 			return awsInputVarsFactory.NewInputVars(i)
 		}
 		return tfInputVarsFactory
@@ -832,8 +832,8 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				Expect(err).ToNot(HaveOccurred())
 
 				var passedDBSize string
-				tfInputVarsFactory.NewInputVarsStub = func(config config.Config) terraform.InputVars {
-					passedDBSize = config.RDSInstanceClass
+				tfInputVarsFactory.NewInputVarsStub = func(config config.ConfigView) terraform.InputVars {
+					passedDBSize = config.GetRDSInstanceClass()
 					return awsInputVarsFactory.NewInputVars(config)
 				}
 

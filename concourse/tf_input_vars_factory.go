@@ -10,7 +10,7 @@ import (
 
 //go:generate counterfeiter . TFInputVarsFactory
 type TFInputVarsFactory interface {
-	NewInputVars(conf config.Config) terraform.InputVars
+	NewInputVars(conf config.ConfigView) terraform.InputVars
 }
 
 func NewTFInputVarsFactory(provider iaas.Provider) (TFInputVarsFactory, error) {
@@ -40,29 +40,29 @@ func NewTFInputVarsFactory(provider iaas.Provider) (TFInputVarsFactory, error) {
 
 type AWSInputVarsFactory struct{}
 
-func (f *AWSInputVarsFactory) NewInputVars(c config.Config) terraform.InputVars {
+func (f *AWSInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputVars {
 	return &terraform.AWSInputVars{
-		NetworkCIDR:            c.NetworkCIDR,
-		PublicCIDR:             c.PublicCIDR,
-		PrivateCIDR:            c.PrivateCIDR,
-		AllowIPs:               c.AllowIPs,
-		AvailabilityZone:       c.AvailabilityZone,
-		ConfigBucket:           c.ConfigBucket,
-		Deployment:             c.Deployment,
-		HostedZoneID:           c.HostedZoneID,
-		HostedZoneRecordPrefix: c.HostedZoneRecordPrefix,
-		Namespace:              c.Namespace,
-		Project:                c.Project,
-		PublicKey:              c.PublicKey,
-		RDSDefaultDatabaseName: c.RDSDefaultDatabaseName,
-		RDSInstanceClass:       c.RDSInstanceClass,
-		RDSPassword:            c.RDSPassword,
-		RDSUsername:            c.RDSUsername,
-		RDS1CIDR:               c.RDS1CIDR,
-		RDS2CIDR:               c.RDS2CIDR,
-		Region:                 c.Region,
-		SourceAccessIP:         c.SourceAccessIP,
-		TFStatePath:            c.TFStatePath,
+		NetworkCIDR:            c.GetNetworkCIDR(),
+		PublicCIDR:             c.GetPublicCIDR(),
+		PrivateCIDR:            c.GetPrivateCIDR(),
+		AllowIPs:               c.GetAllowIPs(),
+		AvailabilityZone:       c.GetAvailabilityZone(),
+		ConfigBucket:           c.GetConfigBucket(),
+		Deployment:             c.GetDeployment(),
+		HostedZoneID:           c.GetHostedZoneID(),
+		HostedZoneRecordPrefix: c.GetHostedZoneRecordPrefix(),
+		Namespace:              c.GetNamespace(),
+		Project:                c.GetProject(),
+		PublicKey:              c.GetPublicKey(),
+		RDSDefaultDatabaseName: c.GetRDSDefaultDatabaseName(),
+		RDSInstanceClass:       c.GetRDSInstanceClass(),
+		RDSPassword:            c.GetRDSPassword(),
+		RDSUsername:            c.GetRDSUsername(),
+		RDS1CIDR:               c.GetRDS1CIDR(),
+		RDS2CIDR:               c.GetRDS2CIDR(),
+		Region:                 c.GetRegion(),
+		SourceAccessIP:         c.GetSourceAccessIP(),
+		TFStatePath:            c.GetTFStatePath(),
 	}
 }
 
@@ -73,25 +73,25 @@ type GCPInputVarsFactory struct {
 	zone            string
 }
 
-func (f *GCPInputVarsFactory) NewInputVars(c config.Config) terraform.InputVars {
+func (f *GCPInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputVars {
 	return &terraform.GCPInputVars{
-		AllowIPs:           c.AllowIPs,
-		ConfigBucket:       c.ConfigBucket,
-		DBName:             c.RDSDefaultDatabaseName,
-		DBPassword:         c.RDSPassword,
-		DBTier:             c.RDSInstanceClass,
-		DBUsername:         c.RDSUsername,
-		Deployment:         c.Deployment,
-		DNSManagedZoneName: c.HostedZoneID,
-		DNSRecordSetPrefix: c.HostedZoneRecordPrefix,
-		ExternalIP:         c.SourceAccessIP,
+		AllowIPs:           c.GetAllowIPs(),
+		ConfigBucket:       c.GetConfigBucket(),
+		DBName:             c.GetRDSDefaultDatabaseName(),
+		DBPassword:         c.GetRDSPassword(),
+		DBTier:             c.GetRDSInstanceClass(),
+		DBUsername:         c.GetRDSUsername(),
+		Deployment:         c.GetDeployment(),
+		DNSManagedZoneName: c.GetHostedZoneID(),
+		DNSRecordSetPrefix: c.GetHostedZoneRecordPrefix(),
+		ExternalIP:         c.GetSourceAccessIP(),
 		GCPCredentialsJSON: f.credentialsPath,
-		Namespace:          c.Namespace,
+		Namespace:          c.GetNamespace(),
 		Project:            f.project,
 		Region:             f.region,
 		Tags:               "",
 		Zone:               f.zone,
-		PublicCIDR:         c.PublicCIDR,
-		PrivateCIDR:        c.PrivateCIDR,
+		PublicCIDR:         c.GetPublicCIDR(),
+		PrivateCIDR:        c.GetPrivateCIDR(),
 	}
 }
