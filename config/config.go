@@ -40,9 +40,14 @@ type Config struct {
 	HostedZoneRecordPrefix    string   `json:"hosted_zone_record_prefix"`
 	IAAS                      string   `json:"iaas"`
 	Namespace                 string   `json:"namespace"`
+	NetworkCIDR               string   `json:"network_cidr"`
+	PrivateCIDR               string   `json:"private_cidr"`
 	PrivateKey                string   `json:"private_key"`
 	Project                   string   `json:"project"`
+	PublicCIDR                string   `json:"public_cidr"`
 	PublicKey                 string   `json:"public_key"`
+	RDS1CIDR                  string   `json:"rds1_cidr"`
+	RDS2CIDR                  string   `json:"rds2_cidr"`
 	RDSDefaultDatabaseName    string   `json:"rds_default_database_name"`
 	RDSInstanceClass          string   `json:"rds_instance_class"`
 	RDSPassword               string   `json:"rds_password"`
@@ -54,9 +59,4 @@ type Config struct {
 	TFStatePath               string   `json:"tf_state_path"`
 	Version                   string   `json:"version"`
 	WorkerType                string   `json:"worker_type"`
-	PrivateCIDR               string   `json:"private_cidr"`
-	PublicCIDR                string   `json:"public_cidr"`
-	NetworkCIDR               string   `json:"network_cidr"`
-	RDS1CIDR                  string   `json:"rds1_cidr"`
-	RDS2CIDR                  string   `json:"rds2_cidr"`
 }
