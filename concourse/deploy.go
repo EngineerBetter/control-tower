@@ -178,7 +178,18 @@ func (client *Client) deployBoshAndPipeline(c config.Config, tfOutputs terraform
 	c.ConcourseUsername = bp.ConcourseUsername
 	c.ConcoursePassword = bp.ConcoursePassword
 
-	return bp, writeDeploySuccessMessage(c, client.stdout)
+	params := deployMessageParams{
+		ConcoursePassword:         bp.ConcoursePassword,
+		ConcourseUsername:         bp.ConcourseUsername,
+		ConcourseUserProvidedCert: c.GetConcourseUserProvidedCert(),
+		Domain:                    c.GetDomain(),
+		IAAS:                      c.GetIAAS(),
+		Namespace:                 c.GetNamespace(),
+		Project:                   c.GetProject(),
+		Region:                    c.GetRegion(),
+	}
+
+	return bp, writeDeploySuccessMessage(params, client.stdout)
 }
 
 func (client *Client) updateBoshAndPipeline(c config.ConfigView, tfOutputs terraform.Outputs) (BoshParams, error) {
@@ -572,9 +583,20 @@ Log into credhub with:
 eval "$(control-tower info --region {{.Region}} {{ if ne .Namespace .Region }} --namespace {{ .Namespace }} {{ end }} --iaas {{ .IAAS }} --env {{.Project}})"
 `
 
-func writeDeploySuccessMessage(config config.Config, stdout io.Writer) error {
+type deployMessageParams struct {
+	ConcoursePassword         string
+	ConcourseUsername         string
+	ConcourseUserProvidedCert bool
+	Domain                    string
+	IAAS                      string
+	Namespace                 string
+	Project                   string
+	Region                    string
+}
+
+func writeDeploySuccessMessage(params deployMessageParams, stdout io.Writer) error {
 	t := template.Must(template.New("deploy").Parse(deployMsg))
-	return t.Execute(stdout, config)
+	return t.Execute(stdout, params)
 }
 
 func writeConfigLoadedSuccessMessage(stdout io.Writer) error {
