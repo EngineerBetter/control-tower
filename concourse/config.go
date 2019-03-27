@@ -168,7 +168,7 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	}
 
 	var isDomainUpdated bool
-	if newConfigCreated || deployArgs.DomainIsSet {
+	if deployArgs.DomainIsSet {
 		if conf.Domain != deployArgs.Domain {
 			isDomainUpdated = true
 		}
