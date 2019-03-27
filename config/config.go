@@ -32,7 +32,6 @@ type Config struct {
 	DirectorUsername          string   `json:"director_username"`
 	Domain                    string   `json:"domain"`
 	EncryptionKey             string   `json:"encryption_key"`
-	GithubAuthIsSet           bool     `json:"github_auth_is_set"`
 	GithubClientID            string   `json:"github_client_id"`
 	GithubClientSecret        string   `json:"github_client_secret"`
 	GrafanaPassword           string   `json:"grafana_password"`
@@ -92,7 +91,6 @@ type ConfigView interface {
 	GetDirectorUsername() string
 	GetDomain() string
 	GetEncryptionKey() string
-	GetGithubAuthIsSet() bool
 	GetGithubClientID() string
 	GetGithubClientSecret() string
 	GetGrafanaPassword() string
@@ -119,6 +117,7 @@ type ConfigView interface {
 	GetTFStatePath() string
 	GetVersion() string
 	GetWorkerType() string
+	IsGithubAuthSet() bool
 }
 
 func (c Config) GetAllowIPs() string {
@@ -241,10 +240,6 @@ func (c Config) GetEncryptionKey() string {
 	return c.EncryptionKey
 }
 
-func (c Config) GetGithubAuthIsSet() bool {
-	return c.GithubAuthIsSet
-}
-
 func (c Config) GetGithubClientID() string {
 	return c.GithubClientID
 }
@@ -347,4 +342,8 @@ func (c Config) GetVersion() string {
 
 func (c Config) GetWorkerType() string {
 	return c.WorkerType
+}
+
+func (c Config) IsGithubAuthSet() bool {
+	return c.GithubClientID != "" && c.GithubClientSecret != ""
 }

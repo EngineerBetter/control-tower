@@ -494,7 +494,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterLoad.ConcourseWorkerCount = args.WorkerCount
 					configAfterLoad.ConcourseWorkerSize = args.WorkerSize
 					configAfterLoad.Domain = args.Domain
-					configAfterLoad.GithubAuthIsSet = true
 					configAfterLoad.GithubClientID = args.GithubAuthClientID
 					configAfterLoad.GithubClientSecret = args.GithubAuthClientSecret
 					configAfterLoad.HostedZoneID = "ABC123"
