@@ -148,7 +148,7 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret
 		conf.GithubAuthIsSet = deployArgs.GithubAuthIsSet
 	}
-	if newConfigCreated || deployArgs.TagsIsSet {
+	if deployArgs.TagsIsSet {
 		conf.Tags = deployArgs.Tags
 	}
 	if newConfigCreated || deployArgs.SpotIsSet {
