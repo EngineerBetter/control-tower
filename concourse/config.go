@@ -102,6 +102,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.DirectorRegistryPassword = passwordGenerator(defaultPasswordLength)
 	conf.DirectorUsername = "admin"
 	conf.EncryptionKey = passwordGenerator(32)
+	conf.IAAS = provider.IAAS().String()
 	conf.PrivateKey = strings.TrimSpace(string(privateKey))
 	conf.PublicKey = strings.TrimSpace(string(publicKey))
 	conf.RDSPassword = passwordGenerator(defaultPasswordLength)
@@ -123,19 +124,12 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 		return config.Config{}, false, err
 	}
 
-	if newConfigCreated {
-		conf.IAAS = deployArgs.IAAS
-	}
-
 	if deployArgs.ZoneIsSet {
 		// This is a safeguard for a redeployment where zone does not belong to the region where the original deployment has happened
 		if !newConfigCreated && deployArgs.Zone != conf.AvailabilityZone {
 			return config.Config{}, false, fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.AvailabilityZone, deployArgs.Zone)
 		}
 		conf.AvailabilityZone = deployArgs.Zone
-	}
-	if newConfigCreated {
-		conf.IAAS = deployArgs.IAAS
 	}
 	if newConfigCreated || deployArgs.WorkerCountIsSet {
 		conf.ConcourseWorkerCount = deployArgs.WorkerCount
