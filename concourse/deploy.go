@@ -173,11 +173,6 @@ func (client *Client) deployBoshAndPipeline(c config.Config, tfOutputs terraform
 		return bp, err
 	}
 
-	// This assignment is necessary for the deploy success message
-	// It should be removed once we stop passing config everywhere
-	c.ConcourseUsername = bp.ConcourseUsername
-	c.ConcoursePassword = bp.ConcoursePassword
-
 	params := deployMessageParams{
 		ConcoursePassword:         bp.ConcoursePassword,
 		ConcourseUsername:         bp.ConcourseUsername,
