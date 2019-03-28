@@ -73,9 +73,9 @@ func (client *Client) FetchInfo() (*Info, error) {
 	tfInputVars := client.tfInputVarsFactory.NewInputVars(conf)
 
 	switch client.provider.IAAS() {
-	case iaas.AWS: // nolint
+	case iaas.AWS:
 		gatewayUser = "vcap"
-	case iaas.GCP: // nolint
+	case iaas.GCP:
 		gatewayUser = "jumpbox"
 	}
 

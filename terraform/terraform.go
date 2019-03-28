@@ -45,9 +45,9 @@ type CLI struct {
 //Factory function to return iaas-specific outputs
 func outputsFor(name iaas.Name) (Outputs, error) {
 	switch name {
-	case iaas.AWS: // nolint
+	case iaas.AWS:
 		return &AWSOutputs{}, nil
-	case iaas.GCP: // nolint
+	case iaas.GCP:
 		return &GCPOutputs{}, nil
 	}
 	return &NullOutputs{}, errors.New("terraform: " + name.String() + " not a valid iaas provider")
@@ -110,12 +110,12 @@ func (c *CLI) init(config InputVars) (string, error) {
 		err      error
 	)
 	switch c.iaas {
-	case iaas.AWS: // nolint
+	case iaas.AWS:
 		tfConfig, err = config.ConfigureTerraform(resource.AWSTerraformConfig)
 		if err != nil {
 			return "", err
 		}
-	case iaas.GCP: // nolint
+	case iaas.GCP:
 		tfConfig, err = config.ConfigureTerraform(resource.GCPTerraformConfig)
 		if err != nil {
 			return "", err

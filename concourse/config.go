@@ -102,9 +102,9 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf = populateConfigWithDefaultCIDRs(conf, provider)
 
 	switch provider.IAAS() {
-	case iaas.AWS: // nolint
+	case iaas.AWS:
 		conf.RDSDefaultDatabaseName = fmt.Sprintf("bosh_%s", eightRandomLetters())
-	case iaas.GCP: // nolint
+	case iaas.GCP:
 		conf.RDSDefaultDatabaseName = fmt.Sprintf("bosh-%s", eightRandomLetters())
 	}
 

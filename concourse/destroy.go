@@ -21,7 +21,7 @@ func (client *Client) Destroy() error {
 
 	switch client.provider.IAAS() {
 
-	case iaas.AWS: // nolint
+	case iaas.AWS:
 		tfOutputs, err1 := client.tfCLI.BuildOutput(tfInputVars)
 		if err1 != nil {
 			return err1
@@ -35,7 +35,7 @@ func (client *Client) Destroy() error {
 			return err1
 		}
 
-	case iaas.GCP: // nolint
+	case iaas.GCP:
 		project, err1 := client.provider.Attr("project")
 		if err1 != nil {
 			return err1
@@ -52,7 +52,7 @@ func (client *Client) Destroy() error {
 		return err
 	}
 
-	if client.provider.IAAS() == iaas.AWS { // nolint
+	if client.provider.IAAS() == iaas.AWS {
 		if len(volumesToDelete) > 0 {
 			fmt.Printf("Scheduling to delete %v volumes\n", len(volumesToDelete))
 		}
