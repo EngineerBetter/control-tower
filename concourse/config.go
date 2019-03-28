@@ -97,6 +97,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.IAAS = provider.IAAS().String()
 	conf.PrivateKey = strings.TrimSpace(string(privateKey))
 	conf.PublicKey = strings.TrimSpace(string(publicKey))
+	conf.RDSInstanceClass = provider.DBType("small")
 	conf.RDSPassword = passwordGenerator(defaultPasswordLength)
 	conf.RDSUsername = "admin" + passwordGenerator(7)
 	conf.VMProvisioningType = config.SPOT
@@ -139,7 +140,7 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	if deployArgs.WebSizeIsSet {
 		conf.ConcourseWebSize = deployArgs.WebSize
 	}
-	if newConfigCreated || deployArgs.DBSizeIsSet {
+	if deployArgs.DBSizeIsSet {
 		conf.RDSInstanceClass = provider.DBType(deployArgs.DBSize)
 	}
 	if deployArgs.GithubAuthIsSet {
