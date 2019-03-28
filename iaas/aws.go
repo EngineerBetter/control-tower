@@ -60,9 +60,9 @@ func (a *AWSProvider) Choose(c Choice) interface{} {
 	return c.AWS
 }
 
-func (a *AWSProvider) Zone(input string) string {
-	if input != "" {
-		return input
+func (a *AWSProvider) Zone(requestedZone string) string {
+	if requestedZone != "" {
+		return requestedZone
 	}
 	ec2Client := ec2.New(a.sess)
 

@@ -220,9 +220,9 @@ func (g *GCPProvider) Region() string {
 //TODO: Choose an appropriate zone based on what zones the region has
 
 // Zone returns the zone used by the Provider
-func (g *GCPProvider) Zone(input string) string {
-	if input != "" {
-		return input
+func (g *GCPProvider) Zone(requestedZone string) string {
+	if requestedZone != "" {
+		return requestedZone
 	}
 	return fmt.Sprintf("%s-b", g.region)
 }
