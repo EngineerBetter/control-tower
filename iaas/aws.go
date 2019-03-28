@@ -60,7 +60,6 @@ func (a *AWSProvider) Choose(c Choice) interface{} {
 	return c.AWS
 }
 
-// Zone is a placeholder for Zone()
 func (a *AWSProvider) Zone(input string) string {
 	if input != "" {
 		return input
