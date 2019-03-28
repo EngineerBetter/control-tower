@@ -101,6 +101,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.RDSPassword = passwordGenerator(defaultPasswordLength)
 	conf.RDSUsername = "admin" + passwordGenerator(7)
 	conf.VMProvisioningType = config.SPOT
+	conf.WorkerType = "m4"
 	conf = populateConfigWithDefaultCIDRs(conf, provider)
 
 	switch provider.IAAS() {
@@ -153,7 +154,7 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	if deployArgs.SpotIsSet {
 		conf.VMProvisioningType = config.ConvertSpotBoolToVMProvisioningType(deployArgs.Spot)
 	}
-	if newConfigCreated || deployArgs.WorkerTypeIsSet {
+	if deployArgs.WorkerTypeIsSet {
 		conf.WorkerType = deployArgs.WorkerType
 	}
 
