@@ -23,7 +23,6 @@ import (
 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 )
 
-// GCPProvider is the concrete implementation of GCP Provider
 type GCPProvider struct {
 	ctx     context.Context
 	storage GCPStorageClient
@@ -31,10 +30,8 @@ type GCPProvider struct {
 	attrs   map[string]string
 }
 
-// GCPOption is the signature of the option function
 type GCPOption func(*GCPProvider) error
 
-// GCPStorageClient is the interface with GCP storage client
 type GCPStorageClient interface {
 	Bucket(name string) *storage.BucketHandle
 	Buckets(ctx context.Context, projectID string) *storage.BucketIterator
@@ -101,7 +98,6 @@ func (g *GCPProvider) Choose(c Choice) interface{} {
 	return c.GCP
 }
 
-// DeleteVersionedBucket deletes a bucket and its content from GCP
 func (g *GCPProvider) DeleteVersionedBucket(name string) error {
 	bucket := g.storage.Bucket(name)
 	it := bucket.Objects(g.ctx, &storage.Query{Versions: true})
@@ -126,7 +122,6 @@ func (g *GCPProvider) DeleteVersionedBucket(name string) error {
 	return nil
 }
 
-// CreateBucket creates a GCP storage bucket with defaults of the US multi-regional location, and a storage class of Standard Storage
 func (g *GCPProvider) CreateBucket(name string) error {
 	project, err := g.Attr("project")
 	if err != nil {
@@ -143,7 +138,6 @@ func (g *GCPProvider) CreateBucket(name string) error {
 	return nil
 }
 
-// BucketExists checks if the named bucket exists
 func (g *GCPProvider) BucketExists(name string) (bool, error) {
 	project, err := g.Attr("project")
 	if err != nil {
@@ -168,7 +162,6 @@ func (g *GCPProvider) BucketExists(name string) (bool, error) {
 	return false, nil
 }
 
-// HasFile returns true if the specified GCP file exists
 func (g *GCPProvider) HasFile(bucket, path string) (bool, error) {
 	o := g.storage.Bucket(bucket).Object(path)
 	_, err := o.Attrs(g.ctx)
@@ -183,7 +176,6 @@ func (g *GCPProvider) HasFile(bucket, path string) (bool, error) {
 	return true, nil
 }
 
-// LoadFile loads a file from GCP bucket
 func (g *GCPProvider) LoadFile(bucket, path string) ([]byte, error) {
 	rc, err := g.storage.Bucket(bucket).Object(path).NewReader(g.ctx)
 
@@ -200,7 +192,6 @@ func (g *GCPProvider) LoadFile(bucket, path string) ([]byte, error) {
 	return data, nil
 }
 
-// WriteFile writes the specified file to GCP storage
 func (g *GCPProvider) WriteFile(bucket, path string, contents []byte) error {
 	wc := g.storage.Bucket(bucket).Object(path).NewWriter(g.ctx)
 	defer wc.Close()
@@ -212,14 +203,12 @@ func (g *GCPProvider) WriteFile(bucket, path string, contents []byte) error {
 	return nil
 }
 
-// Region returns the region used by the Provider
 func (g *GCPProvider) Region() string {
 	return g.region
 }
 
 //TODO: Choose an appropriate zone based on what zones the region has
 
-// Zone returns the zone used by the Provider
 func (g *GCPProvider) Zone(requestedZone, workerSizeNotUsedInGCP string) string {
 	if requestedZone != "" {
 		return requestedZone
@@ -227,7 +216,6 @@ func (g *GCPProvider) Zone(requestedZone, workerSizeNotUsedInGCP string) string 
 	return fmt.Sprintf("%s-b", g.region)
 }
 
-// IAAS returns the name of the Provider
 func (g *GCPProvider) IAAS() Name {
 	return GCP
 }
@@ -252,7 +240,6 @@ func (g *GCPProvider) EnsureFileExists(bucket, path string, defaultContents []by
 	return defaultContents, true, nil
 }
 
-// DeleteVolumes deletes the specified GCP storage volumes
 func (g *GCPProvider) DeleteVolumes(volumesToDelete []string, deleteVolume func(ec2Client IEC2, volumeID *string) error) error {
 	// @note: This will be covered in a later iteration as we need a deployment to try it
 	return errors.New("DeleteVolumes Not Implemented Yet")
@@ -374,7 +361,6 @@ func (g *GCPProvider) DeleteVMsInDeployment(zone, project, deployment string) er
 	}
 }
 
-// FindLongestMatchingHostedZone finds the longest hosted zone that matches the given subdomain
 func (g *GCPProvider) FindLongestMatchingHostedZone(domain string) (string, string, error) {
 	c, err := google.DefaultClient(g.ctx, compute.CloudPlatformScope)
 	if err != nil {
@@ -406,6 +392,7 @@ func (g *GCPProvider) FindLongestMatchingHostedZone(domain string) (string, stri
 
 	return dnsNameFound, nameFound, err
 }
+
 func getCredentials() (string, string, error) {
 	credsStruct := make(map[string]interface{})
 
@@ -433,7 +420,6 @@ func getCredentials() (string, string, error) {
 
 var gcpDB *sql.DB
 
-// CreateDatabases creates databases on the server
 func (g *GCPProvider) CreateDatabases(name, username, password string) error {
 	project, err := g.Attr("project")
 	if err != nil {
