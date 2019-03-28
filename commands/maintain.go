@@ -130,7 +130,7 @@ var maintainCmd = cli.Command{
 		if err != nil {
 			return fmt.Errorf("Error validating args on maintain: [%v]", err)
 		}
-		iaasName, err := iaas.Associate(maintainArgs.IAAS)
+		iaasName, err := iaas.Validate(maintainArgs.IAAS)
 		if err != nil {
 			return fmt.Errorf("Error mapping to supported IAASes on maintain: [%v]", err)
 		}

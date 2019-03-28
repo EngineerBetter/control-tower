@@ -126,7 +126,7 @@ var destroyCmd = cli.Command{
 		if err != nil {
 			return fmt.Errorf("Error validating args on destroy: [%v]", err)
 		}
-		iaasName, err := iaas.Associate(destroyArgs.IAAS)
+		iaasName, err := iaas.Validate(destroyArgs.IAAS)
 		if err != nil {
 			return fmt.Errorf("Error mapping to supported IAASes on destroy: [%v]", err)
 		}

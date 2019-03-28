@@ -119,13 +119,13 @@ func TestAssosiate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := iaas.Associate(tt.arg)
+			got, err := iaas.Validate(tt.arg)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Associate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("Associate() = %v, want %v", got, tt.want)
+				t.Errorf("Validate() = %v, want %v", got, tt.want)
 			}
 		})
 	}

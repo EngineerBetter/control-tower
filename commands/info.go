@@ -149,7 +149,7 @@ var infoCmd = cli.Command{
 		if err != nil {
 			return fmt.Errorf("Error validating args on info: [%v]", err)
 		}
-		iaasName, err := iaas.Associate(infoArgs.IAAS)
+		iaasName, err := iaas.Validate(infoArgs.IAAS)
 		if err != nil {
 			return fmt.Errorf("Error mapping to supported IAASes on info: [%v]", err)
 		}
