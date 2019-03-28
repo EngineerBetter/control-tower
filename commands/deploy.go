@@ -419,7 +419,7 @@ var deployCmd = cli.Command{
 		if err != nil {
 			return fmt.Errorf("Error validating args on deploy: [%v]", err)
 		}
-		iaasName, err := iaas.Assosiate(deployArgs.IAAS)
+		iaasName, err := iaas.Associate(deployArgs.IAAS)
 		if err != nil {
 			return fmt.Errorf("Error mapping to supported IAASes on deploy: [%v]", err)
 		}

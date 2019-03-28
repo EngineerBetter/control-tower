@@ -30,7 +30,7 @@ func (n Name) String() string {
 	return names[n]
 }
 
-func Assosiate(name string) (Name, error) {
+func Associate(name string) (Name, error) {
 	name = strings.ToUpper(name)
 	for n := len(names) - 1; n > 0; n-- {
 		if name == names[n] {
