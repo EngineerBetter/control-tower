@@ -223,11 +223,6 @@ type FakeProvider struct {
 	regionReturnsOnCall map[int]struct {
 		result1 string
 	}
-	WorkerSizeStub        func(string)
-	workerSizeMutex       sync.RWMutex
-	workerSizeArgsForCall []struct {
-		arg1 string
-	}
 	WriteFileStub        func(string, string, []byte) error
 	writeFileMutex       sync.RWMutex
 	writeFileArgsForCall []struct {
@@ -241,10 +236,11 @@ type FakeProvider struct {
 	writeFileReturnsOnCall map[int]struct {
 		result1 error
 	}
-	ZoneStub        func(string) string
+	ZoneStub        func(string, string) string
 	zoneMutex       sync.RWMutex
 	zoneArgsForCall []struct {
 		arg1 string
+		arg2 string
 	}
 	zoneReturns struct {
 		result1 string
@@ -1310,37 +1306,6 @@ func (fake *FakeProvider) RegionReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakeProvider) WorkerSize(arg1 string) {
-	fake.workerSizeMutex.Lock()
-	fake.workerSizeArgsForCall = append(fake.workerSizeArgsForCall, struct {
-		arg1 string
-	}{arg1})
-	fake.recordInvocation("WorkerSize", []interface{}{arg1})
-	fake.workerSizeMutex.Unlock()
-	if fake.WorkerSizeStub != nil {
-		fake.WorkerSizeStub(arg1)
-	}
-}
-
-func (fake *FakeProvider) WorkerSizeCallCount() int {
-	fake.workerSizeMutex.RLock()
-	defer fake.workerSizeMutex.RUnlock()
-	return len(fake.workerSizeArgsForCall)
-}
-
-func (fake *FakeProvider) WorkerSizeCalls(stub func(string)) {
-	fake.workerSizeMutex.Lock()
-	defer fake.workerSizeMutex.Unlock()
-	fake.WorkerSizeStub = stub
-}
-
-func (fake *FakeProvider) WorkerSizeArgsForCall(i int) string {
-	fake.workerSizeMutex.RLock()
-	defer fake.workerSizeMutex.RUnlock()
-	argsForCall := fake.workerSizeArgsForCall[i]
-	return argsForCall.arg1
-}
-
 func (fake *FakeProvider) WriteFile(arg1 string, arg2 string, arg3 []byte) error {
 	var arg3Copy []byte
 	if arg3 != nil {
@@ -1408,16 +1373,17 @@ func (fake *FakeProvider) WriteFileReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeProvider) Zone(arg1 string) string {
+func (fake *FakeProvider) Zone(arg1 string, arg2 string) string {
 	fake.zoneMutex.Lock()
 	ret, specificReturn := fake.zoneReturnsOnCall[len(fake.zoneArgsForCall)]
 	fake.zoneArgsForCall = append(fake.zoneArgsForCall, struct {
 		arg1 string
-	}{arg1})
-	fake.recordInvocation("Zone", []interface{}{arg1})
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("Zone", []interface{}{arg1, arg2})
 	fake.zoneMutex.Unlock()
 	if fake.ZoneStub != nil {
-		return fake.ZoneStub(arg1)
+		return fake.ZoneStub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
@@ -1432,17 +1398,17 @@ func (fake *FakeProvider) ZoneCallCount() int {
 	return len(fake.zoneArgsForCall)
 }
 
-func (fake *FakeProvider) ZoneCalls(stub func(string) string) {
+func (fake *FakeProvider) ZoneCalls(stub func(string, string) string) {
 	fake.zoneMutex.Lock()
 	defer fake.zoneMutex.Unlock()
 	fake.ZoneStub = stub
 }
 
-func (fake *FakeProvider) ZoneArgsForCall(i int) string {
+func (fake *FakeProvider) ZoneArgsForCall(i int) (string, string) {
 	fake.zoneMutex.RLock()
 	defer fake.zoneMutex.RUnlock()
 	argsForCall := fake.zoneArgsForCall[i]
-	return argsForCall.arg1
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeProvider) ZoneReturns(result1 string) {
@@ -1505,8 +1471,6 @@ func (fake *FakeProvider) Invocations() map[string][][]interface{} {
 	defer fake.loadFileMutex.RUnlock()
 	fake.regionMutex.RLock()
 	defer fake.regionMutex.RUnlock()
-	fake.workerSizeMutex.RLock()
-	defer fake.workerSizeMutex.RUnlock()
 	fake.writeFileMutex.RLock()
 	defer fake.writeFileMutex.RUnlock()
 	fake.zoneMutex.RLock()

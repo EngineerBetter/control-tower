@@ -67,10 +67,7 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
 
-	// Why do we do this here?
-	provider.WorkerSize(conf.ConcourseWorkerSize)
-	conf.AvailabilityZone = provider.Zone(deployArgs.Zone)
-	// End stuff from concourse.Deploy()
+	conf.AvailabilityZone = provider.Zone(deployArgs.Zone, conf.ConcourseWorkerSize)
 
 	return conf, nil
 }

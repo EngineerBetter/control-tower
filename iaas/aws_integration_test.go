@@ -91,7 +91,7 @@ func TestAWSProvider_Zone(t *testing.T) {
 				sess:       sess,
 				workerSize: tt.fields.workerSize,
 			}
-			if got := a.Zone(""); got != tt.want {
+			if got := a.Zone("", ""); got != tt.want {
 				t.Errorf("AWSProvider.Zone() = %v, want %v", got, tt.want)
 			}
 		})

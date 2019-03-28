@@ -220,7 +220,7 @@ func (g *GCPProvider) Region() string {
 //TODO: Choose an appropriate zone based on what zones the region has
 
 // Zone returns the zone used by the Provider
-func (g *GCPProvider) Zone(requestedZone string) string {
+func (g *GCPProvider) Zone(requestedZone, workerSizeNotUsedInGCP string) string {
 	if requestedZone != "" {
 		return requestedZone
 	}
@@ -432,9 +432,6 @@ func getCredentials() (string, string, error) {
 }
 
 var gcpDB *sql.DB
-
-// Only used in AWS
-func (g *GCPProvider) WorkerSize(w string) {}
 
 // CreateDatabases creates databases on the server
 func (g *GCPProvider) CreateDatabases(name, username, password string) error {

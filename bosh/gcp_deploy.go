@@ -111,7 +111,7 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		InternalGW:         internalGateway.String(),
 		InternalIP:         directorInternalIP.String(),
 		DirectorName:       "bosh",
-		Zone:               client.provider.Zone(""),
+		Zone:               client.provider.Zone("", ""),
 		Network:            network,
 		PublicSubnetwork:   publicSubnetwork,
 		PrivateSubnetwork:  privateSubnetwork,
@@ -159,7 +159,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
-	zone := client.provider.Zone("")
+	zone := client.provider.Zone("", "")
 
 	publicCIDR := client.config.GetPublicCIDR()
 	_, pubCIDR, err := net.ParseCIDR(publicCIDR)

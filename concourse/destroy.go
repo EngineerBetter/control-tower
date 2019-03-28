@@ -40,7 +40,7 @@ func (client *Client) Destroy() error {
 		if err1 != nil {
 			return err1
 		}
-		zone := client.provider.Zone("")
+		zone := client.provider.Zone("", "")
 		err1 = client.provider.DeleteVMsInDeployment(zone, project, conf.GetDeployment())
 		if err1 != nil {
 			return err1

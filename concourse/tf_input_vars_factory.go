@@ -31,7 +31,7 @@ func NewTFInputVarsFactory(provider iaas.Provider) (TFInputVarsFactory, error) {
 			credentialsPath: credentialsPath,
 			project:         project,
 			region:          provider.Region(),
-			zone:            provider.Zone(""),
+			zone:            provider.Zone("", ""),
 		}, nil
 	}
 
