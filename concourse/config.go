@@ -68,7 +68,7 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 	}
 
 	// Why do we do this here?
-	provider.WorkerType(conf.ConcourseWorkerSize)
+	provider.WorkerSize(conf.ConcourseWorkerSize)
 	conf.AvailabilityZone = provider.Zone(deployArgs.Zone)
 	// End stuff from concourse.Deploy()
 

@@ -433,8 +433,8 @@ func getCredentials() (string, string, error) {
 
 var gcpDB *sql.DB
 
-// WorkerType is a nil setter for workerType
-func (g *GCPProvider) WorkerType(w string) {}
+// Only used in AWS
+func (g *GCPProvider) WorkerSize(w string) {}
 
 // CreateDatabases creates databases on the server
 func (g *GCPProvider) CreateDatabases(name, username, password string) error {

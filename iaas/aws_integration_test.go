@@ -66,7 +66,7 @@ func TestAWSProvider_DeleteVolumes(t *testing.T) {
 func TestAWSProvider_Zone(t *testing.T) {
 	type fields struct {
 		region     string
-		workerType string
+		workerSize string
 	}
 	tests := []struct {
 		name   string
@@ -77,7 +77,7 @@ func TestAWSProvider_Zone(t *testing.T) {
 			name: "return a valid zone for m5.large",
 			fields: fields{
 				region:     "us-east-1",
-				workerType: "m5.large",
+				workerSize: "m5.large",
 			},
 			want: "us-east-1a",
 		},
@@ -89,7 +89,7 @@ func TestAWSProvider_Zone(t *testing.T) {
 			})
 			a := &AWSProvider{
 				sess:       sess,
-				workerType: tt.fields.workerType,
+				workerSize: tt.fields.workerSize,
 			}
 			if got := a.Zone(""); got != tt.want {
 				t.Errorf("AWSProvider.Zone() = %v, want %v", got, tt.want)

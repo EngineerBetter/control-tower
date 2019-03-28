@@ -223,9 +223,9 @@ type FakeProvider struct {
 	regionReturnsOnCall map[int]struct {
 		result1 string
 	}
-	WorkerTypeStub        func(string)
-	workerTypeMutex       sync.RWMutex
-	workerTypeArgsForCall []struct {
+	WorkerSizeStub        func(string)
+	workerSizeMutex       sync.RWMutex
+	workerSizeArgsForCall []struct {
 		arg1 string
 	}
 	WriteFileStub        func(string, string, []byte) error
@@ -1310,34 +1310,34 @@ func (fake *FakeProvider) RegionReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakeProvider) WorkerType(arg1 string) {
-	fake.workerTypeMutex.Lock()
-	fake.workerTypeArgsForCall = append(fake.workerTypeArgsForCall, struct {
+func (fake *FakeProvider) WorkerSize(arg1 string) {
+	fake.workerSizeMutex.Lock()
+	fake.workerSizeArgsForCall = append(fake.workerSizeArgsForCall, struct {
 		arg1 string
 	}{arg1})
-	fake.recordInvocation("WorkerType", []interface{}{arg1})
-	fake.workerTypeMutex.Unlock()
-	if fake.WorkerTypeStub != nil {
-		fake.WorkerTypeStub(arg1)
+	fake.recordInvocation("WorkerSize", []interface{}{arg1})
+	fake.workerSizeMutex.Unlock()
+	if fake.WorkerSizeStub != nil {
+		fake.WorkerSizeStub(arg1)
 	}
 }
 
-func (fake *FakeProvider) WorkerTypeCallCount() int {
-	fake.workerTypeMutex.RLock()
-	defer fake.workerTypeMutex.RUnlock()
-	return len(fake.workerTypeArgsForCall)
+func (fake *FakeProvider) WorkerSizeCallCount() int {
+	fake.workerSizeMutex.RLock()
+	defer fake.workerSizeMutex.RUnlock()
+	return len(fake.workerSizeArgsForCall)
 }
 
-func (fake *FakeProvider) WorkerTypeCalls(stub func(string)) {
-	fake.workerTypeMutex.Lock()
-	defer fake.workerTypeMutex.Unlock()
-	fake.WorkerTypeStub = stub
+func (fake *FakeProvider) WorkerSizeCalls(stub func(string)) {
+	fake.workerSizeMutex.Lock()
+	defer fake.workerSizeMutex.Unlock()
+	fake.WorkerSizeStub = stub
 }
 
-func (fake *FakeProvider) WorkerTypeArgsForCall(i int) string {
-	fake.workerTypeMutex.RLock()
-	defer fake.workerTypeMutex.RUnlock()
-	argsForCall := fake.workerTypeArgsForCall[i]
+func (fake *FakeProvider) WorkerSizeArgsForCall(i int) string {
+	fake.workerSizeMutex.RLock()
+	defer fake.workerSizeMutex.RUnlock()
+	argsForCall := fake.workerSizeArgsForCall[i]
 	return argsForCall.arg1
 }
 
@@ -1505,8 +1505,8 @@ func (fake *FakeProvider) Invocations() map[string][][]interface{} {
 	defer fake.loadFileMutex.RUnlock()
 	fake.regionMutex.RLock()
 	defer fake.regionMutex.RUnlock()
-	fake.workerTypeMutex.RLock()
-	defer fake.workerTypeMutex.RUnlock()
+	fake.workerSizeMutex.RLock()
+	defer fake.workerSizeMutex.RUnlock()
 	fake.writeFileMutex.RLock()
 	defer fake.writeFileMutex.RUnlock()
 	fake.zoneMutex.RLock()

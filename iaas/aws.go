@@ -25,7 +25,7 @@ var AWSDBSizes = map[string]string{
 // AWSProvider is the concrete implementation of AWS Provider
 type AWSProvider struct {
 	sess       *session.Session
-	workerType string
+	workerSize string
 }
 
 // IEC2 only implements functions used in the iaas package
@@ -45,9 +45,9 @@ func newAWS(region string) (Provider, error) {
 	return &AWSProvider{sess, "xlarge"}, nil
 }
 
-// WorkerType is a setter for workerType
-func (a *AWSProvider) WorkerType(w string) {
-	a.workerType = w
+// Used to determine which zone to use
+func (a *AWSProvider) WorkerSize(w string) {
+	a.workerSize = w
 }
 
 // DBType gets the correct RDSInstance class
@@ -77,12 +77,12 @@ func (a *AWSProvider) Zone(input string) string {
 			Filters: []*ec2.Filter{
 				{
 					Name:   aws.String("instance-type"),
-					Values: []*string{aws.String(a.workerType)},
+					Values: []*string{aws.String(a.workerSize)},
 				},
 			},
 		})
 		if len(o.ReservedInstancesOfferings) > 0 {
-			fmt.Printf("Proposed zone for %s worker instances: %s\n", a.workerType, z)
+			fmt.Printf("Proposed zone for %s worker instances: %s\n", a.workerSize, z)
 			return z
 		}
 	}

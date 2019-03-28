@@ -59,7 +59,7 @@ type Provider interface {
 	IAAS() Name
 	LoadFile(bucket, path string) ([]byte, error)
 	Region() string
-	WorkerType(string)
+	WorkerSize(string)
 	WriteFile(bucket, path string, contents []byte) error
 	Zone(string) string
 	Choose(Choice) interface{}
