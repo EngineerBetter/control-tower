@@ -150,12 +150,18 @@ var _ = Describe("client", func() {
 
 		// Initial config in bucket from an existing deployment
 		configInBucket = config.Config{
-			AvailabilityZone:  "eu-west-1a",
-			ConcoursePassword: "s3cret",
-			ConcourseUsername: "admin",
-			Deployment:        "control-tower-happymeal",
-			DirectorPassword:  "secret123",
-			DirectorUsername:  "admin",
+			AvailabilityZone:         "eu-west-1a",
+			ConcoursePassword:        "s3cret",
+			ConcourseUsername:        "admin",
+			Deployment:               "control-tower-happymeal",
+			DirectorHMUserPassword:   "original-password",
+			DirectorMbusPassword:     "original-password",
+			DirectorNATSPassword:     "original-password",
+			DirectorPassword:         "secret123",
+			DirectorRegistryPassword: "original-password",
+			DirectorUsername:         "admin",
+			EncryptionKey:            "123456789a123456789b123456789c",
+			IAAS:                     "AWS",
 			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA2spClkDkFfy2c91Z7N3AImPf0v3o5OoqXUS6nE2NbV2bP/o7
 Oa3KnpzeQ5DBmW3EW7tuvA4bAHxPuk25T9tM8jiItg0TNtMlxzFYVxFq8jMmokEi
