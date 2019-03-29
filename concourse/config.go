@@ -126,10 +126,12 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		return config.Config{}, false, fmt.Errorf("error determining IP addresses to allow access from: [%v]", err)
 	}
 
-	conf, err = updateAllowedIPs(conf, allow)
+	allowedIPs, err := getUpdatedAllowedIPs(allow)
 	if err != nil {
 		return config.Config{}, false, fmt.Errorf("error updating IP addresses to allow access from: [%v]", err)
 	}
+
+	conf.AllowIPs = allowedIPs
 
 	if deployArgs.ZoneIsSet {
 		conf.AvailabilityZone = deployArgs.Zone
@@ -237,13 +239,12 @@ func populateConfigWithDefaultCIDRs(conf config.Config, provider iaas.Provider) 
 	return conf
 }
 
-func updateAllowedIPs(c config.Config, ingressAddresses cidrBlocks) (config.Config, error) {
+func getUpdatedAllowedIPs(ingressAddresses cidrBlocks) (string, error) {
 	addr, err := ingressAddresses.String()
 	if err != nil {
-		return c, err
+		return "", err
 	}
-	c.AllowIPs = addr
-	return c, nil
+	return addr, nil
 }
 
 type cidrBlocks []*net.IPNet
