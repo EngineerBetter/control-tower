@@ -816,6 +816,23 @@ wEW5QkylaPEkbVDhJWeR1I8=
 			})
 		})
 
+		Context("When the user tries to change the availability zone of an existing deployment", func() {
+			BeforeEach(func() {
+				args.Zone = "eu-west-1c"
+				args.ZoneIsSet = true
+			})
+
+			JustBeforeEach(func() {
+				configClient.LoadReturns(configInBucket, nil)
+				configClient.ConfigExistsReturns(true, nil)
+			})
+			It("Returns a meaningful error message", func() {
+				client := buildClient()
+				err := client.Deploy()
+				Expect(err).To(MatchError("error getting initial config before deploy: [Existing deployment uses zone eu-west-1a and cannot change to zone eu-west-1c]"))
+			})
+		})
+
 		Context("When a custom DB instance size is not provided", func() {
 			BeforeEach(func() {
 				args.DBSize = "small"

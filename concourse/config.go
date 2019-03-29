@@ -33,6 +33,11 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 			return config.Config{}, false, fmt.Errorf("error writing config loaded success message [%v]", err)
 		}
 
+		// This is a safeguard for a redeployment where zone does not belong to the region where the original deployment has happened
+		if client.deployArgs.ZoneIsSet && client.deployArgs.Zone != conf.AvailabilityZone {
+			return config.Config{}, false, fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.AvailabilityZone, client.deployArgs.Zone)
+		}
+
 		conf, isDomainUpdated, err = populateConfigWithDefaultsOrProvidedArguments(conf, false, client.deployArgs, client.provider)
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error merging new options with existing config: [%v]", err)
@@ -123,10 +128,6 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	}
 
 	if deployArgs.ZoneIsSet {
-		// This is a safeguard for a redeployment where zone does not belong to the region where the original deployment has happened
-		if !newConfigCreated && deployArgs.Zone != conf.AvailabilityZone {
-			return config.Config{}, false, fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.AvailabilityZone, deployArgs.Zone)
-		}
 		conf.AvailabilityZone = deployArgs.Zone
 	}
 	if deployArgs.WorkerCountIsSet {
