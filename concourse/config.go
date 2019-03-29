@@ -38,7 +38,7 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 			return config.Config{}, false, fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.AvailabilityZone, client.deployArgs.Zone)
 		}
 
-		conf, isDomainUpdated, err = populateConfigWithDefaultsOrProvidedArguments(conf, client.deployArgs, client.provider)
+		conf, isDomainUpdated, err = applyArgumentsToConfig(conf, client.deployArgs, client.provider)
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error merging new options with existing config: [%v]", err)
 		}
@@ -47,7 +47,6 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 		if isMissingCIDRs(conf, client.provider) {
 			conf = populateConfigWithDefaultCIDRs(conf, client.provider)
 		}
-
 	} else {
 		conf, err = newConfig(client.configClient, client.deployArgs, client.provider, client.passwordGenerator, client.eightRandomLetters, client.sshGenerator)
 		if err != nil {
@@ -72,7 +71,7 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
 
-	conf, _, err = populateConfigWithDefaultsOrProvidedArguments(conf, deployArgs, provider)
+	conf, _, err = applyArgumentsToConfig(conf, deployArgs, provider)
 	if err != nil {
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
@@ -125,7 +124,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	return conf, nil
 }
 
-func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, bool, error) {
+func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, bool, error) {
 	allow, err := parseAllowedIPsCIDRs(deployArgs.AllowIPs)
 	if err != nil {
 		return config.Config{}, false, err
