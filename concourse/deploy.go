@@ -589,10 +589,8 @@ func writeDeploySuccessMessage(params deployMessageParams, stdout io.Writer) err
 	return t.Execute(stdout, params)
 }
 
-func writeConfigLoadedSuccessMessage(stdout io.Writer) error {
-	_, err := stdout.Write([]byte("\nUSING PREVIOUS DEPLOYMENT CONFIG\n"))
-
-	return err
+func writeConfigLoadedSuccessMessage(stdout io.Writer) {
+	stdout.Write([]byte("\nUSING PREVIOUS DEPLOYMENT CONFIG\n"))
 }
 
 func loadDirectorState(configClient config.IClient) ([]byte, error) {

@@ -28,10 +28,7 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error loading existing config [%v]", err)
 		}
-		err = writeConfigLoadedSuccessMessage(client.stdout)
-		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error writing config loaded success message [%v]", err)
-		}
+		writeConfigLoadedSuccessMessage(client.stdout)
 
 		// This is a safeguard for a redeployment where zone does not belong to the region where the original deployment has happened
 		if client.deployArgs.ZoneIsSet && client.deployArgs.Zone != conf.AvailabilityZone {
