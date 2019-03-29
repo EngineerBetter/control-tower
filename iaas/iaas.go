@@ -64,9 +64,6 @@ type Provider interface {
 	Choose(Choice) interface{}
 }
 
-// Factory creates a new IaaS provider, defined for testability
-type Factory func(iaasName, region string) (Provider, error)
-
 // New returns a new IAAS client for a particular IAAS and region
 func New(iaasName Name, region string) (Provider, error) {
 	switch iaasName {
