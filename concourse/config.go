@@ -21,34 +21,39 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 	var isDomainUpdated bool
 	var conf config.Config
 	if priorConfigExists {
-		if client.deployArgs.NetworkCIDRIsSet || client.deployArgs.PrivateCIDRIsSet || client.deployArgs.PublicCIDRIsSet {
-			return config.Config{}, false, fmt.Errorf("custom CIDRs cannot be applied after intial deploy")
-		}
 		conf, err = client.configClient.Load()
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error loading existing config [%v]", err)
 		}
 		writeConfigLoadedSuccessMessage(client.stdout)
 
-		// This is a safeguard for a redeployment where zone does not belong to the region where the original deployment has happened
-		if client.deployArgs.ZoneIsSet && client.deployArgs.Zone != conf.AvailabilityZone {
-			return config.Config{}, false, fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.AvailabilityZone, client.deployArgs.Zone)
+		// Existing config, these values are mandatory but did not exist in older versions
+		if isMissingCIDRs(conf, client.provider) {
+			conf = populateConfigWithDefaultCIDRs(conf, client.provider)
+		}
+
+		err := assertImmutableFieldsNotChanging(client.deployArgs, conf)
+		if err != nil {
+			return config.Config{}, false, err
 		}
 
 		conf, isDomainUpdated, err = applyArgumentsToConfig(conf, client.deployArgs, client.provider)
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error merging new options with existing config: [%v]", err)
 		}
-
-		// Existing config, these values are mandatory but did not exist in older versions
-		if isMissingCIDRs(conf, client.provider) {
-			conf = populateConfigWithDefaultCIDRs(conf, client.provider)
-		}
 	} else {
-		conf, err = newConfig(client.configClient, client.deployArgs, client.provider, client.passwordGenerator, client.eightRandomLetters, client.sshGenerator)
+		conf = client.configClient.NewConfig()
+		conf, err = populateConfigWithDefaults(conf, client.provider, client.passwordGenerator, client.sshGenerator, client.eightRandomLetters)
 		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error generating new config: [%v]", err)
+			return config.Config{}, false, fmt.Errorf("error generating default config: [%v]", err)
 		}
+
+		conf, _, err = applyArgumentsToConfig(conf, client.deployArgs, client.provider)
+		if err != nil {
+			return config.Config{}, false, fmt.Errorf("error applying arguments to default config: [%v]", err)
+		}
+
+		conf = applyImmutableArgumentsToConfig(conf, client.deployArgs, client.provider)
 
 		err = client.configClient.Update(conf)
 		if err != nil {
@@ -61,20 +66,17 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 	return conf, isDomainUpdated, nil
 }
 
-func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider iaas.Provider, passwordGenerator func(int) string, eightRandomLetters func() string, sshGenerator func() ([]byte, []byte, string, error)) (config.Config, error) {
-	conf := configClient.NewConfig()
-	conf, err := populateConfigWithDefaults(conf, provider, passwordGenerator, sshGenerator, eightRandomLetters)
-	if err != nil {
-		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
+func assertImmutableFieldsNotChanging(deployArgs *deploy.Args, conf config.ConfigView) error {
+	if deployArgs.NetworkCIDRIsSet || deployArgs.PrivateCIDRIsSet || deployArgs.PublicCIDRIsSet {
+		return fmt.Errorf("custom CIDRs cannot be applied after intial deploy")
 	}
 
-	conf, _, err = applyArgumentsToConfig(conf, deployArgs, provider)
-	if err != nil {
-		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
+	// This is a safeguard for a redeployment where zone does not belong to the region where the original deployment has happened
+	if deployArgs.ZoneIsSet && deployArgs.Zone != conf.GetAvailabilityZone() {
+		return fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.GetAvailabilityZone(), deployArgs.Zone)
 	}
 
-	conf = applyImmutableArgumentsToConfig(conf, deployArgs, provider)
-	return conf, nil
+	return nil
 }
 
 func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, passwordGenerator func(int) string, sshGenerator func() ([]byte, []byte, string, error), eightRandomLetters func() string) (config.Config, error) {
