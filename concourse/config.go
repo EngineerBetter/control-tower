@@ -10,6 +10,7 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/asaskevich/govalidator"
+	"github.com/imdario/mergo"
 )
 
 func (client *Client) getInitialConfig() (config.Config, bool, error) {
@@ -20,6 +21,13 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 
 	var isDomainUpdated bool
 	var conf config.Config
+
+	defaultConf := client.configClient.NewConfig()
+	defaultConf, err = populateConfigWithDefaults(defaultConf, client.provider, client.passwordGenerator, client.sshGenerator, client.eightRandomLetters)
+	if err != nil {
+		return config.Config{}, false, fmt.Errorf("error generating default config: [%v]", err)
+	}
+
 	if priorConfigExists {
 		conf, err = client.configClient.Load()
 		if err != nil {
@@ -27,12 +35,12 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 		}
 		writeConfigLoadedSuccessMessage(client.stdout)
 
-		// Existing config, these values are mandatory but did not exist in older versions
-		if isMissingCIDRs(conf, client.provider) {
-			conf = populateConfigWithDefaultCIDRs(conf, client.provider)
+		err = mergo.Merge(&conf, defaultConf)
+		if err != nil {
+			return config.Config{}, false, fmt.Errorf("error layering stored config on top default config [%v]", err)
 		}
 
-		err := assertImmutableFieldsNotChanging(client.deployArgs, conf)
+		err = assertImmutableFieldsNotChanging(client.deployArgs, conf)
 		if err != nil {
 			return config.Config{}, false, err
 		}
@@ -42,13 +50,7 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 			return config.Config{}, false, fmt.Errorf("error merging new options with existing config: [%v]", err)
 		}
 	} else {
-		conf = client.configClient.NewConfig()
-		conf, err = populateConfigWithDefaults(conf, client.provider, client.passwordGenerator, client.sshGenerator, client.eightRandomLetters)
-		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error generating default config: [%v]", err)
-		}
-
-		conf, _, err = applyArgumentsToConfig(conf, client.deployArgs, client.provider)
+		conf, _, err = applyArgumentsToConfig(defaultConf, client.deployArgs, client.provider)
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error applying arguments to default config: [%v]", err)
 		}
