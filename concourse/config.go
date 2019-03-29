@@ -76,12 +76,7 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
 
-	if hasCIDRFlagsSet(deployArgs, provider) {
-		conf = populateConfigWithDeployArgsCIDRs(conf, deployArgs, provider)
-	}
-
-	conf.AvailabilityZone = provider.Zone(deployArgs.Zone, conf.ConcourseWorkerSize)
-
+	conf = applyImmutableArgumentsToConfig(conf, deployArgs, provider)
 	return conf, nil
 }
 
@@ -177,6 +172,16 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	}
 
 	return conf, isDomainUpdated, nil
+}
+
+// Set config fields that are only valid on first deployment
+func applyImmutableArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) config.Config {
+	if hasCIDRFlagsSet(deployArgs, provider) {
+		conf = populateConfigWithDeployArgsCIDRs(conf, deployArgs, provider)
+	}
+
+	conf.AvailabilityZone = provider.Zone(deployArgs.Zone, conf.ConcourseWorkerSize)
+	return conf
 }
 
 func hasCIDRFlagsSet(deployArgs *deploy.Args, provider iaas.Provider) bool {
