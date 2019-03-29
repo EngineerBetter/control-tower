@@ -127,12 +127,12 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, bool, error) {
 	allow, err := parseAllowedIPsCIDRs(deployArgs.AllowIPs)
 	if err != nil {
-		return config.Config{}, false, err
+		return config.Config{}, false, fmt.Errorf("error determining IP addresses to allow access from: [%v]", err)
 	}
 
 	conf, err = updateAllowedIPs(conf, allow)
 	if err != nil {
-		return config.Config{}, false, err
+		return config.Config{}, false, fmt.Errorf("error updating IP addresses to allow access from: [%v]", err)
 	}
 
 	if deployArgs.ZoneIsSet {
