@@ -38,9 +38,14 @@ func (client *Client) getInitialConfig() (config.Config, bool, error) {
 			return config.Config{}, false, fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.AvailabilityZone, client.deployArgs.Zone)
 		}
 
-		conf, isDomainUpdated, err = populateConfigWithDefaultsOrProvidedArguments(conf, false, client.deployArgs, client.provider)
+		conf, isDomainUpdated, err = populateConfigWithDefaultsOrProvidedArguments(conf, client.deployArgs, client.provider)
 		if err != nil {
 			return config.Config{}, false, fmt.Errorf("error merging new options with existing config: [%v]", err)
+		}
+
+		// Existing config, these values are mandatory but did not exist in older versions
+		if isMissingCIDRs(conf, client.provider) {
+			conf = populateConfigWithDefaultCIDRs(conf, client.provider)
 		}
 
 	} else {
@@ -67,9 +72,13 @@ func newConfig(configClient config.IClient, deployArgs *deploy.Args, provider ia
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
 
-	conf, _, err = populateConfigWithDefaultsOrProvidedArguments(conf, true, deployArgs, provider)
+	conf, _, err = populateConfigWithDefaultsOrProvidedArguments(conf, deployArgs, provider)
 	if err != nil {
 		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
+	}
+
+	if hasCIDRFlagsSet(deployArgs, provider) {
+		conf = populateConfigWithDeployArgsCIDRs(conf, deployArgs, provider)
 	}
 
 	conf.AvailabilityZone = provider.Zone(deployArgs.Zone, conf.ConcourseWorkerSize)
@@ -116,7 +125,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	return conf, nil
 }
 
-func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfigCreated bool, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, bool, error) {
+func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, bool, error) {
 	allow, err := parseAllowedIPsCIDRs(deployArgs.AllowIPs)
 	if err != nil {
 		return config.Config{}, false, err
@@ -154,17 +163,6 @@ func populateConfigWithDefaultsOrProvidedArguments(conf config.Config, newConfig
 	}
 	if deployArgs.WorkerTypeIsSet {
 		conf.WorkerType = deployArgs.WorkerType
-	}
-
-	if newConfigCreated {
-		if hasCIDRFlagsSet(deployArgs, provider) {
-			conf = populateConfigWithDeployArgsCIDRs(conf, deployArgs, provider)
-		}
-	} else {
-		// Existing config, these values are mandatory but did not exist in older versions
-		if isMissingCIDRs(conf, provider) {
-			conf = populateConfigWithDefaultCIDRs(conf, provider)
-		}
 	}
 
 	var isDomainUpdated bool
