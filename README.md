@@ -87,10 +87,10 @@ You can keep up to date on Control-Tower announcements by reading the [EngineerB
 - Ensure your credentials are *long lived credentials* and not *temporary security credentials*
 - Ensure you have the correct local dependencies for [bootstrapping a BOSH VM](https://bosh.io/docs/cli-v2-install/#additional-dependencies)
 - If you are using GCP, enable the following APIs in your project:
-  - Compute Engine API
-  - Identity and Access Management (IAM) API
-  - Cloud Resource Manager API
-  - SQL Admin API
+  - Compute Engine API (`gcloud services enable compute.googleapis.com`)
+  - Identity and Access Management (IAM) API (`gcloud services enable iam.googleapis.com`)
+  - Cloud Resource Manager API (`gcloud services enable cloudresourcemanager.googleapis.com`)
+  - SQL Admin API (`gcloud services enable sqladmin.googleapis.com`)
 
 ## Install
 
