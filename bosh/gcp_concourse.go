@@ -82,6 +82,7 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 	if client.config.IsGithubAuthSet() {
 		vmap["github_client_id"] = client.config.GetGithubClientID()
 		vmap["github_client_secret"] = client.config.GetGithubClientSecret()
+		vmap["github_host"] = client.config.GetGithubHost()
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubAuthFilename))
 	}
 

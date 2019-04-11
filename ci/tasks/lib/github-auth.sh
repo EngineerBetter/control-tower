@@ -4,6 +4,7 @@
 function addGitHubFlagsToArgs() {
   args+=(--github-auth-client-id "$GITHUB_AUTH_CLIENT_ID")
   args+=(--github-auth-client-secret "$GITHUB_AUTH_CLIENT_SECRET")
+  args+=(--github-auth-host "$GITHUB_AUTH_HOST")
 }
 
 function assertGitHubAuthConfigured() {

@@ -213,6 +213,7 @@ All flags are optional. Configuration settings provided via flags will persist i
 
 - `--github-auth-client-id value`      Client ID for a github OAuth application - Used for Github Auth [$GITHUB_AUTH_CLIENT_ID]
 - `--github-auth-client-secret value`  Client Secret for a github OAuth application - Used for Github Auth [$GITHUB_AUTH_CLIENT_SECRET]
+- `--github-auth-host value` Hostname for github. (Optional, No scheme, No trailing slash) - Used for Github Auth [$GITHUB_AUTH_HOST]
 - `--add-tag key=value` Add a tag to the VMs that form your `control-tower` deployment. Can be used multiple times in a single `deploy` command.
 - `--spot=value` Use spot instances for workers. Can be true/false. Default is true.
 

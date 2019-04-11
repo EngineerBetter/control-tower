@@ -4,3 +4,4 @@
   value:
     client_id: ((github_client_id))
     client_secret: ((github_client_secret))
+    host: ((github_host))

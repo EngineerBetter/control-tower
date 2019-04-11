@@ -503,6 +503,7 @@ jobs:
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret))
+      GITHUB_AUTH_HOST: ((github_auth_host))
     on_failure:
       put: slack-alert
       params:
@@ -525,6 +526,7 @@ jobs:
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret_gcp))
+      GITHUB_AUTH_HOST: ((github_auth_host))
     on_failure:
       put: slack-alert
       params:

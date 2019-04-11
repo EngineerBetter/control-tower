@@ -44,6 +44,7 @@ type Config struct {
 	EncryptionKey            string `json:"encryption_key"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
+	GithubHost               string `json:"github_host"`
 	GrafanaPassword          string `json:"grafana_password"`
 	HostedZoneID             string `json:"hosted_zone_id"`
 	HostedZoneRecordPrefix   string `json:"hosted_zone_record_prefix"`
@@ -104,6 +105,7 @@ type ConfigView interface {
 	GetEncryptionKey() string
 	GetGithubClientID() string
 	GetGithubClientSecret() string
+	GetGithubHost() string
 	GetGrafanaPassword() string
 	GetHostedZoneID() string
 	GetHostedZoneRecordPrefix() string
@@ -253,6 +255,10 @@ func (c Config) GetGithubClientID() string {
 
 func (c Config) GetGithubClientSecret() string {
 	return c.GithubClientSecret
+}
+
+func (c Config) GetGithubHost() string {
+	return c.GithubHost
 }
 
 func (c Config) GetGrafanaPassword() string {

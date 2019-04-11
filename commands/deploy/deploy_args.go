@@ -39,6 +39,8 @@ type Args struct {
 	GithubAuthClientIDIsSet     bool
 	GithubAuthClientSecret      string
 	GithubAuthClientSecretIsSet bool
+	GithubAuthHost              string
+	GithubAuthHostIsSet         bool
 	// GithubAuthIsSet is true if the user has specified both the --github-auth-client-secret and --github-auth-client-id flags
 	GithubAuthIsSet bool
 	Tags            cli.StringSlice
@@ -95,6 +97,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
 				a.GithubAuthClientSecretIsSet = true
+			case "github-auth-host":
+				a.GithubAuthHostIsSet = true
 			case "add-tag":
 				a.TagsIsSet = true
 			case "namespace":
@@ -220,6 +224,9 @@ func (a Args) validateGithubFields() error {
 	}
 	if a.GithubAuthClientID == "" && a.GithubAuthClientSecret != "" {
 		return errors.New("--github-auth-client-secret requires --github-auth-client-id to also be provided")
+	}
+	if a.GithubAuthHost != "" && a.GithubAuthClientSecret == "" {
+		return errors.New("github-auth-host requires --github-auth-client-id to also be provided")
 	}
 
 	return nil

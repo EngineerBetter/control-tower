@@ -155,6 +155,16 @@ func TestDeployArgs_Validate(t *testing.T) {
 			expectedErr: "--github-auth-client-secret requires --github-auth-client-id to also be provided",
 		},
 		{
+			name: "Github Host requires Github ID",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthHost = "example.com"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "github-auth-host requires --github-auth-client-id to also be provided",
+		},
+		{
 			name: "Tags should be in the format 'key=value'",
 			modification: func() Args {
 				args := defaultFields

@@ -131,6 +131,13 @@ var deployFlags = []cli.Flag{
 		EnvVar:      "GITHUB_AUTH_CLIENT_SECRET",
 		Destination: &initialDeployArgs.GithubAuthClientSecret,
 	},
+	cli.StringFlag{
+		Name:        "github-auth-host",
+		Usage:       "(optional) Override default hostname for Github. (No scheme, No trailing slash) - Used for Github Auth",
+		EnvVar:      "GITHUB_AUTH_HOST",
+		Value:       "github.com",
+		Destination: &initialDeployArgs.GithubAuthHost,
+	},
 	cli.StringSliceFlag{
 		Name:  "add-tag",
 		Usage: "(optional) Key=Value pair to tag EC2 instances with - Multiple tags can be applied with multiple uses of this flag",
