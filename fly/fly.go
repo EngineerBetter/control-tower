@@ -206,7 +206,7 @@ func (client *Client) writePipelineConfig(pipelinePath string, config config.Con
 	}
 	defer fileHandler.Close()
 
-	params, err := client.pipeline.BuildPipelineParams(config.GetDeployment(), config.GetNamespace(), config.GetRegion(), config.GetDomain())
+	params, err := client.pipeline.BuildPipelineParams(config.GetDeployment(), config.GetNamespace(), config.GetRegion(), config.GetDomain(), config.GetIAAS())
 	if err != nil {
 		return err
 	}

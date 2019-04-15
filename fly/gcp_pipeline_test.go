@@ -36,10 +36,10 @@ jobs:
     params:
       AWS_REGION: "europe-west1"
       DEPLOYMENT: "my-deployment"
-      IAAS: GCP
-      SELF_UPDATE: true
-      NAMESPACE: prod
       GCPCreds: 'creds-content'
+      IAAS: "GCP"
+      NAMESPACE: "prod"
+      SELF_UPDATE: true
     config:
       platform: linux
       image_resource:
@@ -71,10 +71,10 @@ jobs:
     params:
       AWS_REGION: "europe-west1"
       DEPLOYMENT: "my-deployment"
-      IAAS: GCP
-      SELF_UPDATE: true
-      NAMESPACE: "prod"
       GCPCreds: 'creds-content'
+      IAAS: "GCP"
+      NAMESPACE: "prod"
+      SELF_UPDATE: true
     config:
       platform: linux
       image_resource:
@@ -121,7 +121,7 @@ jobs:
 			pipeline, err := NewGCPPipeline(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
 
-			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "europe-west1", "ci.engineerbetter.com")
+			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "europe-west1", "ci.engineerbetter.com", "GCP")
 			Expect(err).ToNot(HaveOccurred())
 
 			yamlBytes, err := util.RenderTemplate("self-update pipeline", pipeline.GetConfigTemplate(), params)

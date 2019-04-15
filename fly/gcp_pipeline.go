@@ -23,14 +23,15 @@ func NewGCPPipeline(credsPath string) (Pipeline, error) {
 }
 
 //BuildPipelineParams builds params for AWS control-tower self update pipeline
-func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain string) (Pipeline, error) {
+func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain, iaas string) (Pipeline, error) {
 	return GCPPipeline{
 		PipelineTemplateParams: PipelineTemplateParams{
 			ControlTowerVersion: ControlTowerVersion,
-			Deployment:         strings.TrimPrefix(deployment, "control-tower-"),
-			Domain:             domain,
-			Namespace:          namespace,
-			Region:             region,
+			Deployment:          strings.TrimPrefix(deployment, "control-tower-"),
+			Domain:              domain,
+			Namespace:           namespace,
+			Region:              region,
+			IaaS:                iaas,
 		},
 		GCPCreds: a.GCPCreds,
 	}, nil
@@ -63,10 +64,10 @@ jobs:
     params:
       AWS_REGION: "{{ .Region }}"
       DEPLOYMENT: "{{ .Deployment }}"
-      IAAS: GCP
-      SELF_UPDATE: true
-      NAMESPACE: {{ .Namespace }}
       GCPCreds: '{{ .GCPCreds }}'
+      IAAS: "{{ .IaaS }}"
+      NAMESPACE: "{{ .Namespace }}"
+      SELF_UPDATE: true
     config:
       platform: linux
       image_resource:
@@ -98,10 +99,10 @@ jobs:
     params:
       AWS_REGION: "{{ .Region }}"
       DEPLOYMENT: "{{ .Deployment }}"
-      IAAS: GCP
-      SELF_UPDATE: true
-      NAMESPACE: "{{ .Namespace }}"
       GCPCreds: '{{ .GCPCreds }}'
+      IAAS: "{{ .IaaS }}"
+      NAMESPACE: "{{ .Namespace }}"
+      SELF_UPDATE: true
     config:
       platform: linux
       image_resource:

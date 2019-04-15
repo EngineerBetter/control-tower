@@ -2,16 +2,17 @@ package fly
 
 // Pipeline is interface for self update pipeline
 type Pipeline interface {
-	BuildPipelineParams(deployment, namespace, region, domain string) (Pipeline, error)
+	BuildPipelineParams(deployment, namespace, region, domain, iaas string) (Pipeline, error)
 	GetConfigTemplate() string
 }
 
 type PipelineTemplateParams struct {
 	ControlTowerVersion string
-	Deployment         string
-	Domain             string
-	Namespace          string
-	Region             string
+	Deployment          string
+	Domain              string
+	Namespace           string
+	Region              string
+	IaaS                string
 }
 
 const selfUpdateResources = `

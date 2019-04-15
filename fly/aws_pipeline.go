@@ -11,7 +11,7 @@ type AWSPipeline struct {
 	PipelineTemplateParams
 	AWSAccessKeyID     string
 	AWSSecretAccessKey string
-	credsGetter AWSCredsGetter
+	credsGetter        AWSCredsGetter
 }
 
 // NewAWSPipeline return AWSPipeline
@@ -19,7 +19,8 @@ func NewAWSPipeline(getter AWSCredsGetter) Pipeline {
 	return AWSPipeline{credsGetter: getter}
 }
 
-type AWSCredsGetter = func()(string, string, error)
+type AWSCredsGetter = func() (string, string, error)
+
 var getCredsFromSession = func() (string, string, error) {
 	sess, err := session.NewSession()
 	if err != nil {
@@ -35,7 +36,7 @@ var getCredsFromSession = func() (string, string, error) {
 }
 
 //BuildPipelineParams builds params for AWS control-tower self update pipeline
-func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain string) (Pipeline, error) {
+func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain, iaas string) (Pipeline, error) {
 	accessKeyID, secretAccessKey, err := a.credsGetter()
 	if err != nil {
 		return nil, err
@@ -44,10 +45,11 @@ func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain s
 	return AWSPipeline{
 		PipelineTemplateParams: PipelineTemplateParams{
 			ControlTowerVersion: ControlTowerVersion,
-			Deployment:         strings.TrimPrefix(deployment, "control-tower-"),
-			Domain:             domain,
-			Namespace:          namespace,
-			Region:             region,
+			Deployment:          strings.TrimPrefix(deployment, "control-tower-"),
+			Domain:              domain,
+			Namespace:           namespace,
+			Region:              region,
+			IaaS:                iaas,
 		},
 		AWSAccessKeyID:     accessKeyID,
 		AWSSecretAccessKey: secretAccessKey,
@@ -71,12 +73,13 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_REGION: "{{ .Region }}"
-      DEPLOYMENT: "{{ .Deployment }}"
       AWS_ACCESS_KEY_ID: "{{ .AWSAccessKeyID }}"
+      AWS_REGION: "{{ .Region }}"
       AWS_SECRET_ACCESS_KEY: "{{ .AWSSecretAccessKey }}"
+      DEPLOYMENT: "{{ .Deployment }}"
+      IAAS: "{{ .IaaS }}"
+      NAMESPACE: "{{ .Namespace }}"
       SELF_UPDATE: true
-      NAMESPACE: {{ .Namespace }}
     config:
       platform: linux
       image_resource:
@@ -105,12 +108,13 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_REGION: "{{ .Region }}"
-      DEPLOYMENT: "{{ .Deployment }}"
       AWS_ACCESS_KEY_ID: "{{ .AWSAccessKeyID }}"
+      AWS_REGION: "{{ .Region }}"
       AWS_SECRET_ACCESS_KEY: "{{ .AWSSecretAccessKey }}"
+      DEPLOYMENT: "{{ .Deployment }}"
+      IAAS: "{{ .IaaS }}"
+      NAMESPACE: "{{ .Namespace }}"
       SELF_UPDATE: true
-      NAMESPACE: {{ .Namespace }}
     config:
       platform: linux
       image_resource:

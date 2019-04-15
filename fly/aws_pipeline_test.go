@@ -31,12 +31,13 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_REGION: "eu-west-1"
-      DEPLOYMENT: "my-deployment"
       AWS_ACCESS_KEY_ID: "access-key"
+      AWS_REGION: "eu-west-1"
       AWS_SECRET_ACCESS_KEY: "secret-key"
+      DEPLOYMENT: "my-deployment"
+      IAAS: "AWS"
+      NAMESPACE: "prod"
       SELF_UPDATE: true
-      NAMESPACE: prod
     config:
       platform: linux
       image_resource:
@@ -65,12 +66,13 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_REGION: "eu-west-1"
-      DEPLOYMENT: "my-deployment"
       AWS_ACCESS_KEY_ID: "access-key"
+      AWS_REGION: "eu-west-1"
       AWS_SECRET_ACCESS_KEY: "secret-key"
+      DEPLOYMENT: "my-deployment"
+      IAAS: "AWS"
+      NAMESPACE: "prod"
       SELF_UPDATE: true
-      NAMESPACE: prod
     config:
       platform: linux
       image_resource:
@@ -110,7 +112,7 @@ jobs:
 
 			pipeline := NewAWSPipeline(fakeCredsGetter)
 
-			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "eu-west-1", "ci.engineerbetter.com")
+			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "eu-west-1", "ci.engineerbetter.com", "AWS")
 			Expect(err).ToNot(HaveOccurred())
 
 			yamlBytes, err := util.RenderTemplate("self-update pipeline", pipeline.GetConfigTemplate(), params)
