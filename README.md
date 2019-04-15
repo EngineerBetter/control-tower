@@ -13,7 +13,7 @@ A tool for easily deploying [Concourse](https://concourse-ci.org) in a single co
 ```sh
 $ AWS_ACCESS_KEY_ID=<access-key-id> \
   AWS_SECRET_ACCESS_KEY=<secret-access-key> \
-  control-tower deploy <your-project-name>
+  control-tower deploy --iaas aws <your-project-name>
 ```
 
 ##### GCP
