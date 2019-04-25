@@ -45,9 +45,9 @@ type IClient interface {
 	Maintain(maintain.Args) error
 }
 
-//go:generate go-bindata -pkg $GOPACKAGE ../../control-tower-ops/director-versions-aws.json ../../control-tower-ops/director-versions-gcp.json
-var awsVersionFile = MustAsset("../../control-tower-ops/director-versions-aws.json")
-var gcpVersionFile = MustAsset("../../control-tower-ops/director-versions-gcp.json")
+//go:generate go-bindata -pkg $GOPACKAGE ../../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json ../../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json
+var awsVersionFile = MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json")
+var gcpVersionFile = MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json")
 
 // New returns a new client
 func NewClient(
