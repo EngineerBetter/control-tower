@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util/yaml"
 )
@@ -72,7 +71,6 @@ type IAASEnvironment interface {
 	ConfigureDirectorManifestCPI() (string, error)
 	ConfigureDirectorCloudConfig() (string, error)
 	ConfigureConcourseStemcell() (string, error)
-	IAASCheck() iaas.Name
 }
 
 // Store exposes its methods

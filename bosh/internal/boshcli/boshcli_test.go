@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
-	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/internal/fakeexec"
 	"github.com/stretchr/testify/require"
 )
@@ -36,9 +35,6 @@ func (s mockStore) Get(key string) ([]byte, error) {
 type mockIAASConfig struct {
 }
 
-func (c mockIAASConfig) IAASCheck() iaas.Name {
-	return iaas.AWS
-}
 func (c mockIAASConfig) ConfigureDirectorManifestCPI() (string, error) {
 	return "a CPI", nil
 }

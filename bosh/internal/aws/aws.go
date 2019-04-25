@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util"
 	"github.com/EngineerBetter/control-tower/util/yaml"
@@ -108,11 +107,6 @@ type awsCloudConfigParams struct {
 	PrivateCIDR         string
 	PrivateCIDRGateway  string
 	PrivateCIDRReserved string
-}
-
-// IAASCheck returns the IAAS provider
-func (e Environment) IAASCheck() iaas.Name {
-	return iaas.AWS
 }
 
 // ConfigureDirectorCloudConfig inserts values from the environment into the config template passed as argument
