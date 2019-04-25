@@ -96,7 +96,7 @@ func Get(id ID) Resource {
 }
 
 func init() {
-	p := file.MustAsset("../../control-tower-ops/director-versions.json")
+	p := file.MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions.json")
 	err := json.Unmarshal(p, &resources)
 	if err != nil {
 		panic(err)
