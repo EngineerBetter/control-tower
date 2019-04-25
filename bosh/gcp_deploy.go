@@ -11,20 +11,19 @@ import (
 // Deploy deploys a new Bosh director or converges an existing deployment
 // Returns new contents of bosh state file
 func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, newCreds []byte, err error) {
-	boshCLI, err := boshcli.New(boshcli.DownloadBOSH())
 	if err != nil {
 		return state, creds, err
 	}
 
-	state, creds, err = client.createEnv(boshCLI, state, creds, "")
+	state, creds, err = client.createEnv(client.boshCLI, state, creds, "")
 	if err != nil {
 		return state, creds, err
 	}
 
-	if err = client.updateCloudConfig(boshCLI); err != nil {
+	if err = client.updateCloudConfig(client.boshCLI); err != nil {
 		return state, creds, err
 	}
-	if err = client.uploadConcourseStemcell(boshCLI); err != nil {
+	if err = client.uploadConcourseStemcell(client.boshCLI); err != nil {
 		return state, creds, err
 	}
 	if err = client.createDefaultDatabases(); err != nil {
