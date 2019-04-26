@@ -52,58 +52,6 @@ type Store interface {
 	Get(string) ([]byte, error)
 }
 
-func (c *CLI) xEnv(action string, store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error {
-	const stateFilename = "state.json"
-	const varsFilename = "vars.yaml"
-
-	manifest, err := config.ConfigureDirectorManifestCPI()
-	if err != nil {
-		return err
-	}
-
-	boshResource := resource.Get(resource.BOSHRelease)
-	bpmResource := resource.Get(resource.BPMRelease)
-
-	vars := map[string]interface{}{
-		"director_name":            "bosh",
-		"admin_password":           password,
-		"director_ssl.certificate": cert,
-		"director_ssl.private_key": key,
-		"director_ssl.ca":          ca,
-		"bosh_url":                 boshResource.URL,
-		"bosh_version":             boshResource.Version,
-		"bosh_sha1":                boshResource.SHA1,
-		"bpm_url":                  bpmResource.URL,
-		"bpm_version":              bpmResource.Version,
-		"bpm_sha1":                 bpmResource.SHA1,
-		"tags":                     tags,
-	}
-	manifest, err = yaml.Interpolate(manifest, "", vars)
-	if err != nil {
-		return err
-	}
-	statePath, uploadState, err := writeToDisk(store, stateFilename)
-	if err != nil {
-		return err
-	}
-	defer uploadState()
-	varsPath, uploadVars, err := writeToDisk(store, varsFilename)
-	if err != nil {
-		return err
-	}
-	defer uploadVars()
-	manifestPath, err := writeTempFile([]byte(manifest))
-	if err != nil {
-		return err
-	}
-	defer os.Remove(manifestPath)
-
-	cmd := c.execCmd(c.boshPath, action, "--state="+statePath, "--vars-store="+varsPath, manifestPath)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	return cmd.Run()
-}
-
 // UpdateCloudConfig generates cloud config from template and use it to update bosh cloud config
 func (c *CLI) UpdateCloudConfig(config IAASEnvironment, ip, password, ca string) error {
 	var cloudConfig string
@@ -186,7 +134,55 @@ func (c *CLI) Recreate(config IAASEnvironment, ip, password, ca string) error {
 }
 
 func (c *CLI) CreateEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error {
-	return c.xEnv("create-env", store, config, password, cert, key, ca, tags)
+	const stateFilename = "state.json"
+	const varsFilename = "vars.yaml"
+
+	manifest, err := config.ConfigureDirectorManifestCPI()
+	if err != nil {
+		return err
+	}
+
+	boshResource := resource.Get(resource.BOSHRelease)
+	bpmResource := resource.Get(resource.BPMRelease)
+
+	vars := map[string]interface{}{
+		"director_name":            "bosh",
+		"admin_password":           password,
+		"director_ssl.certificate": cert,
+		"director_ssl.private_key": key,
+		"director_ssl.ca":          ca,
+		"bosh_url":                 boshResource.URL,
+		"bosh_version":             boshResource.Version,
+		"bosh_sha1":                boshResource.SHA1,
+		"bpm_url":                  bpmResource.URL,
+		"bpm_version":              bpmResource.Version,
+		"bpm_sha1":                 bpmResource.SHA1,
+		"tags":                     tags,
+	}
+	manifest, err = yaml.Interpolate(manifest, "", vars)
+	if err != nil {
+		return err
+	}
+	statePath, uploadState, err := writeToDisk(store, stateFilename)
+	if err != nil {
+		return err
+	}
+	defer uploadState()
+	varsPath, uploadVars, err := writeToDisk(store, varsFilename)
+	if err != nil {
+		return err
+	}
+	defer uploadVars()
+	manifestPath, err := writeTempFile([]byte(manifest))
+	if err != nil {
+		return err
+	}
+	defer os.Remove(manifestPath)
+
+	cmd := c.execCmd(c.boshPath, "create-env", "--state="+statePath, "--vars-store="+varsPath, manifestPath)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+	return cmd.Run()
 }
 
 // RunAuthenticatedCommand runs the bosh command `action` with flags `flags`
