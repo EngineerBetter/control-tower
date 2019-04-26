@@ -39,7 +39,7 @@ control-tower deploy \
 |:-|:-|:-|
 |`--workers value`|Number of Concourse worker instances to deploy (default: 1)|`WORKERS`|
 |`--worker-type`|Specify a worker type for aws (m5 or m4) (default: "m4")|`WORKER_TYPE`|
-|`--worker-size value`|Size of Concourse workers. Can be medium, large, xlarge, 2xlarge, 4xlarge, 10xlarge, 12xlarge, 16xlarge or 24xlarge depending on the worker-type (default: "xlarge")|`WORKER_SIZE`|
+|`--worker-size value`|Size of Concourse workers. See table below for sizes<br>(default: "xlarge")|`WORKER_SIZE`|
 
 **`worker-type` is an AWS-specific option**
 
@@ -61,7 +61,7 @@ control-tower deploy \
 
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
-|`--web-size value`|Size of Concourse web node. Can be small, medium, large, xlarge, 2xlarge (default: "small")|`WEB_SIZE`|
+|`--web-size value`|Size of Concourse web node. See table below for sizes<br>(default: "small")|`WEB_SIZE`|
 
 |--web-size|AWS Instance type|GCP Instance type|
 |:-|:-|:-|
@@ -75,7 +75,7 @@ control-tower deploy \
 
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
-|`--db-size value`|Size of Concourse Postgres instance. Can be small, medium, large, xlarge, 2xlarge, or 4xlarge (default: "small")|`DB_SIZE`|
+|`--db-size value`|Size of Concourse Postgres instance. See table below for sizes<br>(default: "small")|`DB_SIZE`|
 
 >Note that when changing the database size on an existing control-tower deployment, the SQL instance will scaled by terraform resulting in approximately 3 minutes of downtime.
 
@@ -92,7 +92,7 @@ control-tower deploy \
 
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
-|`--allow-ips value`|Comma separated list of IP addresses or CIDR ranges to allow access to (default: "0.0.0.0/0")|`ALLOW_IPS`|
+|`--allow-ips value`|Comma separated list of IP addresses or CIDR ranges to allow access to<br>(default: "0.0.0.0/0")|`ALLOW_IPS`|
 
 > `allow-ips` governs what can access Concourse but not what can access the control plane (i.e. the BOSH director). The control plane will be restricted to the IP `control-tower deploy` was run from.
 
@@ -114,7 +114,7 @@ control-tower deploy \
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
 |`--spot=value`|Use spot instances for workers. Can be true/false. Default is true|`SPOT`|
-|`--preemptible=value` Use preemptible instances for workers. Can be true/false. Default is true|`PREEMPTIBLE`|
+|`--preemptible=value`|Use preemptible instances for workers. Can be true/false. Default is true|`PREEMPTIBLE`|
 
 > Control Tower uses spot/preemptible instances for workers by default as a cost saving measure. Users requiring lower risk may switch this feature off by setting --spot=false.
 
@@ -145,10 +145,10 @@ If any of the following 5 flags is set, all the required ones from this group ne
 
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
-|`--vpc-network-range value`|Customise the VPC network CIDR to deploy into (required for AWS)|`VPC_NETWORK_RANGE`|
-|`--public-subnet-range value`|Customise public network CIDR (if IAAS is AWS must be within --vpc-network-range) (required)|`PUBLIC_SUBNET_RANGE`|
-|`--private-subnet-range value`|Customise private network CIDR (if IAAS is AWS must be within --vpc-network-range) (required)|`PRIVATE_SUBNET_RANGE`|
-|`--rds-subnet-range1 value`|Customise first rds network CIDR (must be within --vpc-network-range) (required for AWS)|`RDS_SUBNET_RANGE1`|
-|`--rds-subnet-range2 value`|Customise second rds network CIDR (must be within --vpc-network-range) (required for AWS)|`RDS_SUBNET_RANGE2`|
+|`--vpc-network-range value`|Customise the VPC network CIDR to deploy into<br>(required for AWS)|`VPC_NETWORK_RANGE`|
+|`--public-subnet-range value`|Customise public network CIDR (if IAAS is AWS must be within --vpc-network-range)<br>(required)|`PUBLIC_SUBNET_RANGE`|
+|`--private-subnet-range value`|Customise private network CIDR (if IAAS is AWS must be within --vpc-network-range)<br>(required)|`PRIVATE_SUBNET_RANGE`|
+|`--rds-subnet-range1 value`|Customise first rds network CIDR (must be within --vpc-network-range)<br>(required for AWS)|`RDS_SUBNET_RANGE1`|
+|`--rds-subnet-range2 value`|Customise second rds network CIDR (must be within --vpc-network-range)<br>(required for AWS)|`RDS_SUBNET_RANGE2`|
 
 > All the ranges above should be in the CIDR format of IPv4/Mask. The sizes can vary as long as `vpc-network-range` is big enough to contain all others (in case IAAS is AWS). The smallest CIDR for `public` and `private` subnets is a /28. The smallest CIDR for `rds1` and `rds2` subnets is a /29

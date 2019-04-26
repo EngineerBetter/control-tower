@@ -11,7 +11,7 @@ All flags are optional
 |**Flag**|**Description**
 |:-|:-|
 |`--renew-nats-cert`|Rotate the NATS certificate on the director||
-|`--stage value`|Specify a specific stage at which to start the NATS certificate renewal process. If not specified, the stage will be determined automatically.||
+|`--stage value`|Specify a specific stage at which to start the NATS certificate renewal process.<br>If not specified, the stage will be determined automatically.||
 
 > Note that the NATS certificate [is hardcoded to expire after 1 year](https://github.com/cloudfoundry/bosh-cli/blob/master/vendor/github.com/cloudfoundry/config-server/types/certificate_generator.go#L171). This command follows [the istructions on bosh.io](https://bosh.io/docs/nats-ca-rotation/) to rotate this certificate. **This operation _will_ cause downtime on your Concourse** as it performs multiple full recreates.
 

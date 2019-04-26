@@ -75,6 +75,6 @@ You can keep up to date on Control Tower announcements by reading the [EngineerB
 |Updating|[Updating](docs/updating.md)|
 |Metrics|[Metrics](docs/metrics.md)|
 |Credential Management|[Credhub](docs/credhub.md)|
-|How much will this cost?|[Cost Estimation](cost.md)|
+|How much will this cost?|[Cost Estimation](docs/cost.md)|
 |What is it doing? - deep dive|[Walkthrough](docs/walkthrough.md)|
 |Want to Contribute?|[Development](docs/development.md)|
