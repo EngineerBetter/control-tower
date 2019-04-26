@@ -89,6 +89,7 @@ resources:
     private_key: ((github_private_key))
     ignore_paths:
     - README.md
+    - docs/
 
 - name: control-tower-ops
   type: git
