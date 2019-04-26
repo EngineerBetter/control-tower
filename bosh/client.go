@@ -51,7 +51,7 @@ func New(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.
 		return nil, err
 	}
 
-	boshCLIPath, err := resource.BOSHCLIPath()
+	boshCLIPath, err := resource.DownloadBOSHCLI()
 	if err != nil {
 		return nil, fmt.Errorf("failed to determine BOSH CLI path: [%v]", err)
 	}

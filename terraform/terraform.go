@@ -67,7 +67,7 @@ func Path(path string) Option {
 // DownloadTerraform returns the dowloaded CLI path Option
 func DownloadTerraform() Option {
 	return func(c *CLI) error {
-		path, err := resource.TerraformCLIPath()
+		path, err := resource.DownloadTerraformCLI()
 		c.Path = path
 		return err
 	}

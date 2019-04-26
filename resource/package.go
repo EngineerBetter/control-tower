@@ -124,14 +124,14 @@ func (p binaryPaths) path() string {
 	}
 }
 
-// BOSHCLIPath returns the path of the downloaded bosh-cli
-func BOSHCLIPath() (string, error) {
+// DownloadBOSHCLI returns the path of the downloaded bosh-cli
+func DownloadBOSHCLI() (string, error) {
 	p := binaries["bosh-cli"].path()
 	return bincache.Download(p)
 }
 
-// TerraformCLIPath returns the path of the downloaded terraform-cli
-func TerraformCLIPath() (string, error) {
+// DownloadTerraformCLI returns the path of the downloaded terraform-cli
+func DownloadTerraformCLI() (string, error) {
 	p := binaries["terraform"].path()
 	return bincache.Download(p)
 }
