@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/EngineerBetter/control-tower/resource"
@@ -185,11 +186,11 @@ func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, 
 	if err != nil {
 		return &CreateEnvFiles{}, err
 	}
-	statePath, err := writeTempFile(createEnvFiles.StateFileContents)
+	statePath, err := writeNonEmptyTempFile(createEnvFiles.StateFileContents, "state.json")
 	if err != nil {
 		return &CreateEnvFiles{}, err
 	}
-	varsPath, err := writeTempFile(createEnvFiles.VarsFileContents)
+	varsPath, err := writeNonEmptyTempFile(createEnvFiles.VarsFileContents, "vars.yml")
 	if err != nil {
 		return &CreateEnvFiles{}, err
 	}
@@ -207,11 +208,11 @@ func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, 
 
 	stateFileContents, err1 := ioutil.ReadFile(statePath)
 	if err1 != nil {
-		return &CreateEnvFiles{}, fmt.Errorf("Error loading state file after create-env: [%v]", err)
+		return &CreateEnvFiles{}, fmt.Errorf("Error loading state file after create-env: [%v]", err1)
 	}
 	varsFileContents, err1 := ioutil.ReadFile(varsPath)
 	if err1 != nil {
-		return &CreateEnvFiles{}, fmt.Errorf("Error loading vars file after create-env: [%v]", err)
+		return &CreateEnvFiles{}, fmt.Errorf("Error loading vars file after create-env: [%v]", err1)
 	}
 
 	createEnvFiles = &CreateEnvFiles{
@@ -275,6 +276,15 @@ func (c *CLI) detachedBoshCommand(stdout io.Writer, flags ...string) error {
 	}
 
 	return fmt.Errorf("Didn't detect successful task start in BOSH comand: bosh-cli %s", strings.Join(flags, " "))
+}
+
+// If data is empty, return a path to where one could put a temp file
+func writeNonEmptyTempFile(data []byte, filename string) (string, error) {
+	if len(data) == 0 && filename != "" {
+		return filepath.Join(os.TempDir(), filename), nil
+	}
+
+	return writeTempFile(data)
 }
 
 func writeTempFile(data []byte) (string, error) {
