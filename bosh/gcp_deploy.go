@@ -14,7 +14,7 @@ func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, new
 		return state, creds, err
 	}
 
-	state, creds, err = client.createEnv(client.boshCLI, state, creds, "")
+	state, creds, err = client.CreateEnv(state, creds, "")
 	if err != nil {
 		return state, creds, err
 	}
@@ -39,21 +39,6 @@ func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, new
 
 // CreateEnv exposes bosh create-env functionality
 func (client *GCPClient) CreateEnv(state, creds []byte, customOps string) (newState, newCreds []byte, err error) {
-	return client.createEnv(client.boshCLI, state, creds, customOps)
-}
-
-// Recreate exposes BOSH recreate
-func (client *GCPClient) Recreate() error {
-	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
-	if err != nil {
-		return err
-	}
-	return client.boshCLI.Recreate(boshcli.GCPEnvironment{
-		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
-}
-
-func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, customOps string) (newState, newCreds []byte, err error) {
 	tags, err := splitTags(client.config.GetTags())
 	if err != nil {
 		return state, creds, err
@@ -104,7 +89,7 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 	if err1 != nil {
 		return state, creds, err1
 	}
-	err1 = bosh.CreateEnv(store, boshcli.GCPEnvironment{
+	err1 = client.boshCLI.CreateEnv(store, boshcli.GCPEnvironment{
 		InternalCIDR:       client.config.GetPublicCIDR(),
 		InternalGW:         internalGateway.String(),
 		InternalIP:         directorInternalIP.String(),
@@ -125,6 +110,17 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		return store["state.json"], store["vars.yaml"], err1
 	}
 	return store["state.json"], store["vars.yaml"], err
+}
+
+// Recreate exposes BOSH recreate
+func (client *GCPClient) Recreate() error {
+	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
+	if err != nil {
+		return err
+	}
+	return client.boshCLI.Recreate(boshcli.GCPEnvironment{
+		ExternalIP: directorPublicIP,
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 
 // Locks implements locks for GCP client
