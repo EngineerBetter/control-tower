@@ -59,8 +59,8 @@ var allOperations = resource.AWSCPIOps + resource.ExternalIPOps + resource.AWSDi
 // ConfigureDirectorManifestCPI interpolates all the Environment parameters and
 // required release versions into ready to use Director manifest
 func (e Environment) ConfigureDirectorManifestCPI() (string, error) {
-	cpiResource := resource.Get(resource.AWSCPI)
-	stemcellResource := resource.Get(resource.AWSStemcell)
+	cpiResource := resource.AWSCPI()
+	stemcellResource := resource.AWSStemcell()
 
 	return yaml.Interpolate(resource.DirectorManifest, allOperations+e.CustomOperations, map[string]interface{}{
 		"cpi_url":                  cpiResource.URL,

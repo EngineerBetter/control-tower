@@ -142,8 +142,8 @@ func (c *CLI) CreateEnv(store Store, config IAASEnvironment, password, cert, key
 		return err
 	}
 
-	boshResource := resource.Get(resource.BOSHRelease)
-	bpmResource := resource.Get(resource.BPMRelease)
+	boshResource := resource.BOSHRelease()
+	bpmResource := resource.BPMRelease()
 
 	vars := map[string]interface{}{
 		"director_name":            "bosh",

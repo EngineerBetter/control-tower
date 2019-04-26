@@ -19,22 +19,6 @@ type Resource struct {
 
 var resources map[string]Resource
 
-// ID defines the name of a resource in a safer way
-type ID struct {
-	name string
-}
-
-var (
-	// AWSCPI statically defines cpi string
-	AWSCPI = ID{"cpi"}
-	// AWSStemcell statically defines stemcell string
-	AWSStemcell = ID{"stemcell"}
-	// BOSHRelease statically defines bosh string
-	BOSHRelease = ID{"bosh"}
-	// BPMRelease statically defines bpm string
-	BPMRelease = ID{"bpm"}
-)
-
 var (
 	// DirectorManifest statically defines director-manifest.yml contents
 	DirectorManifest = mustAssetString("assets/manifest.yml")
@@ -86,13 +70,28 @@ func mustAssetString(name string) string {
 	return string(file.MustAsset(name))
 }
 
-// Get returns an Resource in a safe way
-func Get(id ID) Resource {
-	r, ok := resources[id.name]
+func get(name string) Resource {
+	r, ok := resources[name]
 	if !ok {
-		panic("resource " + id.name + " not found")
+		panic("resource " + name + " not found")
 	}
 	return r
+}
+
+func AWSCPI() Resource {
+	return get("cpi")
+}
+
+func AWSStemcell() Resource {
+	return get("stemcell")
+}
+
+func BOSHRelease() Resource {
+	return get("bosh")
+}
+
+func BPMRelease() Resource {
+	return get("bpm")
 }
 
 func init() {
