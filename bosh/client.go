@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/EngineerBetter/control-tower/resource"
 	"io"
+	"os/exec"
 
 	"github.com/EngineerBetter/control-tower/iaas"
 
@@ -49,10 +51,12 @@ func New(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.
 		return nil, err
 	}
 
-	boshCLI, err := boshcli.New(boshcli.DownloadBOSH())
+	boshCLIPath, err := resource.BOSHCLIPath()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create boshCLI: [%v]", err)
+		return nil, fmt.Errorf("failed to determine BOSH CLI path: [%v]", err)
 	}
+
+	boshCLI := boshcli.New(boshCLIPath, exec.Command)
 
 	switch provider.IAAS() {
 	case iaas.AWS:

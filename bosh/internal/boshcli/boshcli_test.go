@@ -50,8 +50,7 @@ func (c mockIAASConfig) ConfigureConcourseStemcell() (string, error) {
 func TestCLI_CreateEnv(t *testing.T) {
 	e := fakeexec.New(t)
 	defer e.Finish()
-	c, err := boshcli.New(boshcli.FakeExec(e.Cmd()))
-	require.NoError(t, err)
+	c := boshcli.New("bosh", e.Cmd())
 	store := make(mockStore)
 	config := mockIAASConfig{}
 	e.ExpectFunc(func(t testing.TB, command string, args ...string) {
@@ -62,7 +61,7 @@ func TestCLI_CreateEnv(t *testing.T) {
 		v := strings.TrimPrefix(args[2], "--vars-store=")
 		expectPathNotToExistButBeWriteable(t, v)
 	})
-	err = c.CreateEnv(store, config, "password", "cert", "key", "ca", map[string]string{})
+	err := c.CreateEnv(store, config, "password", "cert", "key", "ca", map[string]string{})
 	require.NoError(t, err)
 }
 
@@ -80,8 +79,7 @@ func expectPathNotToExistButBeWriteable(t testing.TB, path string) {
 func TestCLI_UpdateCloudConfig(t *testing.T) {
 	e := fakeexec.New(t)
 	defer e.Finish()
-	c, err := boshcli.New(boshcli.FakeExec(e.Cmd()))
-	require.NoError(t, err)
+	c := boshcli.New("bosh", e.Cmd())
 	config := mockIAASConfig{}
 	e.ExpectFunc(func(t testing.TB, command string, args ...string) {
 		require.Equal(t, "bosh", command)
@@ -93,15 +91,14 @@ func TestCLI_UpdateCloudConfig(t *testing.T) {
 		require.Equal(t, "password", args[8])
 		require.Equal(t, "update-cloud-config", args[9])
 	})
-	err = c.UpdateCloudConfig(config, "ip", "password", "ca")
+	err := c.UpdateCloudConfig(config, "ip", "password", "ca")
 	require.NoError(t, err)
 }
 
 func TestCLI_UploadConcourseStemcell(t *testing.T) {
 	e := fakeexec.New(t)
 	defer e.Finish()
-	c, err := boshcli.New(boshcli.FakeExec(e.Cmd()))
-	require.NoError(t, err)
+	c := boshcli.New("bosh", e.Cmd())
 	config := mockIAASConfig{}
 	e.ExpectFunc(func(t testing.TB, command string, args ...string) {
 		require.Equal(t, "bosh", command)
@@ -113,7 +110,7 @@ func TestCLI_UploadConcourseStemcell(t *testing.T) {
 		require.Equal(t, "password", args[8])
 		require.Equal(t, "upload-stemcell", args[9])
 	})
-	err = c.UploadConcourseStemcell(config, "ip", "password", "ca")
+	err := c.UploadConcourseStemcell(config, "ip", "password", "ca")
 	require.NoError(t, err)
 
 }

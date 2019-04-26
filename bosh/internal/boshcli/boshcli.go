@@ -31,30 +31,12 @@ type CLI struct {
 	boshPath string
 }
 
-// Option defines the arbitary element of Options for New
-type Option func(*CLI) error
-
-// DownloadBOSH returns the dowloaded boshcli path Option
-func DownloadBOSH() Option {
-	return func(c *CLI) error {
-		path, err := resource.BOSHCLIPath()
-		c.boshPath = path
-		return err
-	}
-}
-
 // New provides a new CLI
-func New(ops ...Option) (ICLI, error) {
-	c := &CLI{
-		execCmd:  exec.Command,
-		boshPath: "bosh",
+func New(boshPath string, execCmdFunc func(string, ...string) *exec.Cmd) ICLI {
+	return &CLI{
+		execCmd:  execCmdFunc,
+		boshPath: boshPath,
 	}
-	for _, op := range ops {
-		if err := op(c); err != nil {
-			return nil, err
-		}
-	}
-	return c, nil
 }
 
 // IAASEnvironment exposes ConfigureDirectorManifestCPI
