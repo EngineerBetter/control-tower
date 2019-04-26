@@ -34,14 +34,6 @@ type CLI struct {
 // Option defines the arbitary element of Options for New
 type Option func(*CLI) error
 
-// BOSHPath returns the path of the bosh-cli as an Option
-func BOSHPath(path string) Option {
-	return func(c *CLI) error {
-		c.boshPath = path
-		return nil
-	}
-}
-
 // DownloadBOSH returns the dowloaded boshcli path Option
 func DownloadBOSH() Option {
 	return func(c *CLI) error {
