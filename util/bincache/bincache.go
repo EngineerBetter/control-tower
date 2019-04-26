@@ -42,15 +42,6 @@ func Download(url string) (string, error) {
 
 	var closer io.ReadCloser
 
-	// if strings.HasSuffix(url, ".zip") {
-	// 	closer, err = handleZipFile(resp)
-	// 	if err != nil {
-	// 		return "", nil
-	// 	}
-	// } else {
-	// 	closer = resp.Body
-	// }
-
 	if isZip(url, resp) {
 		closer, err = handleZipFile(resp)
 		if err != nil {
