@@ -135,8 +135,8 @@ func (e Environment) ConfigureDirectorCloudConfig() (string, error) {
 	return string(cc), err
 }
 
-// ConfigureConcourseStemcell returns the stemcell location string for an AWS specific stemcell for the required concourse version
-func (e Environment) ConfigureConcourseStemcell() (string, error) {
+// ConcourseStemcellURL returns the stemcell location string for an AWS specific stemcell for the required concourse version
+func (e Environment) ConcourseStemcellURL() (string, error) {
 	var ops []struct {
 		Path  string
 		Value json.RawMessage

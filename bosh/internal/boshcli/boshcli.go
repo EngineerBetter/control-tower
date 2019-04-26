@@ -39,11 +39,10 @@ func New(boshPath string, execCmdFunc func(string, ...string) *exec.Cmd) ICLI {
 	}
 }
 
-// IAASEnvironment exposes ConfigureDirectorManifestCPI
 type IAASEnvironment interface {
 	ConfigureDirectorManifestCPI() (string, error)
 	ConfigureDirectorCloudConfig() (string, error)
-	ConfigureConcourseStemcell() (string, error)
+	ConcourseStemcellURL() (string, error)
 }
 
 type Store interface {
@@ -102,7 +101,7 @@ func (c *CLI) UploadConcourseStemcell(config IAASEnvironment, ip, password, ca s
 		err      error
 	)
 
-	stemcell, err = config.ConfigureConcourseStemcell()
+	stemcell, err = config.ConcourseStemcellURL()
 	if err != nil {
 		return err
 	}

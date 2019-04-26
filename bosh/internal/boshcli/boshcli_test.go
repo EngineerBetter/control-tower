@@ -43,7 +43,7 @@ func (c mockIAASConfig) ConfigureDirectorCloudConfig() (string, error) {
 	return "a Cloud Config", nil
 }
 
-func (c mockIAASConfig) ConfigureConcourseStemcell() (string, error) {
+func (c mockIAASConfig) ConcourseStemcellURL() (string, error) {
 	return "a Stemcell", nil
 }
 

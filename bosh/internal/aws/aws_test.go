@@ -358,14 +358,14 @@ func TestEnvironment_ConfigureConcourseStemcell(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			e := Environment{}
 			resource.AWSReleaseVersions = getStemcellFixture(tt.fixture)
-			got, err := e.ConfigureConcourseStemcell()
+			got, err := e.ConcourseStemcellURL()
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Environment.ConfigureConcourseStemcell() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Environment.ConcourseStemcellURL() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			if got != tt.want {
-				t.Errorf("Environment.ConfigureConcourseStemcell() = %v, want %v", got, tt.want)
+				t.Errorf("Environment.ConcourseStemcellURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}
