@@ -26,23 +26,6 @@ type FakeICLI struct {
 	createEnvReturnsOnCall map[int]struct {
 		result1 error
 	}
-	DeleteEnvStub        func(boshcli.Store, boshcli.IAASEnvironment, string, string, string, string, map[string]string) error
-	deleteEnvMutex       sync.RWMutex
-	deleteEnvArgsForCall []struct {
-		arg1 boshcli.Store
-		arg2 boshcli.IAASEnvironment
-		arg3 string
-		arg4 string
-		arg5 string
-		arg6 string
-		arg7 map[string]string
-	}
-	deleteEnvReturns struct {
-		result1 error
-	}
-	deleteEnvReturnsOnCall map[int]struct {
-		result1 error
-	}
 	LocksStub        func(boshcli.IAASEnvironment, string, string, string) ([]byte, error)
 	locksMutex       sync.RWMutex
 	locksArgsForCall []struct {
@@ -184,72 +167,6 @@ func (fake *FakeICLI) CreateEnvReturnsOnCall(i int, result1 error) {
 		})
 	}
 	fake.createEnvReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeICLI) DeleteEnv(arg1 boshcli.Store, arg2 boshcli.IAASEnvironment, arg3 string, arg4 string, arg5 string, arg6 string, arg7 map[string]string) error {
-	fake.deleteEnvMutex.Lock()
-	ret, specificReturn := fake.deleteEnvReturnsOnCall[len(fake.deleteEnvArgsForCall)]
-	fake.deleteEnvArgsForCall = append(fake.deleteEnvArgsForCall, struct {
-		arg1 boshcli.Store
-		arg2 boshcli.IAASEnvironment
-		arg3 string
-		arg4 string
-		arg5 string
-		arg6 string
-		arg7 map[string]string
-	}{arg1, arg2, arg3, arg4, arg5, arg6, arg7})
-	fake.recordInvocation("DeleteEnv", []interface{}{arg1, arg2, arg3, arg4, arg5, arg6, arg7})
-	fake.deleteEnvMutex.Unlock()
-	if fake.DeleteEnvStub != nil {
-		return fake.DeleteEnvStub(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.deleteEnvReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakeICLI) DeleteEnvCallCount() int {
-	fake.deleteEnvMutex.RLock()
-	defer fake.deleteEnvMutex.RUnlock()
-	return len(fake.deleteEnvArgsForCall)
-}
-
-func (fake *FakeICLI) DeleteEnvCalls(stub func(boshcli.Store, boshcli.IAASEnvironment, string, string, string, string, map[string]string) error) {
-	fake.deleteEnvMutex.Lock()
-	defer fake.deleteEnvMutex.Unlock()
-	fake.DeleteEnvStub = stub
-}
-
-func (fake *FakeICLI) DeleteEnvArgsForCall(i int) (boshcli.Store, boshcli.IAASEnvironment, string, string, string, string, map[string]string) {
-	fake.deleteEnvMutex.RLock()
-	defer fake.deleteEnvMutex.RUnlock()
-	argsForCall := fake.deleteEnvArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5, argsForCall.arg6, argsForCall.arg7
-}
-
-func (fake *FakeICLI) DeleteEnvReturns(result1 error) {
-	fake.deleteEnvMutex.Lock()
-	defer fake.deleteEnvMutex.Unlock()
-	fake.DeleteEnvStub = nil
-	fake.deleteEnvReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeICLI) DeleteEnvReturnsOnCall(i int, result1 error) {
-	fake.deleteEnvMutex.Lock()
-	defer fake.deleteEnvMutex.Unlock()
-	fake.DeleteEnvStub = nil
-	if fake.deleteEnvReturnsOnCall == nil {
-		fake.deleteEnvReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.deleteEnvReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -580,8 +497,6 @@ func (fake *FakeICLI) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createEnvMutex.RLock()
 	defer fake.createEnvMutex.RUnlock()
-	fake.deleteEnvMutex.RLock()
-	defer fake.deleteEnvMutex.RUnlock()
 	fake.locksMutex.RLock()
 	defer fake.locksMutex.RUnlock()
 	fake.recreateMutex.RLock()

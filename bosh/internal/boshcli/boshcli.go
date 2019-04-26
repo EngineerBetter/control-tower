@@ -18,7 +18,6 @@ import (
 //go:generate counterfeiter . ICLI
 type ICLI interface {
 	CreateEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error
-	DeleteEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error
 	RunAuthenticatedCommand(action, ip, password, ca string, detach bool, stdout io.Writer, flags ...string) error
 	Locks(config IAASEnvironment, ip, password, ca string) ([]byte, error)
 	Recreate(config IAASEnvironment, ip, password, ca string) error
@@ -213,12 +212,7 @@ func (c *CLI) Recreate(config IAASEnvironment, ip, password, ca string) error {
 	return cmd.Run()
 }
 
-func (c *CLI) DeleteEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error {
-	return c.xEnv("delete-env", store, config, password, cert, key, ca, tags)
-}
-
 func (c *CLI) CreateEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error {
-
 	return c.xEnv("create-env", store, config, password, cert, key, ca, tags)
 }
 
