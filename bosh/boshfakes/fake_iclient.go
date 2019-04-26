@@ -35,19 +35,6 @@ type FakeIClient struct {
 		result2 []byte
 		result3 error
 	}
-	DeleteStub        func([]byte) ([]byte, error)
-	deleteMutex       sync.RWMutex
-	deleteArgsForCall []struct {
-		arg1 []byte
-	}
-	deleteReturns struct {
-		result1 []byte
-		result2 error
-	}
-	deleteReturnsOnCall map[int]struct {
-		result1 []byte
-		result2 error
-	}
 	DeployStub        func([]byte, []byte, bool) ([]byte, []byte, error)
 	deployMutex       sync.RWMutex
 	deployArgsForCall []struct {
@@ -231,74 +218,6 @@ func (fake *FakeIClient) CreateEnvReturnsOnCall(i int, result1 []byte, result2 [
 		result2 []byte
 		result3 error
 	}{result1, result2, result3}
-}
-
-func (fake *FakeIClient) Delete(arg1 []byte) ([]byte, error) {
-	var arg1Copy []byte
-	if arg1 != nil {
-		arg1Copy = make([]byte, len(arg1))
-		copy(arg1Copy, arg1)
-	}
-	fake.deleteMutex.Lock()
-	ret, specificReturn := fake.deleteReturnsOnCall[len(fake.deleteArgsForCall)]
-	fake.deleteArgsForCall = append(fake.deleteArgsForCall, struct {
-		arg1 []byte
-	}{arg1Copy})
-	fake.recordInvocation("Delete", []interface{}{arg1Copy})
-	fake.deleteMutex.Unlock()
-	if fake.DeleteStub != nil {
-		return fake.DeleteStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	fakeReturns := fake.deleteReturns
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeIClient) DeleteCallCount() int {
-	fake.deleteMutex.RLock()
-	defer fake.deleteMutex.RUnlock()
-	return len(fake.deleteArgsForCall)
-}
-
-func (fake *FakeIClient) DeleteCalls(stub func([]byte) ([]byte, error)) {
-	fake.deleteMutex.Lock()
-	defer fake.deleteMutex.Unlock()
-	fake.DeleteStub = stub
-}
-
-func (fake *FakeIClient) DeleteArgsForCall(i int) []byte {
-	fake.deleteMutex.RLock()
-	defer fake.deleteMutex.RUnlock()
-	argsForCall := fake.deleteArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeIClient) DeleteReturns(result1 []byte, result2 error) {
-	fake.deleteMutex.Lock()
-	defer fake.deleteMutex.Unlock()
-	fake.DeleteStub = nil
-	fake.deleteReturns = struct {
-		result1 []byte
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeIClient) DeleteReturnsOnCall(i int, result1 []byte, result2 error) {
-	fake.deleteMutex.Lock()
-	defer fake.deleteMutex.Unlock()
-	fake.DeleteStub = nil
-	if fake.deleteReturnsOnCall == nil {
-		fake.deleteReturnsOnCall = make(map[int]struct {
-			result1 []byte
-			result2 error
-		})
-	}
-	fake.deleteReturnsOnCall[i] = struct {
-		result1 []byte
-		result2 error
-	}{result1, result2}
 }
 
 func (fake *FakeIClient) Deploy(arg1 []byte, arg2 []byte, arg3 bool) ([]byte, []byte, error) {
@@ -548,8 +467,6 @@ func (fake *FakeIClient) Invocations() map[string][][]interface{} {
 	defer fake.cleanupMutex.RUnlock()
 	fake.createEnvMutex.RLock()
 	defer fake.createEnvMutex.RUnlock()
-	fake.deleteMutex.RLock()
-	defer fake.deleteMutex.RUnlock()
 	fake.deployMutex.RLock()
 	defer fake.deployMutex.RUnlock()
 	fake.instancesMutex.RLock()

@@ -11,7 +11,7 @@ import (
 
 // Deploy implements deploy for AWS client
 func (client *AWSClient) Deploy(state, creds []byte, detach bool) (newState, newCreds []byte, err error) {
-	state, creds, err = client.createEnv(client.boshCLI, state, creds, "")
+	state, creds, err = client.CreateEnv(state, creds, "")
 	if err != nil {
 		return state, creds, err
 	}
@@ -48,21 +48,6 @@ func (client *AWSClient) Locks() ([]byte, error) {
 
 // CreateEnv exposes bosh create-env functionality
 func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newState, newCreds []byte, err error) {
-	return client.createEnv(client.boshCLI, state, creds, customOps)
-}
-
-// Recreate exposes BOSH recreate
-func (client *AWSClient) Recreate() error {
-	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
-	if err != nil {
-		return err
-	}
-	return client.boshCLI.Recreate(aws.Environment{
-		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
-}
-
-func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, customOps string) (newState, newCreds []byte, err error) {
 	tags, err := splitTags(client.config.GetTags())
 	if err != nil {
 		return state, creds, err
@@ -146,7 +131,7 @@ func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		return state, creds, err1
 	}
 
-	err1 = bosh.CreateEnv(store, aws.Environment{
+	err1 = client.boshCLI.CreateEnv(store, aws.Environment{
 		InternalCIDR:    client.config.GetPublicCIDR(),
 		InternalGateway: internalGateway.String(),
 		InternalIP:      directorInternalIP.String(),
@@ -182,6 +167,17 @@ func (client *AWSClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 		return store["state.json"], store["vars.yaml"], err1
 	}
 	return store["state.json"], store["vars.yaml"], err
+}
+
+// Recreate exposes BOSH recreate
+func (client *AWSClient) Recreate() error {
+	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
+	if err != nil {
+		return err
+	}
+	return client.boshCLI.Recreate(aws.Environment{
+		ExternalIP: directorPublicIP,
+	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 
 func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {

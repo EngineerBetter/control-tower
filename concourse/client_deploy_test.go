@@ -32,7 +32,6 @@ var _ = Describe("client", func() {
 	var certGenerationActions []string
 	var stdout *gbytes.Buffer
 	var stderr *gbytes.Buffer
-	var deleteBoshDirectorError error
 	var args *deploy.Args
 	var configInBucket config.Config
 	var terraformOutputs terraform.AWSOutputs
@@ -145,7 +144,6 @@ var _ = Describe("client", func() {
 			VPCID:                    terraform.MetadataStringValue{Value: "vpc-112233"},
 		}
 
-		deleteBoshDirectorError = nil
 		certGenerationActions = []string{}
 
 		// Initial config in bucket from an existing deployment
@@ -229,7 +227,6 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		boshClientFactory := func(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (bosh.IClient, error) {
 			boshClient = &boshfakes.FakeIClient{}
 			boshClient.DeployReturns(directorStateFixture, directorCredsFixture, nil)
-			boshClient.DeleteReturns(nil, deleteBoshDirectorError)
 			return boshClient, nil
 		}
 

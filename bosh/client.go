@@ -25,7 +25,6 @@ const CredsFilename = "director-creds.yml"
 // IClient is a client for performing bosh-init commands
 type IClient interface {
 	Deploy([]byte, []byte, bool) ([]byte, []byte, error)
-	Delete([]byte) ([]byte, error)
 	Cleanup() error
 	Instances() ([]Instance, error)
 	CreateEnv([]byte, []byte, string) ([]byte, []byte, error)

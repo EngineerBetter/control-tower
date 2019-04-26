@@ -33,7 +33,6 @@ var _ = Describe("client", func() {
 	var actions []string
 	var stdout *gbytes.Buffer
 	var stderr *gbytes.Buffer
-	var deleteBoshDirectorError error
 	var args *deploy.Args
 	var configInBucket, configAfterLoad, configAfterCreateEnv config.Config
 	var ipChecker func() (string, error)
@@ -176,7 +175,6 @@ var _ = Describe("client", func() {
 			VPCID:                    terraform.MetadataStringValue{Value: "vpc-112233"},
 		}
 
-		deleteBoshDirectorError = nil
 		actions = []string{}
 		configInBucket = config.Config{
 			PublicKey: "example-public-key",
@@ -252,10 +250,6 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 					actions = append(actions, "deploying director")
 				}
 				return directorStateFixture, directorCredsFixture, nil
-			}
-			boshClient.DeleteStub = func([]byte) ([]byte, error) {
-				actions = append(actions, "deleting director")
-				return nil, deleteBoshDirectorError
 			}
 			boshClient.CleanupStub = func() error {
 				actions = append(actions, "cleaning up bosh init")
@@ -351,18 +345,6 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			Expect(err).ToNot(HaveOccurred())
 
 			Eventually(stdout).Should(gbytes.Say("DESTROY SUCCESSFUL"))
-		})
-
-		Context("When there is an error deleting the bosh director", func() {
-			BeforeEach(func() {
-				deleteBoshDirectorError = errors.New("some error")
-			})
-
-			It("Continues the error", func() {
-				client := buildClient()
-				err := client.Destroy()
-				Expect(err).ToNot(HaveOccurred())
-			})
 		})
 	})
 
