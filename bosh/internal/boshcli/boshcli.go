@@ -46,7 +46,6 @@ type IAASEnvironment interface {
 	ConfigureConcourseStemcell() (string, error)
 }
 
-// Store exposes its methods
 type Store interface {
 	Set(key string, value []byte) error
 	// Get must return a zero length byte slice and a nil error when the key is not present in the store
