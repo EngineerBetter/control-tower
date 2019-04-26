@@ -26,17 +26,6 @@ func vars(vars map[string]interface{}) []string {
 	return x
 }
 
-type temporaryStore map[string][]byte
-
-func (s temporaryStore) Set(key string, value []byte) error {
-	s[key] = value
-	return nil
-}
-
-func (s temporaryStore) Get(key string) ([]byte, error) {
-	return s[key], nil
-}
-
 func splitTags(ts []string) (map[string]string, error) {
 	m := make(map[string]string)
 	for _, t := range ts {

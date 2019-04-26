@@ -9,10 +9,10 @@ import (
 )
 
 type FakeICLI struct {
-	CreateEnvStub        func(boshcli.Store, boshcli.IAASEnvironment, string, string, string, string, map[string]string) error
+	CreateEnvStub        func(*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, string, string, string, map[string]string) (*boshcli.CreateEnvFiles, error)
 	createEnvMutex       sync.RWMutex
 	createEnvArgsForCall []struct {
-		arg1 boshcli.Store
+		arg1 *boshcli.CreateEnvFiles
 		arg2 boshcli.IAASEnvironment
 		arg3 string
 		arg4 string
@@ -21,10 +21,12 @@ type FakeICLI struct {
 		arg7 map[string]string
 	}
 	createEnvReturns struct {
-		result1 error
+		result1 *boshcli.CreateEnvFiles
+		result2 error
 	}
 	createEnvReturnsOnCall map[int]struct {
-		result1 error
+		result1 *boshcli.CreateEnvFiles
+		result2 error
 	}
 	LocksStub        func(boshcli.IAASEnvironment, string, string, string) ([]byte, error)
 	locksMutex       sync.RWMutex
@@ -105,11 +107,11 @@ type FakeICLI struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeICLI) CreateEnv(arg1 boshcli.Store, arg2 boshcli.IAASEnvironment, arg3 string, arg4 string, arg5 string, arg6 string, arg7 map[string]string) error {
+func (fake *FakeICLI) CreateEnv(arg1 *boshcli.CreateEnvFiles, arg2 boshcli.IAASEnvironment, arg3 string, arg4 string, arg5 string, arg6 string, arg7 map[string]string) (*boshcli.CreateEnvFiles, error) {
 	fake.createEnvMutex.Lock()
 	ret, specificReturn := fake.createEnvReturnsOnCall[len(fake.createEnvArgsForCall)]
 	fake.createEnvArgsForCall = append(fake.createEnvArgsForCall, struct {
-		arg1 boshcli.Store
+		arg1 *boshcli.CreateEnvFiles
 		arg2 boshcli.IAASEnvironment
 		arg3 string
 		arg4 string
@@ -123,10 +125,10 @@ func (fake *FakeICLI) CreateEnv(arg1 boshcli.Store, arg2 boshcli.IAASEnvironment
 		return fake.CreateEnvStub(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 	}
 	if specificReturn {
-		return ret.result1
+		return ret.result1, ret.result2
 	}
 	fakeReturns := fake.createEnvReturns
-	return fakeReturns.result1
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeICLI) CreateEnvCallCount() int {
@@ -135,40 +137,43 @@ func (fake *FakeICLI) CreateEnvCallCount() int {
 	return len(fake.createEnvArgsForCall)
 }
 
-func (fake *FakeICLI) CreateEnvCalls(stub func(boshcli.Store, boshcli.IAASEnvironment, string, string, string, string, map[string]string) error) {
+func (fake *FakeICLI) CreateEnvCalls(stub func(*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, string, string, string, map[string]string) (*boshcli.CreateEnvFiles, error)) {
 	fake.createEnvMutex.Lock()
 	defer fake.createEnvMutex.Unlock()
 	fake.CreateEnvStub = stub
 }
 
-func (fake *FakeICLI) CreateEnvArgsForCall(i int) (boshcli.Store, boshcli.IAASEnvironment, string, string, string, string, map[string]string) {
+func (fake *FakeICLI) CreateEnvArgsForCall(i int) (*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, string, string, string, map[string]string) {
 	fake.createEnvMutex.RLock()
 	defer fake.createEnvMutex.RUnlock()
 	argsForCall := fake.createEnvArgsForCall[i]
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5, argsForCall.arg6, argsForCall.arg7
 }
 
-func (fake *FakeICLI) CreateEnvReturns(result1 error) {
+func (fake *FakeICLI) CreateEnvReturns(result1 *boshcli.CreateEnvFiles, result2 error) {
 	fake.createEnvMutex.Lock()
 	defer fake.createEnvMutex.Unlock()
 	fake.CreateEnvStub = nil
 	fake.createEnvReturns = struct {
-		result1 error
-	}{result1}
+		result1 *boshcli.CreateEnvFiles
+		result2 error
+	}{result1, result2}
 }
 
-func (fake *FakeICLI) CreateEnvReturnsOnCall(i int, result1 error) {
+func (fake *FakeICLI) CreateEnvReturnsOnCall(i int, result1 *boshcli.CreateEnvFiles, result2 error) {
 	fake.createEnvMutex.Lock()
 	defer fake.createEnvMutex.Unlock()
 	fake.CreateEnvStub = nil
 	if fake.createEnvReturnsOnCall == nil {
 		fake.createEnvReturnsOnCall = make(map[int]struct {
-			result1 error
+			result1 *boshcli.CreateEnvFiles
+			result2 error
 		})
 	}
 	fake.createEnvReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
+		result1 *boshcli.CreateEnvFiles
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeICLI) Locks(arg1 boshcli.IAASEnvironment, arg2 string, arg3 string, arg4 string) ([]byte, error) {

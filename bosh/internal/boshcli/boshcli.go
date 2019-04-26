@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/EngineerBetter/control-tower/resource"
@@ -19,12 +18,17 @@ import (
 
 //go:generate counterfeiter . ICLI
 type ICLI interface {
-	CreateEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error
+	CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) (*CreateEnvFiles, error)
 	RunAuthenticatedCommand(action, ip, password, ca string, detach bool, stdout io.Writer, flags ...string) error
 	Locks(config IAASEnvironment, ip, password, ca string) ([]byte, error)
 	Recreate(config IAASEnvironment, ip, password, ca string) error
 	UpdateCloudConfig(config IAASEnvironment, ip, password, ca string) error
 	UploadConcourseStemcell(config IAASEnvironment, ip, password, ca string) error
+}
+
+type CreateEnvFiles struct {
+	StateFileContents []byte
+	VarsFileContents  []byte
 }
 
 // CLI struct holds the abstraction of execCmd
@@ -71,12 +75,6 @@ func getStemcellVersionFromOpsFile(releaseVersionsFile string) (string, error) {
 	}
 
 	return version, nil
-}
-
-type Store interface {
-	Set(key string, value []byte) error
-	// Get must return a zero length byte slice and a nil error when the key is not present in the store
-	Get(string) ([]byte, error)
 }
 
 // UpdateCloudConfig generates cloud config from template and use it to update bosh cloud config
@@ -160,13 +158,10 @@ func (c *CLI) Recreate(config IAASEnvironment, ip, password, ca string) error {
 	return cmd.Run()
 }
 
-func (c *CLI) CreateEnv(store Store, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) error {
-	const stateFilename = "state.json"
-	const varsFilename = "vars.yaml"
-
+func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) (*CreateEnvFiles, error) {
 	manifest, err := config.ConfigureDirectorManifestCPI()
 	if err != nil {
-		return err
+		return &CreateEnvFiles{}, err
 	}
 
 	boshResource := resource.BOSHRelease()
@@ -188,26 +183,43 @@ func (c *CLI) CreateEnv(store Store, config IAASEnvironment, password, cert, key
 	}
 	manifest, err = yaml.Interpolate(manifest, "", vars)
 	if err != nil {
-		return err
+		return &CreateEnvFiles{}, err
 	}
-	statePath, err := writeToDisk(store, stateFilename)
+	statePath, err := writeTempFile(createEnvFiles.StateFileContents)
 	if err != nil {
-		return err
+		return &CreateEnvFiles{}, err
 	}
-	varsPath, err := writeToDisk(store, varsFilename)
+	varsPath, err := writeTempFile(createEnvFiles.VarsFileContents)
 	if err != nil {
-		return err
+		return &CreateEnvFiles{}, err
 	}
 	manifestPath, err := writeTempFile([]byte(manifest))
 	if err != nil {
-		return err
+		return &CreateEnvFiles{}, err
 	}
 	defer os.Remove(manifestPath)
 
 	cmd := c.execCmd(c.boshPath, "create-env", "--state="+statePath, "--vars-store="+varsPath, manifestPath)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	return cmd.Run()
+
+	err = cmd.Run()
+
+	stateFileContents, err1 := ioutil.ReadFile(statePath)
+	if err1 != nil {
+		return &CreateEnvFiles{}, fmt.Errorf("Error loading state file after create-env: [%v]", err)
+	}
+	varsFileContents, err1 := ioutil.ReadFile(varsPath)
+	if err1 != nil {
+		return &CreateEnvFiles{}, fmt.Errorf("Error loading vars file after create-env: [%v]", err)
+	}
+
+	createEnvFiles = &CreateEnvFiles{
+		StateFileContents: stateFileContents,
+		VarsFileContents:  varsFileContents,
+	}
+
+	return createEnvFiles, err
 }
 
 // RunAuthenticatedCommand runs the bosh command `action` with flags `flags`
@@ -263,24 +275,6 @@ func (c *CLI) detachedBoshCommand(stdout io.Writer, flags ...string) error {
 	}
 
 	return fmt.Errorf("Didn't detect successful task start in BOSH comand: bosh-cli %s", strings.Join(flags, " "))
-}
-
-func writeToDisk(store Store, key string) (filename string, err error) {
-	data, err := store.Get(key)
-	if err != nil {
-		return "", err
-	}
-	var path string
-	if len(data) == 0 {
-		path, err = ioutil.TempDir("", "")
-		path = filepath.Join(path, key)
-	} else {
-		path, err = writeTempFile(data)
-	}
-	if err != nil {
-		return "", err
-	}
-	return path, nil
 }
 
 func writeTempFile(data []byte) (string, error) {

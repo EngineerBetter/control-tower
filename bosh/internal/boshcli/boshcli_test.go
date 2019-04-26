@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
@@ -19,17 +18,6 @@ func TestExecCommandHelper(t *testing.T) {
 	fmt.Print(os.Getenv("STDOUT"))
 	i, _ := strconv.Atoi(os.Getenv("EXIT_STATUS"))
 	os.Exit(i)
-}
-
-type mockStore map[string][]byte
-
-func (s mockStore) Set(key string, value []byte) error {
-	s[key] = value
-	return nil
-}
-
-func (s mockStore) Get(key string) ([]byte, error) {
-	return s[key], nil
 }
 
 type mockIAASConfig struct {
@@ -51,29 +39,13 @@ func TestCLI_CreateEnv(t *testing.T) {
 	e := fakeexec.New(t)
 	defer e.Finish()
 	c := boshcli.New("bosh", e.Cmd())
-	store := make(mockStore)
 	config := mockIAASConfig{}
 	e.ExpectFunc(func(t testing.TB, command string, args ...string) {
 		require.Equal(t, "bosh", command)
 		require.Equal(t, "create-env", args[0])
-		s := strings.TrimPrefix(args[1], "--state=")
-		expectPathNotToExistButBeWriteable(t, s)
-		v := strings.TrimPrefix(args[2], "--vars-store=")
-		expectPathNotToExistButBeWriteable(t, v)
 	})
-	err := c.CreateEnv(store, config, "password", "cert", "key", "ca", map[string]string{})
+	_, err := c.CreateEnv(&boshcli.CreateEnvFiles{}, config, "password", "cert", "key", "ca", map[string]string{})
 	require.NoError(t, err)
-}
-
-func expectPathNotToExistButBeWriteable(t testing.TB, path string) {
-	t.Helper()
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
-		t.Errorf("expected path %q not to exist", path)
-	}
-	f, err := os.Create(path)
-	require.NoError(t, err)
-	defer os.Remove(f.Name())
-	f.Close()
 }
 
 func TestCLI_UpdateCloudConfig(t *testing.T) {

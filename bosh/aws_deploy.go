@@ -53,11 +53,6 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 	}
 	tags["control-tower-project"] = client.config.GetProject()
 	tags["control-tower-component"] = "concourse"
-	//TODO(px): pull up this so that we use aws.Store
-	store := temporaryStore{
-		"vars.yaml":  creds,
-		"state.json": state,
-	}
 
 	boshUserAccessKeyID, err1 := client.outputs.Get("BoshUserAccessKeyID")
 	if err1 != nil {
@@ -130,7 +125,7 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		return state, creds, err1
 	}
 
-	err1 = client.boshCLI.CreateEnv(store, boshcli.AWSEnvironment{
+	createEnvFiles, err1 := client.boshCLI.CreateEnv(&boshcli.CreateEnvFiles{StateFileContents: state, VarsFileContents: creds}, boshcli.AWSEnvironment{
 		InternalCIDR:    client.config.GetPublicCIDR(),
 		InternalGateway: internalGateway.String(),
 		InternalIP:      directorInternalIP.String(),
@@ -163,9 +158,9 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		CustomOperations:     customOps,
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
 	if err1 != nil {
-		return store["state.json"], store["vars.yaml"], err1
+		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
 	}
-	return store["state.json"], store["vars.yaml"], err
+	return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err
 }
 
 // Recreate exposes BOSH recreate
