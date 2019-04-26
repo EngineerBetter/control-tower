@@ -1,17 +1,10 @@
 package boshcli
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
-
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util"
 	"github.com/EngineerBetter/control-tower/util/yaml"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
 // Environment holds all the parameters AWS IAAS needs
@@ -140,36 +133,4 @@ func (e AWSEnvironment) ConcourseStemcellURL() (string, error) {
 		return "", fmt.Errorf("Error getting AWS stemcell version for Concourse [%v]", err)
 	}
 	return fmt.Sprintf("https://s3.amazonaws.com/bosh-aws-light-stemcells/%s/light-bosh-stemcell-%s-aws-xen-hvm-ubuntu-xenial-go_agent.tgz", version, version), nil
-}
-
-// Store holds the abstraction of a aws storage artifact
-type S3Store struct {
-	s3     s3iface.S3API
-	bucket string
-}
-
-// Get returns the contents of a Store element identified with a key
-func (s *S3Store) Get(key string) ([]byte, error) {
-	result, err := s.s3.GetObject(&s3.GetObjectInput{
-		Bucket: aws.String(s.bucket),
-		Key:    aws.String(key),
-	})
-	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == s3.ErrCodeNoSuchKey {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	defer result.Body.Close()
-	return ioutil.ReadAll(result.Body)
-}
-
-// Set stores the contents of a Store element identified with a key
-func (s *S3Store) Set(key string, value []byte) error {
-	_, err := s.s3.PutObject(&s3.PutObjectInput{
-		Body:   bytes.NewReader(value),
-		Bucket: aws.String(s.bucket),
-		Key:    aws.String(key),
-	})
-	return err
 }
