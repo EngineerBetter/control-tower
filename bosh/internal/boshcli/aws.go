@@ -1,9 +1,7 @@
-package aws
+package boshcli
 
 import (
 	"bytes"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 
@@ -17,7 +15,7 @@ import (
 )
 
 // Environment holds all the parameters AWS IAAS needs
-type Environment struct {
+type AWSEnvironment struct {
 	AccessKeyID           string
 	ATCSecurityGroup      string
 	AZ                    string
@@ -54,13 +52,13 @@ type Environment struct {
 	WorkerType            string
 }
 
-var allOperations = resource.AWSCPIOps + resource.ExternalIPOps + resource.AWSDirectorCustomOps
-
 // ConfigureDirectorManifestCPI interpolates all the Environment parameters and
 // required release versions into ready to use Director manifest
-func (e Environment) ConfigureDirectorManifestCPI() (string, error) {
+func (e AWSEnvironment) ConfigureDirectorManifestCPI() (string, error) {
 	cpiResource := resource.AWSCPI()
 	stemcellResource := resource.AWSStemcell()
+
+	var allOperations = resource.AWSCPIOps + resource.ExternalIPOps + resource.AWSDirectorCustomOps
 
 	return yaml.Interpolate(resource.DirectorManifest, allOperations+e.CustomOperations, map[string]interface{}{
 		"cpi_url":                  cpiResource.URL,
@@ -110,7 +108,7 @@ type awsCloudConfigParams struct {
 }
 
 // ConfigureDirectorCloudConfig inserts values from the environment into the config template passed as argument
-func (e Environment) ConfigureDirectorCloudConfig() (string, error) {
+func (e AWSEnvironment) ConfigureDirectorCloudConfig() (string, error) {
 	templateParams := awsCloudConfigParams{
 		AvailabilityZone:    e.AZ,
 		VMsSecurityGroupID:  e.VMSecurityGroup,
@@ -136,47 +134,30 @@ func (e Environment) ConfigureDirectorCloudConfig() (string, error) {
 }
 
 // ConcourseStemcellURL returns the stemcell location string for an AWS specific stemcell for the required concourse version
-func (e Environment) ConcourseStemcellURL() (string, error) {
-	var ops []struct {
-		Path  string
-		Value json.RawMessage
-	}
-	err := json.Unmarshal([]byte(resource.AWSReleaseVersions), &ops)
+func (e AWSEnvironment) ConcourseStemcellURL() (string, error) {
+	version, err := getStemcellVersionFromOpsFile(resource.AWSReleaseVersions)
 	if err != nil {
-		return "", err
-	}
-	var version string
-	for _, op := range ops {
-		if op.Path != "/stemcells/alias=xenial/version" {
-			continue
-		}
-		err := json.Unmarshal(op.Value, &version)
-		if err != nil {
-			return "", err
-		}
-	}
-	if version == "" {
-		return "", errors.New("did not find stemcell version in versions.json")
+		return "", fmt.Errorf("Error getting AWS stemcell version for Concourse [%v]", err)
 	}
 	return fmt.Sprintf("https://s3.amazonaws.com/bosh-aws-light-stemcells/%s/light-bosh-stemcell-%s-aws-xen-hvm-ubuntu-xenial-go_agent.tgz", version, version), nil
 }
 
 // Store holds the abstraction of a aws storage artifact
-type Store struct {
+type S3Store struct {
 	s3     s3iface.S3API
 	bucket string
 }
 
 // NewStore returns a reference to a new Store
-func NewStore(s3 s3iface.S3API, bucket string) *Store {
-	return &Store{
+func NewStore(s3 s3iface.S3API, bucket string) *S3Store {
+	return &S3Store{
 		s3:     s3,
 		bucket: bucket,
 	}
 }
 
 // Get returns the contents of a Store element identified with a key
-func (s *Store) Get(key string) ([]byte, error) {
+func (s *S3Store) Get(key string) ([]byte, error) {
 	result, err := s.s3.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(s.bucket),
 		Key:    aws.String(key),
@@ -192,7 +173,7 @@ func (s *Store) Get(key string) ([]byte, error) {
 }
 
 // Set stores the contents of a Store element identified with a key
-func (s *Store) Set(key string, value []byte) error {
+func (s *S3Store) Set(key string, value []byte) error {
 	_, err := s.s3.PutObject(&s3.PutObjectInput{
 		Body:   bytes.NewReader(value),
 		Bucket: aws.String(s.bucket),

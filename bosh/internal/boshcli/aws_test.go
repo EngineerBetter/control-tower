@@ -1,4 +1,4 @@
-package gcp
+package boshcli
 
 import (
 	"errors"
@@ -91,7 +91,7 @@ func TestStore_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Store{
+			s := &S3Store{
 				s3:     tt.fields.s3,
 				bucket: tt.fields.bucket,
 			}
@@ -148,7 +148,7 @@ func TestStore_Set(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Store{
+			s := &S3Store{
 				s3:     tt.fields.s3,
 				bucket: tt.fields.bucket,
 			}
@@ -159,18 +159,20 @@ func TestStore_Set(t *testing.T) {
 	}
 }
 
-func TestEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
+func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 
-	fullTemplateParams := Environment{
-		Zone:                "zone",
-		PublicSubnetwork:    "public_subnetwork",
-		PrivateSubnetwork:   "private_subnetwork",
+	fullTemplateParams := AWSEnvironment{
+		AZ:                  "az",
+		VMSecurityGroup:     "vm_security_group",
+		ATCSecurityGroup:    "atc_security_group",
+		PublicSubnetID:      "public_subnet_id",
+		PrivateSubnetID:     "private_subnet_id",
 		Spot:                false,
-		Network:             "network",
+		WorkerType:          "worker_type",
 		PublicCIDR:          "public_cidr",
 		PublicCIDRGateway:   "public_cidr_gateway",
-		PublicCIDRStatic:    "public_cidr_static",
 		PublicCIDRReserved:  "public_cidr_reserved",
+		PublicCIDRStatic:    "public_cidr_static",
 		PrivateCIDR:         "private_cidr",
 		PrivateCIDRGateway:  "private_cidr_gateway",
 		PrivateCIDRReserved: "private_cidr_reserved",
@@ -183,18 +185,18 @@ func TestEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 
 	tests := []struct {
 		name     string
-		fields   Environment
+		fields   AWSEnvironment
 		want     string
 		wantErr  bool
-		init     func(Environment) Environment
+		init     func(AWSEnvironment) AWSEnvironment
 		validate func(string, string) (bool, string)
 	}{
 		{
 			name:    "Success- template rendered",
 			fields:  fullTemplateParams,
-			want:    getFixture("../fixtures/gcp_cloud_config_full.yml"),
+			want:    getFixture("../fixtures/aws_cloud_config_full.yml"),
 			wantErr: false,
-			init: func(e Environment) Environment {
+			init: func(e AWSEnvironment) AWSEnvironment {
 				return e
 			},
 			validate: func(a, b string) (bool, string) {
@@ -204,9 +206,9 @@ func TestEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 		{
 			name:    "Success- spot instance rendered",
 			fields:  fullTemplateParams,
-			want:    getFixture("../fixtures/gcp_cloud_config_spot.yml"),
+			want:    getFixture("../fixtures/aws_cloud_config_spot.yml"),
 			wantErr: false,
-			init: func(e Environment) Environment {
+			init: func(e AWSEnvironment) AWSEnvironment {
 				n := e
 				n.Spot = true
 				return n
@@ -219,15 +221,43 @@ func TestEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 		{
 			name:    "Success- running with no spot",
 			fields:  fullTemplateParams,
-			want:    getFixture("../fixtures/gcp_cloud_config_no_spot.yml"),
+			want:    getFixture("../fixtures/aws_cloud_config_no_spot.yml"),
 			wantErr: false,
-			init: func(e Environment) Environment {
+			init: func(e AWSEnvironment) AWSEnvironment {
 				n := e
 				n.Spot = false
 				return n
 			},
 			validate: func(a, b string) (bool, string) {
 				return a == b, fmt.Sprintf("templating failed while rendering without spots")
+			},
+		},
+		{
+			name:    "Success- worker type is m5",
+			fields:  fullTemplateParams,
+			want:    getFixture("../fixtures/aws_cloud_config_m5.yml"),
+			wantErr: false,
+			init: func(e AWSEnvironment) AWSEnvironment {
+				n := e
+				n.WorkerType = "m5"
+				return n
+			},
+			validate: func(a, b string) (bool, string) {
+				return a == b, fmt.Sprintf("m5 worker templating failed")
+			},
+		},
+		{
+			name:    "Success- m4 worker type is m4",
+			fields:  fullTemplateParams,
+			want:    getFixture("../fixtures/aws_cloud_config_m4.yml"),
+			wantErr: false,
+			init: func(e AWSEnvironment) AWSEnvironment {
+				n := e
+				n.WorkerType = "m4"
+				return n
+			},
+			validate: func(a, b string) (bool, string) {
+				return a == b, fmt.Sprintf("m4 worker templating failed")
 			},
 		},
 	}
@@ -242,50 +272,6 @@ func TestEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 			passed, message := tt.validate(got, tt.want)
 			if !passed {
 				t.Errorf(message)
-			}
-		})
-	}
-}
-
-func getStemcellFixture(fixture string) string {
-	stemcellBytes, _ := ioutil.ReadFile(fmt.Sprintf("../fixtures/%s.json", fixture))
-	return string(stemcellBytes)
-}
-
-func TestEnvironment_ConfigureConcourseStemcell(t *testing.T) {
-	type args struct {
-		versions string
-	}
-	tests := []struct {
-		name    string
-		want    string
-		wantErr bool
-		fixture string
-	}{
-		{
-			name:    "parse versions and provide a valid stemcell url",
-			want:    "https://s3.amazonaws.com/bosh-gce-light-stemcells/5/light-bosh-stemcell-5-google-kvm-ubuntu-xenial-go_agent.tgz",
-			wantErr: false,
-			fixture: "stemcell_version",
-		},
-		{
-			name:    "parse versions and indicate no stemcell was found",
-			want:    "",
-			wantErr: true,
-			fixture: "invalid_stemcell_version",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			e := Environment{}
-			resource.GCPReleaseVersions = getStemcellFixture(tt.fixture)
-			got, err := e.ConcourseStemcellURL()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Environment.ConcourseStemcellURL() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("Environment.ConcourseStemcellURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -328,17 +314,59 @@ func matchStructFields(c interface{}, res map[string]int) map[string]int {
 	return res
 }
 
-func Test_CloudConfigStructureTest(t *testing.T) {
+func Test_AWSCloudConfigStructureTest(t *testing.T) {
 	t.Run("validating structure", func(t *testing.T) {
-		templ, err := template.New("template").Option("missingkey=error").Parse(resource.GCPDirectorCloudConfig)
+		templ, err := template.New("template").Option("missingkey=error").Parse(resource.AWSDirectorCloudConfig)
 		if err != nil {
 			t.Errorf("cannot parse the template")
 		}
-		emptyGcpCloudConfigParams := gcpCloudConfigParams{}
-		for k, v := range matchStructFields(emptyGcpCloudConfigParams, listTemplFields(templ)) {
+		emptyAwsCloudConfigParams := awsCloudConfigParams{}
+		for k, v := range matchStructFields(emptyAwsCloudConfigParams, listTemplFields(templ)) {
 			if v < 2 {
 				t.Errorf("Field with key name %s is not mapped properly", k)
 			}
 		}
 	})
+}
+
+func getStemcellFixture(fixture string) string {
+	stemcellBytes, _ := ioutil.ReadFile(fmt.Sprintf("../fixtures/%s.json", fixture))
+	return string(stemcellBytes)
+}
+
+func TestAWSEnvironment_ConfigureConcourseStemcell(t *testing.T) {
+	tests := []struct {
+		name    string
+		want    string
+		wantErr bool
+		fixture string
+	}{
+		{
+			name:    "parse versions and provide a valid stemcell url",
+			want:    "https://s3.amazonaws.com/bosh-aws-light-stemcells/5/light-bosh-stemcell-5-aws-xen-hvm-ubuntu-xenial-go_agent.tgz",
+			wantErr: false,
+			fixture: "stemcell_version",
+		},
+		{
+			name:    "parse versions and indicate no stemcell was found",
+			want:    "",
+			wantErr: true,
+			fixture: "invalid_stemcell_version",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := AWSEnvironment{}
+			resource.AWSReleaseVersions = getStemcellFixture(tt.fixture)
+			got, err := e.ConcourseStemcellURL()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Environment.ConcourseStemcellURL() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if got != tt.want {
+				t.Errorf("Environment.ConcourseStemcellURL() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

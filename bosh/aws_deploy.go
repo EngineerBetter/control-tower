@@ -3,7 +3,6 @@ package bosh
 import (
 	"net"
 
-	"github.com/EngineerBetter/control-tower/bosh/internal/aws"
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 	"github.com/EngineerBetter/control-tower/db"
 	"github.com/apparentlymart/go-cidr/cidr"
@@ -40,7 +39,7 @@ func (client *AWSClient) Locks() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return client.boshCLI.Locks(aws.Environment{
+	return client.boshCLI.Locks(boshcli.AWSEnvironment{
 		ExternalIP: directorPublicIP,
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 
@@ -131,7 +130,7 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		return state, creds, err1
 	}
 
-	err1 = client.boshCLI.CreateEnv(store, aws.Environment{
+	err1 = client.boshCLI.CreateEnv(store, boshcli.AWSEnvironment{
 		InternalCIDR:    client.config.GetPublicCIDR(),
 		InternalGateway: internalGateway.String(),
 		InternalIP:      directorInternalIP.String(),
@@ -175,7 +174,7 @@ func (client *AWSClient) Recreate() error {
 	if err != nil {
 		return err
 	}
-	return client.boshCLI.Recreate(aws.Environment{
+	return client.boshCLI.Recreate(boshcli.AWSEnvironment{
 		ExternalIP: directorPublicIP,
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
@@ -236,7 +235,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 
-	return bosh.UpdateCloudConfig(aws.Environment{
+	return bosh.UpdateCloudConfig(boshcli.AWSEnvironment{
 		AZ:                  client.config.GetAvailabilityZone(),
 		PublicSubnetID:      publicSubnetID,
 		PrivateSubnetID:     privateSubnetID,
@@ -259,7 +258,7 @@ func (client *AWSClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
-	return bosh.UploadConcourseStemcell(aws.Environment{
+	return bosh.UploadConcourseStemcell(boshcli.AWSEnvironment{
 		ExternalIP: directorPublicIP,
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }

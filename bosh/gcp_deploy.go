@@ -4,7 +4,6 @@ import (
 	"net"
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
-	"github.com/EngineerBetter/control-tower/bosh/internal/gcp"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 
@@ -49,7 +48,7 @@ func (client *GCPClient) Recreate() error {
 	if err != nil {
 		return err
 	}
-	return client.boshCLI.Recreate(gcp.Environment{
+	return client.boshCLI.Recreate(boshcli.GCPEnvironment{
 		ExternalIP: directorPublicIP,
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
@@ -105,7 +104,7 @@ func (client *GCPClient) createEnv(bosh boshcli.ICLI, state, creds []byte, custo
 	if err1 != nil {
 		return state, creds, err1
 	}
-	err1 = bosh.CreateEnv(store, gcp.Environment{
+	err1 = bosh.CreateEnv(store, boshcli.GCPEnvironment{
 		InternalCIDR:       client.config.GetPublicCIDR(),
 		InternalGW:         internalGateway.String(),
 		InternalIP:         directorInternalIP.String(),
@@ -134,7 +133,7 @@ func (client *GCPClient) Locks() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return client.boshCLI.Locks(gcp.Environment{
+	return client.boshCLI.Locks(boshcli.GCPEnvironment{
 		ExternalIP: directorPublicIP,
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 
@@ -194,7 +193,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
-	return bosh.UpdateCloudConfig(gcp.Environment{
+	return bosh.UpdateCloudConfig(boshcli.GCPEnvironment{
 		PublicCIDR:          client.config.GetPublicCIDR(),
 		PublicCIDRGateway:   publicCIDRGateway,
 		PublicCIDRStatic:    publicCIDRStatic,
@@ -214,7 +213,7 @@ func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
-	return bosh.UploadConcourseStemcell(gcp.Environment{
+	return bosh.UploadConcourseStemcell(boshcli.GCPEnvironment{
 		ExternalIP: directorPublicIP,
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }

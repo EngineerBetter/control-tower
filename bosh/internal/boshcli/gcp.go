@@ -1,23 +1,16 @@
-package gcp
+package boshcli
 
 import (
-	"bytes"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util"
 	"github.com/EngineerBetter/control-tower/util/yaml"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
 // Environment holds all the parameters GCP IAAS needs
-type Environment struct {
+type GCPEnvironment struct {
 	CustomOperations    string
 	DirectorName        string
 	ExternalIP          string
@@ -42,15 +35,15 @@ type Environment struct {
 	Zone                string
 }
 
-var allOperations = resource.GCPCPIOps + resource.GCPExternalIPOps + resource.GCPDirectorCustomOps + resource.GCPJumpboxUserOps
-
 // ConfigureDirectorManifestCPI interpolates all the Environment parameters and
 // required release versions into ready to use Director manifest
-func (e Environment) ConfigureDirectorManifestCPI() (string, error) {
+func (e GCPEnvironment) ConfigureDirectorManifestCPI() (string, error) {
 	gcpCreds, err := ioutil.ReadFile(e.GcpCredentialsJSON)
 	if err != nil {
 		return "", err
 	}
+
+	var allOperations = resource.GCPCPIOps + resource.GCPExternalIPOps + resource.GCPDirectorCustomOps + resource.GCPJumpboxUserOps
 
 	return yaml.Interpolate(resource.DirectorManifest, allOperations+e.CustomOperations, map[string]interface{}{
 		"internal_cidr":        e.InternalCIDR,
@@ -84,7 +77,7 @@ type gcpCloudConfigParams struct {
 }
 
 // ConfigureDirectorCloudConfig inserts values from the environment into the config template passed as argument
-func (e Environment) ConfigureDirectorCloudConfig() (string, error) {
+func (e GCPEnvironment) ConfigureDirectorCloudConfig() (string, error) {
 	templateParams := gcpCloudConfigParams{
 		Zone:                e.Zone,
 		PublicSubnetwork:    e.PublicSubnetwork,
@@ -108,67 +101,10 @@ func (e Environment) ConfigureDirectorCloudConfig() (string, error) {
 }
 
 // ConcourseStemcellURL returns the stemcell location string for an AWS specific stemcell for the required concourse version
-func (e Environment) ConcourseStemcellURL() (string, error) {
-	var ops []struct {
-		Path  string
-		Value json.RawMessage
-	}
-	err := json.Unmarshal([]byte(resource.GCPReleaseVersions), &ops)
+func (e GCPEnvironment) ConcourseStemcellURL() (string, error) {
+	version, err := getStemcellVersionFromOpsFile(resource.GCPReleaseVersions)
 	if err != nil {
-		return "", err
-	}
-	var version string
-	for _, op := range ops {
-		if op.Path != "/stemcells/alias=xenial/version" {
-			continue
-		}
-		err := json.Unmarshal(op.Value, &version)
-		if err != nil {
-			return "", err
-		}
-	}
-	if version == "" {
-		return "", errors.New("did not find stemcell version in versions.json")
+		return "", fmt.Errorf("Error getting GCP stemcell version for Concourse [%v]", err)
 	}
 	return fmt.Sprintf("https://s3.amazonaws.com/bosh-gce-light-stemcells/%s/light-bosh-stemcell-%s-google-kvm-ubuntu-xenial-go_agent.tgz", version, version), nil
-}
-
-// Store holds the abstraction of a aws storage artifact
-type Store struct {
-	s3     s3iface.S3API
-	bucket string
-}
-
-// NewStore returns a reference to a new Store
-func NewStore(s3 s3iface.S3API, bucket string) *Store {
-	return &Store{
-		s3:     s3,
-		bucket: bucket,
-	}
-}
-
-// Get returns the contents of a Store element identified with a key
-func (s *Store) Get(key string) ([]byte, error) {
-	result, err := s.s3.GetObject(&s3.GetObjectInput{
-		Bucket: aws.String(s.bucket),
-		Key:    aws.String(key),
-	})
-	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == s3.ErrCodeNoSuchKey {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	defer result.Body.Close()
-	return ioutil.ReadAll(result.Body)
-}
-
-// Set stores the contents of a Store element identified with a key
-func (s *Store) Set(key string, value []byte) error {
-	_, err := s.s3.PutObject(&s3.PutObjectInput{
-		Body:   bytes.NewReader(value),
-		Bucket: aws.String(s.bucket),
-		Key:    aws.String(key),
-	})
-	return err
 }

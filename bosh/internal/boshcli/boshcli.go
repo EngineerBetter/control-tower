@@ -3,6 +3,8 @@ package boshcli
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -43,6 +45,32 @@ type IAASEnvironment interface {
 	ConfigureDirectorManifestCPI() (string, error)
 	ConfigureDirectorCloudConfig() (string, error)
 	ConcourseStemcellURL() (string, error)
+}
+
+func getStemcellVersionFromOpsFile(releaseVersionsFile string) (string, error) {
+	var ops []struct {
+		Path  string
+		Value json.RawMessage
+	}
+	err := json.Unmarshal([]byte(releaseVersionsFile), &ops)
+	if err != nil {
+		return "", err
+	}
+	var version string
+	for _, op := range ops {
+		if op.Path != "/stemcells/alias=xenial/version" {
+			continue
+		}
+		err := json.Unmarshal(op.Value, &version)
+		if err != nil {
+			return "", err
+		}
+	}
+	if version == "" {
+		return "", errors.New("did not find stemcell version in versions.json")
+	}
+
+	return version, nil
 }
 
 type Store interface {
