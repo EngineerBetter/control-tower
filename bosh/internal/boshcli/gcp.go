@@ -1,7 +1,6 @@
 package boshcli
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"github.com/EngineerBetter/control-tower/resource"
@@ -100,11 +99,6 @@ func (e GCPEnvironment) ConfigureDirectorCloudConfig() (string, error) {
 	return string(cc), err
 }
 
-// ConcourseStemcellURL returns the stemcell location string for an AWS specific stemcell for the required concourse version
 func (e GCPEnvironment) ConcourseStemcellURL() (string, error) {
-	version, err := getStemcellVersionFromOpsFile(resource.GCPReleaseVersions)
-	if err != nil {
-		return "", fmt.Errorf("Error getting GCP stemcell version for Concourse [%v]", err)
-	}
-	return fmt.Sprintf("https://s3.amazonaws.com/bosh-gce-light-stemcells/%s/light-bosh-stemcell-%s-google-kvm-ubuntu-xenial-go_agent.tgz", version, version), nil
+	return concourseStemcellURL(resource.GCPReleaseVersions, "https://s3.amazonaws.com/bosh-gce-light-stemcells/%s/light-bosh-stemcell-%s-google-kvm-ubuntu-xenial-go_agent.tgz")
 }

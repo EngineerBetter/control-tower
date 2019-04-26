@@ -51,7 +51,7 @@ type IAASEnvironment interface {
 	ConcourseStemcellURL() (string, error)
 }
 
-func getStemcellVersionFromOpsFile(releaseVersionsFile string) (string, error) {
+func concourseStemcellURL(releaseVersionsFile, urlFormat string) (string, error) {
 	var ops []struct {
 		Path  string
 		Value json.RawMessage
@@ -74,7 +74,7 @@ func getStemcellVersionFromOpsFile(releaseVersionsFile string) (string, error) {
 		return "", errors.New("did not find stemcell version in versions.json")
 	}
 
-	return version, nil
+	return fmt.Sprintf(urlFormat, version, version), nil
 }
 
 // UpdateCloudConfig generates cloud config from template and use it to update bosh cloud config
