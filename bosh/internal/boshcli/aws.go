@@ -148,14 +148,6 @@ type S3Store struct {
 	bucket string
 }
 
-// NewStore returns a reference to a new Store
-func NewStore(s3 s3iface.S3API, bucket string) *S3Store {
-	return &S3Store{
-		s3:     s3,
-		bucket: bucket,
-	}
-}
-
 // Get returns the contents of a Store element identified with a key
 func (s *S3Store) Get(key string) ([]byte, error) {
 	result, err := s.s3.GetObject(&s3.GetObjectInput{
