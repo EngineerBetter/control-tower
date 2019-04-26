@@ -190,16 +190,14 @@ func (c *CLI) CreateEnv(store Store, config IAASEnvironment, password, cert, key
 	if err != nil {
 		return err
 	}
-	statePath, uploadState, err := writeToDisk(store, stateFilename)
+	statePath, err := writeToDisk(store, stateFilename)
 	if err != nil {
 		return err
 	}
-	defer uploadState()
-	varsPath, uploadVars, err := writeToDisk(store, varsFilename)
+	varsPath, err := writeToDisk(store, varsFilename)
 	if err != nil {
 		return err
 	}
-	defer uploadVars()
 	manifestPath, err := writeTempFile([]byte(manifest))
 	if err != nil {
 		return err
@@ -267,10 +265,10 @@ func (c *CLI) detachedBoshCommand(stdout io.Writer, flags ...string) error {
 	return fmt.Errorf("Didn't detect successful task start in BOSH comand: bosh-cli %s", strings.Join(flags, " "))
 }
 
-func writeToDisk(store Store, key string) (filename string, upload func() error, err error) {
+func writeToDisk(store Store, key string) (filename string, err error) {
 	data, err := store.Get(key)
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 	var path string
 	if len(data) == 0 {
@@ -280,17 +278,9 @@ func writeToDisk(store Store, key string) (filename string, upload func() error,
 		path, err = writeTempFile(data)
 	}
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
-	upload = func() error {
-		defer os.Remove(path)
-		data, err := ioutil.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		return store.Set(key, data)
-	}
-	return path, upload, nil
+	return path, nil
 }
 
 func writeTempFile(data []byte) (string, error) {
