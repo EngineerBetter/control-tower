@@ -198,17 +198,6 @@ func hasCIDRFlagsSet(deployArgs *deploy.Args, provider iaas.Provider) bool {
 	}
 }
 
-func isMissingCIDRs(conf config.Config, provider iaas.Provider) bool {
-	switch provider.IAAS() {
-	case iaas.AWS:
-		return conf.NetworkCIDR == "" || conf.PrivateCIDR == "" || conf.PublicCIDR == "" || conf.RDS1CIDR == "" || conf.RDS2CIDR == ""
-	case iaas.GCP:
-		return conf.PrivateCIDR == "" || conf.PublicCIDR == ""
-	default:
-		return false
-	}
-}
-
 func populateConfigWithDeployArgsCIDRs(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) config.Config {
 	switch provider.IAAS() {
 	case iaas.AWS:
