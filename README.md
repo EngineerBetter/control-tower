@@ -8,9 +8,9 @@ A tool for easily deploying [Concourse](https://concourse-ci.org) in a single co
 
 ## TL;DR
 
-### AWS
-
 (Don't forget to read the [pre-requisites](prerequisites.md)!)
+
+### AWS
 
 ```sh
 $ AWS_ACCESS_KEY_ID=<access-key-id> \
