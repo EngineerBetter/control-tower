@@ -281,7 +281,11 @@ func (c *CLI) detachedBoshCommand(stdout io.Writer, flags ...string) error {
 // If data is empty, return a path to where one could put a temp file
 func writeNonEmptyTempFile(data []byte, filename string) (string, error) {
 	if len(data) == 0 && filename != "" {
-		return filepath.Join(os.TempDir(), filename), nil
+		dir, err := ioutil.TempDir("", "control-tower")
+		if err != nil {
+			return "", fmt.Errorf("Error generating temp directory: %v", err)
+		}
+		return filepath.Join(dir, filename), nil
 	}
 
 	return writeTempFile(data)
