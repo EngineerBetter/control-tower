@@ -8,7 +8,7 @@ A tool for easily deploying [Concourse](https://concourse-ci.org) in a single co
 
 ## TL;DR
 
-(Don't forget to read the [pre-requisites](prerequisites.md)!)
+(Don't forget to read the [pre-requisites](docs/prerequisites.md)!)
 
 ### AWS
 
