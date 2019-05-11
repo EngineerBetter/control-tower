@@ -1,105 +1,73 @@
 package boshcli
 
 import (
-	"fmt"
 	"github.com/EngineerBetter/control-tower/resource"
+	"github.com/onsi/gomega/format"
 	"io/ioutil"
 	"testing"
 	"text/template"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
-func TestGCPEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
-
-	fullTemplateParams := GCPEnvironment{
-		Zone:                "zone",
-		PublicSubnetwork:    "public_subnetwork",
-		PrivateSubnetwork:   "private_subnetwork",
-		Spot:                false,
-		Network:             "network",
-		PublicCIDR:          "public_cidr",
-		PublicCIDRGateway:   "public_cidr_gateway",
-		PublicCIDRStatic:    "public_cidr_static",
-		PublicCIDRReserved:  "public_cidr_reserved",
-		PrivateCIDR:         "private_cidr",
-		PrivateCIDRGateway:  "private_cidr_gateway",
-		PrivateCIDRReserved: "private_cidr_reserved",
-	}
-
-	getFixture := func(f string) string {
-		contents, _ := ioutil.ReadFile(f)
-		return string(contents)
-	}
-
-	tests := []struct {
-		name     string
-		fields   GCPEnvironment
-		want     string
-		wantErr  bool
-		init     func(GCPEnvironment) GCPEnvironment
-		validate func(string, string) (bool, string)
-	}{
-		{
-			name:    "Success- template rendered",
-			fields:  fullTemplateParams,
-			want:    getFixture("../fixtures/gcp_cloud_config_full.yml"),
-			wantErr: false,
-			init: func(e GCPEnvironment) GCPEnvironment {
-				return e
-			},
-			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("basic rendering expected to work")
-			},
-		},
-		{
-			name:    "Success- spot instance rendered",
-			fields:  fullTemplateParams,
-			want:    getFixture("../fixtures/gcp_cloud_config_spot.yml"),
-			wantErr: false,
-			init: func(e GCPEnvironment) GCPEnvironment {
-				n := e
-				n.Spot = true
-				return n
-			},
-			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("templating failed while rendering without spots")
-			},
-		},
-
-		{
-			name:    "Success- running with no spot",
-			fields:  fullTemplateParams,
-			want:    getFixture("../fixtures/gcp_cloud_config_no_spot.yml"),
-			wantErr: false,
-			init: func(e GCPEnvironment) GCPEnvironment {
-				n := e
-				n.Spot = false
-				return n
-			},
-			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("templating failed while rendering without spots")
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			e := tt.init(tt.fields)
-			got, err := e.ConfigureDirectorCloudConfig()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Environment.ConfigureDirectorCloudConfig()\nerror expected:  %v\nreceived error:  %v", tt.wantErr, err)
-				return
-			}
-			passed, message := tt.validate(got, tt.want)
-			if !passed {
-				t.Errorf(message)
-			}
-		})
-	}
+func getFixture(filename string) string {
+	contents, _ := ioutil.ReadFile(filename)
+	return string(contents)
 }
 
+var _ = Describe("GCPEnvironment", func() {
+	Describe("ConfigureDirectorCloudConfig", func() {
+		var expected string
+		var environment GCPEnvironment
+
+		BeforeEach(func() {
+			environment = GCPEnvironment{
+				Zone:                "zone",
+				PublicSubnetwork:    "public_subnetwork",
+				PrivateSubnetwork:   "private_subnetwork",
+				Spot:                false,
+				Network:             "network",
+				PublicCIDR:          "public_cidr",
+				PublicCIDRGateway:   "public_cidr_gateway",
+				PublicCIDRStatic:    "public_cidr_static",
+				PublicCIDRReserved:  "public_cidr_reserved",
+				PrivateCIDR:         "private_cidr",
+				PrivateCIDRGateway:  "private_cidr_gateway",
+				PrivateCIDRReserved: "private_cidr_reserved",
+			}
+
+			format.TruncatedDiff = false
+		})
+
+		Context("when spot instances are not requested", func() {
+			BeforeEach(func() {
+				expected = getFixture("../fixtures/gcp_cloud_config_no_spot.yml")
+			})
+
+			It("renders the expected YAML", func() {
+				actual, err := environment.ConfigureDirectorCloudConfig()
+				Expect(err).ToNot(HaveOccurred())
+				Expect(actual).To(Equal(expected))
+			})
+		})
+
+		Context("when spot instances are requested", func() {
+			BeforeEach(func() {
+				expected = getFixture("../fixtures/gcp_cloud_config_spot.yml")
+				environment.Spot = true
+			})
+
+			It("renders the expected YAML", func() {
+				actual, err := environment.ConfigureDirectorCloudConfig()
+				Expect(err).ToNot(HaveOccurred())
+				Expect(actual).To(Equal(expected))
+			})
+		})
+	})
+})
+
 func TestGCPEnvironment_ConfigureConcourseStemcell(t *testing.T) {
-	type args struct {
-		versions string
-	}
 	tests := []struct {
 		name    string
 		want    string

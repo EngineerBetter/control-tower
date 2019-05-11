@@ -9,87 +9,89 @@ vm_types:
   cloud_properties:
     machine_type: n1-standard-1
     root_disk_size_gb: 20
-    root_disk_type: pd-ssd
+    << : &common_properties
+      service_scopes: [cloud-platform]
+      root_disk_type: pd-ssd
 
 - name: concourse-web-medium
   cloud_properties:
     machine_type: n1-standard-2
     root_disk_size_gb: 20
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-web-large
   cloud_properties:
     machine_type: n1-standard-4
     root_disk_size_gb: 20
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-web-xlarge
   cloud_properties:
     machine_type: n1-standard-8
     root_disk_size_gb: 20
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-web-2xlarge
   cloud_properties:
     machine_type: n1-standard-16
     root_disk_size_gb: 20
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-medium
   cloud_properties:
     machine_type: n1-standard-1 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-large
   cloud_properties:
     machine_type: n1-standard-2 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-xlarge
   cloud_properties:
     machine_type: n1-standard-4 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-2xlarge
   cloud_properties:
     machine_type: n1-standard-8 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-4xlarge
   cloud_properties:
     machine_type: n1-standard-16 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-10xlarge
   cloud_properties:
     machine_type: n1-standard-32 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: concourse-16xlarge
   cloud_properties:
     machine_type: n1-standard-64 
     preemptible: true # 
     root_disk_size_gb: 200
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 - name: compilation
   cloud_properties:
     machine_type: n1-standard-2 
     preemptible: true # 
     root_disk_size_gb: 5
-    root_disk_type: pd-ssd
+    << : *common_properties
 
 disk_types:
 - name: default
