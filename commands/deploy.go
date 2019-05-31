@@ -178,6 +178,11 @@ var deployFlags = []cli.Flag{
 		EnvVar:      "RDS_SUBNET_RANGE2",
 		Destination: &initialDeployArgs.RDS2CIDR,
 	},
+	cli.StringSliceFlag{
+		Name:        "add-egress-port",
+		Usage:       "(optional for GCP) Additional egress port that concourse workers can connect to. Multiple invocations adds additional ports",
+		Value: &initialDeployArgs.EgressPorts,
+	},
 }
 
 func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider) error {

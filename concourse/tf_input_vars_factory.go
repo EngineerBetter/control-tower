@@ -85,6 +85,7 @@ func (f *GCPInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputV
 		DNSManagedZoneName: c.GetHostedZoneID(),
 		DNSRecordSetPrefix: c.GetHostedZoneRecordPrefix(),
 		ExternalIP:         c.GetSourceAccessIP(),
+		EgressPorts:        c.GetEgressPorts(),
 		GCPCredentialsJSON: f.credentialsPath,
 		Namespace:          c.GetNamespace(),
 		Project:            f.project,

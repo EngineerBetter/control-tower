@@ -161,6 +161,9 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	if deployArgs.WorkerTypeIsSet {
 		conf.WorkerType = deployArgs.WorkerType
 	}
+	if deployArgs.EgressPortsIsSet {
+		conf.EgressPorts = deployArgs.EgressPorts
+	}
 
 	var isDomainUpdated bool
 	if deployArgs.DomainIsSet {

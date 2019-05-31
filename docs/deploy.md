@@ -109,6 +109,12 @@ control-tower deploy \
 |:-|:-|:-|
 |`--add-tag key=value`|Add a tag to the VMs that form your `control-tower` deployment. Can be used multiple times in a single `deploy` command||
 
+## Egress Ports
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--add-egress-port number[-number]`|(optional for GCP) Add a port or port range to the firewall to allow outbound connections from internal VMs. Can be used multiple times in a single `deploy` command||
+
 ## Volatile Lifecycle VMs
 
 |**Flag**|**Description**|**Environment Variable**|

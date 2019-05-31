@@ -253,7 +253,7 @@ resource "google_compute_firewall" "from-private" {
   source_ranges = ["${var.private_cidr}"]
   allow {
     protocol = "tcp"
-    ports = ["6868","4222", "25250", "25555", "25777", "5555", "2222", "7777", "7788", "7799", "22", "3307", "8844", "8443"]
+    ports = ["6868","4222", "25250", "25555", "25777", "5555", "2222", "7777", "7788", "7799", "22", "3307", "8844", "8443" {{ range $port := .EgressPorts }}, "{{ $port }}" {{end}}]
   }
   allow {
     protocol = "udp"

@@ -60,6 +60,8 @@ type Args struct {
 	RDS1CIDRIsSet    bool
 	RDS2CIDR         string
 	RDS2CIDRIsSet    bool
+	EgressPorts      cli.StringSlice
+	EgressPortsIsSet bool
 }
 
 // MarkSetFlags is marking the IsSet DeployArgs
@@ -113,6 +115,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.RDS1CIDRIsSet = true
 			case "rds-subnet-range2":
 				a.RDS2CIDRIsSet = true
+			case "add-egress-port":
+				a.EgressPortsIsSet = true
 			default:
 				return fmt.Errorf("flag %q is not supported by deployment flags", f)
 			}
@@ -163,6 +167,10 @@ func (a Args) Validate() error {
 	}
 
 	if err := a.validateTags(); err != nil {
+		return err
+	}
+
+	if err := a.validateEgressPorts(); err != nil {
 		return err
 	}
 
@@ -243,6 +251,19 @@ func (a Args) validateTags() error {
 		}
 		if !m {
 			return fmt.Errorf("`%v` is not in the format `key=value`", tag)
+		}
+	}
+	return nil
+}
+
+func (a Args) validateEgressPorts() error {
+	for _, egress_port := range a.EgressPorts {
+		m, err := regexp.MatchString(`\d+(-\d+)?`, egress_port)
+		if err != nil {
+			return err
+		}
+		if !m {
+			return fmt.Errorf("`%v` is not in the format `number[-number]`", egress_port)
 		}
 	}
 	return nil

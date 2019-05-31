@@ -12,24 +12,25 @@ import (
 
 // InputVars holds all the parameters GCP IAAS needs
 type GCPInputVars struct {
-	AllowIPs           string
-	ConfigBucket       string
-	DBName             string
-	DBPassword         string
-	DBTier             string
-	DBUsername         string
-	Deployment         string
-	DNSManagedZoneName string
-	DNSRecordSetPrefix string
-	ExternalIP         string
-	GCPCredentialsJSON string
-	Namespace          string
-	PrivateCIDR        string
-	Project            string
-	PublicCIDR         string
-	Region             string
-	Tags               string
-	Zone               string
+	AllowIPs             string
+	ConfigBucket         string
+	DBName               string
+	DBPassword           string
+	DBTier               string
+	DBUsername           string
+	Deployment           string
+	DNSManagedZoneName   string
+	DNSRecordSetPrefix   string
+	EgressPorts        []string
+	ExternalIP           string
+	GCPCredentialsJSON   string
+	Namespace            string
+	PrivateCIDR          string
+	Project              string
+	PublicCIDR           string
+	Region               string
+	Tags                 string
+	Zone                 string
 }
 
 // ConfigureTerraform interpolates terraform contents and returns terraform config

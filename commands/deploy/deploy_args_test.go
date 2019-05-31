@@ -174,6 +174,25 @@ func TestDeployArgs_Validate(t *testing.T) {
 			expectedErr: "`not a real tag` is not in the format `key=value`",
 		},
 		{
+			name: "Egress ports can be a single number or range of numbers",
+			modification: func() Args {
+				args := defaultFields
+				args.EgressPorts = []string{"1234", "3456-7890"}
+				return args
+			},
+			wantErr:     false,
+		},
+		{
+			name: "Invalid egress ports should throw a helpful error",
+			modification: func() Args {
+				args := defaultFields
+				args.EgressPorts = []string{"not a port"}
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "`not a port` is not in the format `number[-number]`",
+		},
+		{
 			name: "Both public-subnet-range and private-subnet-range are required when either is provided",
 			modification: func() Args {
 				args := defaultFields
