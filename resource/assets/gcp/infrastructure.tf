@@ -83,7 +83,7 @@ provider "google" {
     credentials = "{{ .GCPCredentialsJSON }}"
     project = "{{ .Project }}"
     region = "${var.region}"
-    version = "~> 1.20"
+    version = "~> 2.8.0"
 }
 
 
@@ -109,53 +109,31 @@ resource "google_dns_record_set" "dns" {
 }
 {{end}}
 
-// route for nat
-resource "google_compute_route" "nat" {
-  name                   = "${var.deployment}-nat-route"
-  dest_range             = "0.0.0.0/0"
-  network                = "${google_compute_network.default.name}"
-  next_hop_instance      = "${google_compute_instance.nat-instance.name}"
-  next_hop_instance_zone = "${var.zone}"
-  priority               = 800
-  tags                   = ["no-ip"]
-  project                = "${var.project}"
+resource "google_compute_router" "nat-router" {
+  name    = "router"
+  region  = "${var.region}"
+  network = "${google_compute_network.default.self_link}"
+  bgp {
+    asn = 64514
+  }
 }
 
-// nat
-resource "google_compute_instance" "nat-instance" {
-  name         = "${var.deployment}-nat-instance"
-  machine_type = "n1-standard-1"
-  zone         = "${var.zone}"
-  project      = "${var.project}"
-
-  tags = ["nat", "internal"]
-
-  boot_disk {
-    initialize_params {
-      image = "ubuntu-1804-bionic-v20181222"
-    }
+resource "google_compute_router_nat" "worker-nat" {
+  name                               = "${var.deployment}-worker-nat"
+  project                            = "${var.project}"
+  region                             = "${var.region}"
+  router                             = "${google_compute_router.nat-router.name}"
+  nat_ips                            = ["${google_compute_address.nat_ip.*.self_link}"]
+  nat_ip_allocate_option             = "MANUAL_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+  subnetwork {
+    name                    = "${google_compute_subnetwork.private.self_link}"
+    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
-
-  network_interface {
-    subnetwork = "${google_compute_subnetwork.private.name}"
-    subnetwork_project = "${var.project}"
-    access_config {
-      // Ephemeral IP
-    }
+  log_config {
+    filter = "TRANSLATIONS_ONLY"
+    enable = true
   }
-
-  can_ip_forward = true
-
-  metadata_startup_script = <<EOT
-#!/bin/bash
-
-netif="$(ip r | awk '/default/ {print $5}')"
-
-echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
-sudo sysctl -p
-
-sudo iptables -t nat -A POSTROUTING -o "$netif" -j MASQUERADE
-EOT
 }
 
 resource "google_compute_network" "default" {
@@ -182,22 +160,10 @@ resource "google_compute_firewall" "director" {
   description = "Firewall for external access to BOSH director"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["external"]
-  source_ranges = ["${var.source_access_ip}/32", "${google_compute_instance.nat-instance.network_interface.0.access_config.0.nat_ip}/32"]
+  source_ranges = ["${var.source_access_ip}/32", "${google_compute_address.nat_ip.address}/32"]
   allow {
     protocol = "tcp"
     ports = ["6868", "25555", "22"]
-  }
-}
-
-resource "google_compute_firewall" "nat" {
-  name = "${var.deployment}-nat"
-  description = "Firewall for external access to NAT"
-  network     = "${google_compute_network.default.self_link}"
-  target_tags = ["nat"]
-  source_ranges = ["0.0.0.0/0"]
-  allow {
-    protocol = "tcp"
-    ports = ["80", "443"]
   }
 }
 
@@ -219,7 +185,7 @@ resource "google_compute_firewall" "atc-https" {
   description = "Firewall for external access to concourse atc"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["web"]
-  source_ranges = ["${google_compute_instance.nat-instance.network_interface.0.access_config.0.nat_ip}/32", "${google_compute_address.atc_ip.address}/32", {{ .AllowIPs }}]
+  source_ranges = ["${google_compute_address.nat_ip.address}/32", "${google_compute_address.atc_ip.address}/32", {{ .AllowIPs }}]
   allow {
     protocol = "tcp"
     ports = ["443", "8443"]
@@ -228,13 +194,19 @@ resource "google_compute_firewall" "atc-https" {
 
 resource "google_compute_firewall" "from-public" {
   name = "${var.deployment}-public"
-  description = "Control-Tower VMs firewall"
+  description = "Control-Tower firewall from public VMs"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["web", "external", "internal", "worker"]
   source_ranges = ["${var.public_cidr}"]
   allow {
     protocol = "tcp"
-    ports = ["6868","4222", "25250", "25555", "25777", "5555", "2222", "7777", "7788", "7799", "22"]
+    // "25250", "25777", "4222", "22" == BOSH
+    // https://github.com/cloudfoundry/bosh-deployment#security-groups
+    // 7777 == garden
+    // 7788 == baggageclaim
+    // 7799 == reaper
+    // 5555 == riemann
+    ports = ["25250", "25777", "4222", "22", "5555", "7777", "7788", "7799"]
   }
   allow {
     protocol = "udp"
@@ -247,13 +219,17 @@ resource "google_compute_firewall" "from-public" {
 
 resource "google_compute_firewall" "from-private" {
   name = "${var.deployment}-private"
-  description = "Control-Tower VMs firewall"
+  description = "Control-Tower firewall from private VMs"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["web", "external", "internal", "worker"]
   source_ranges = ["${var.private_cidr}"]
   allow {
     protocol = "tcp"
-    ports = ["6868","4222", "25250", "25555", "25777", "5555", "2222", "7777", "7788", "7799", "22", "3307", "8844", "8443"]
+    // "25250", "25777", "4222", "22" == BOSH
+    // https://github.com/cloudfoundry/bosh-deployment#security-groups
+    // 5555 == riemann
+    // 2222 == worker registration
+    ports = ["25250", "25777", "4222", "22", "5555", "2222"]
   }
   allow {
     protocol = "udp"
@@ -269,7 +245,7 @@ resource "google_compute_firewall" "atc-services" {
   description = "Firewall for external access to concourse atc"
   network     = "${google_compute_network.default.self_link}"
   target_tags = ["web"]
-  source_ranges = ["${google_compute_instance.nat-instance.network_interface.0.access_config.0.nat_ip}/32", "${google_compute_address.atc_ip.address}/32", {{ .AllowIPs }}]
+  source_ranges = ["${google_compute_address.nat_ip.address}/32", "${google_compute_address.atc_ip.address}/32", {{ .AllowIPs }}]
   allow {
     protocol = "tcp"
     ports = ["3000", "8844"]
@@ -330,12 +306,14 @@ resource "google_compute_address" "director" {
   name = "${var.deployment}-director-ip"
 }
 
+resource "google_compute_address" "nat_ip" {
+  name = "${var.deployment}-nat-ip"
+}
+
 resource "google_sql_database_instance" "director" {
   name = "${var.db_name}"
   database_version = "POSTGRES_9_6"
   region       = "${var.region}"
-
-  depends_on = ["google_compute_instance.nat-instance"]
 
   settings {
     tier = "${var.db_tier}"
@@ -344,18 +322,21 @@ resource "google_sql_database_instance" "director" {
     }
 
     ip_configuration {
-      authorized_networks = {
-        name = "atc_conf"
-        value = "${google_compute_address.atc_ip.address}/32"}
-
-      authorized_networks = {
-        name = "bosh"
-        value = "${google_compute_address.director.address}/32"
-      }
-      authorized_networks = {
-        name = "nat"
-        value = "${google_compute_instance.nat-instance.network_interface.0.access_config.0.nat_ip}/32"
-      }
+      ipv4_enabled = "true"
+      authorized_networks = [
+        {
+          name = "atc_conf"
+          value = "${google_compute_address.atc_ip.address}/32"
+        },
+        {
+          name = "bosh"
+          value = "${google_compute_address.director.address}/32"
+        },
+        {
+          name = "nat"
+          value = "${google_compute_address.nat_ip.address}/32"
+        }
+      ]
     }
   }
 }
@@ -417,7 +398,7 @@ output "db_name" {
 }
 
 output "nat_gateway_ip" {
-  value = "${google_compute_instance.nat-instance.network_interface.0.access_config.0.nat_ip}"
+  value = "${google_compute_address.nat_ip.address}"
 }
 
 output "server_ca_cert" {
