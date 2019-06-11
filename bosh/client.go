@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/EngineerBetter/control-tower/resource"
 	"io"
 	"os/exec"
+
+	"github.com/EngineerBetter/control-tower/resource"
 
 	"github.com/EngineerBetter/control-tower/iaas"
 
@@ -17,13 +18,15 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter -generate
+
 // StateFilename is default name for bosh-init state file
 const StateFilename = "director-state.json"
 
 // CredsFilename is default name for bosh-init creds file
 const CredsFilename = "director-creds.yml"
 
-//go:generate counterfeiter . IClient
+//counterfeiter:generate . IClient
 // IClient is a client for performing bosh-init commands
 type IClient interface {
 	Deploy([]byte, []byte, bool) ([]byte, []byte, error)

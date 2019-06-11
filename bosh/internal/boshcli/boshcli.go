@@ -17,7 +17,7 @@ import (
 	"github.com/EngineerBetter/control-tower/util/yaml"
 )
 
-//go:generate counterfeiter . ICLI
+//counterfeiter:generate . ICLI
 type ICLI interface {
 	CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) (*CreateEnvFiles, error)
 	RunAuthenticatedCommand(action, ip, password, ca string, detach bool, stdout io.Writer, flags ...string) error

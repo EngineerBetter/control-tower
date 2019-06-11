@@ -4,7 +4,7 @@ import (
 	"github.com/EngineerBetter/control-tower/util"
 )
 
-//go:generate counterfeiter . IClient
+//counterfeiter:generate . IClient
 // IClient represents client for interacting with a working directory
 type IClient interface {
 	SaveFileToWorkingDir(path string, contents []byte) (string, error)
