@@ -110,7 +110,7 @@ resource "google_dns_record_set" "dns" {
 {{end}}
 
 resource "google_compute_router" "nat-router" {
-  name    = "router"
+  name    = "${var.deployment}-router"
   region  = "${var.region}"
   network = "${google_compute_network.default.self_link}"
   bgp {
