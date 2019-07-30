@@ -68,7 +68,7 @@ type Config struct {
 	Tags               []string `json:"tags"`
 	TFStatePath        string   `json:"tf_state_path"`
 	Version            string   `json:"version"`
-	VMProvisioningType string   `json:vm_provisioning_type`
+	VMProvisioningType string   `json:"vm_provisioning_type"`
 	WorkerType         string   `json:"worker_type"`
 }
 
@@ -352,5 +352,5 @@ func (c Config) IsGithubAuthSet() bool {
 }
 
 func (c Config) IsSpot() bool {
-	return c.Spot
+	return c.VMProvisioningType == SPOT
 }
