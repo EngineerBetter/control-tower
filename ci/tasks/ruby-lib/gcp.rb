@@ -39,7 +39,7 @@ class GCP
   def cleanup(orphan)
     bucket = orphan.bucket
     if bucket.contents.empty?
-      bucket.delete_empty
+      bucket.delete
     else
       found_components = 0
       found_components += delete_components('compute instances', "labels.deployment:bosh AND labels.control-tower-project:#{orphan.project}", 'name')
@@ -126,9 +126,5 @@ class GCPBucket
 
   def delete
     `gsutil rm -r gs://#{name}`
-  end
-
-  def delete_empty
-    `gsutil rb gs://#{name}`
   end
 end
