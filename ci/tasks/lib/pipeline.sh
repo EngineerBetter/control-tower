@@ -36,8 +36,5 @@ function flyLogin() {
     --username "$username" \
     --password "$password"
 
-curl -k https://"$domain":3000
-
-fly --target system-test sync
-
+  fly --target system-test sync
 }

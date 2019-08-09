@@ -124,3 +124,6 @@ after_timestamp="$(date -d "$after" +"%s")"
 sleep 60
 
 assertPipelinesCanReadFromCredhub
+
+assertGrafanaPresent
+assertConcourseDashboardPresent
