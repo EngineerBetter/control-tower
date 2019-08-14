@@ -527,6 +527,13 @@ resource "aws_security_group" "atc" {
     protocol    = "tcp"
     cidr_blocks = ["${aws_eip.nat.public_ip}/32", "${aws_eip.atc.public_ip}/32", {{ .AllowIPs }}]
   }
+
+  ingress {
+    from_port   = 8086
+    to_port     = 8086
+    protocol    = "tcp"
+    cidr_blocks = ["${var.private_cidr}"]
+  }
 }
 
 resource "aws_route_table" "rds" {
