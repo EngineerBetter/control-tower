@@ -406,13 +406,6 @@ resource "aws_security_group" "vms" {
   }
 
   ingress {
-    from_port   = 5555
-    to_port     = 5555
-    protocol    = "tcp"
-    cidr_blocks = ["${var.network_cidr}"]
-  }
-
-  ingress {
     from_port   = 7777
     to_port     = 7777
     protocol    = "tcp"

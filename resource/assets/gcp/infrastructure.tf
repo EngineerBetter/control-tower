@@ -205,8 +205,7 @@ resource "google_compute_firewall" "from-public" {
     // 7777 == garden
     // 7788 == baggageclaim
     // 7799 == reaper
-    // 5555 == riemann
-    ports = ["25250", "25777", "4222", "22", "5555", "7777", "7788", "7799"]
+    ports = ["25250", "25777", "4222", "22", "7777", "7788", "7799"]
   }
   allow {
     protocol = "udp"
@@ -227,9 +226,9 @@ resource "google_compute_firewall" "from-private" {
     protocol = "tcp"
     // "25250", "25777", "4222", "22" == BOSH
     // https://github.com/cloudfoundry/bosh-deployment#security-groups
-    // 5555 == riemann
     // 2222 == worker registration
-    ports = ["25250", "25777", "4222", "22", "5555", "2222"]
+    // 8086 == telegraf
+    ports = ["25250", "25777", "4222", "22", "2222","8086"]
   }
   allow {
     protocol = "udp"
