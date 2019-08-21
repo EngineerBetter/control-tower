@@ -3,10 +3,12 @@ package bosh
 import (
 	"fmt"
 	"io/ioutil"
+	"net"
 	"os"
 	"strings"
 
 	"github.com/EngineerBetter/control-tower/db"
+	"github.com/apparentlymart/go-cidr/cidr"
 )
 
 func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, error) {
@@ -29,6 +31,16 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		return creds, err
 	}
 
+	publicCIDR := client.config.GetPublicCIDR()
+	_, pubCIDR, err1 := net.ParseCIDR(publicCIDR)
+	if err1 != nil {
+		return creds, err
+	}
+	atcPrivateIP, err := cidr.Host(pubCIDR, 7)
+	if err != nil {
+		return creds, err
+	}
+
 	vmap := map[string]interface{}{
 		"deployment_name":          concourseDeploymentName,
 		"domain":                   client.config.GetDomain(),
@@ -47,6 +59,7 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		"external_tls.certificate": client.config.GetConcourseCert(),
 		"external_tls.private_key": client.config.GetConcourseKey(),
 		"atc_encryption_key":       client.config.GetEncryptionKey(),
+		"web_static_ip":            atcPrivateIP.String(),
 	}
 
 	flagFiles := []string{
