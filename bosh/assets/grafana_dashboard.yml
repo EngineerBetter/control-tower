@@ -1818,6 +1818,10 @@ grafana_dashboard: |
                 {
                   "params": [],
                   "type": "sum"
+                },
+                {
+                  "params": [],
+                  "type": "difference"
                 }
               ]
             ],
@@ -4587,5 +4591,5 @@ grafana_dashboard: |
     "timezone": "browser",
     "title": "Concourse",
     "uid": "000000001",
-    "version": 2
+    "version": 0
   }
