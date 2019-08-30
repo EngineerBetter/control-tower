@@ -148,7 +148,11 @@ func (a *AWSProvider) CheckForWhitelistedIP(ip, securityGroup string) (bool, err
 			if err != nil {
 				return false, err
 			}
-			checkPorts(parsedCIDR, parsedIP, &port22, &port6868, &port25555, *entry.FromPort)
+			// support "All traffic rules"
+			if *entry.IpProtocol == "-1" {
+				return parsedCIDR.Contains(parsedIP), nil
+			}
+			checkPorts(parsedCIDR, parsedIP, &port22, &port6868, &port25555, *entry.FromPort, *entry.ToPort)
 		}
 	}
 
@@ -159,17 +163,28 @@ func (a *AWSProvider) CheckForWhitelistedIP(ip, securityGroup string) (bool, err
 	return false, nil
 }
 
-func checkPorts(cidr *net.IPNet, ip net.IP, port22, port6868, port25555 *bool, fromPort int64) {
+func checkPorts(cidr *net.IPNet, ip net.IP, port22, port6868, port25555 *bool, fromPort, toPort int64) {
 	if cidr.Contains(ip) {
-		switch fromPort {
-		case 22:
-			*port22 = true
-		case 6868:
-			*port6868 = true
-		case 25555:
-			*port25555 = true
+		// support ranges of ports
+		if toPort != fromPort {
+			*port22 = between(22, fromPort, toPort)
+			*port6868 = between(6868, fromPort, toPort)
+			*port25555 = between(25555, fromPort, toPort)
+		} else {
+			switch fromPort {
+			case 22:
+				*port22 = true
+			case 6868:
+				*port6868 = true
+			case 25555:
+				*port25555 = true
+			}
 		}
 	}
+}
+
+func between(value, lower, upper int64) bool {
+	return (value <= upper && value >= lower)
 }
 
 func checkInUseVolumes(ec2Client *ec2.EC2, volumes []*string) error {
