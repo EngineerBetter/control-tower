@@ -36,7 +36,7 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 	if err1 != nil {
 		return creds, err
 	}
-	atcPrivateIP, err := cidr.Host(pubCIDR, 7)
+	atcPrivateIP, err := cidr.Host(pubCIDR, 8)
 	if err != nil {
 		return creds, err
 	}

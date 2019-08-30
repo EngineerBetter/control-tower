@@ -206,7 +206,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 	publicCIDRGateway := pubGateway.String()
-	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{6, 7})
+	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{6, 8})
 	if err != nil {
 		return err
 	}
