@@ -11,4 +11,3 @@ source control-tower/ci/tasks/lib/pipeline.sh
 source control-tower/ci/tasks/lib/trap.sh
 source control-tower/ci/tasks/lib/credhub.sh
 source control-tower/ci/tasks/lib/grafana.sh
-source control-tower/ci/tasks/lib/domain.sh
