@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/set-flags.sh
 
