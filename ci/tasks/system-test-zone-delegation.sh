@@ -22,15 +22,11 @@ chmod +x ./cup
 
 if [ "$IAAS" = "AWS" ]
 then
-    # shellcheck disable=SC2034
-    domain="ct-delegation.engineerbetter.com"
+    args+=(--domain ct-delegation.engineerbetter.com)
 elif [ "$IAAS" = "GCP" ]
 then
-    # shellcheck disable=SC2034
-    domain="ct-delegation.gcp.engineerbetter.com"
+    args+=(--domain ct-delegation.gcp.engineerbetter.com)
 fi
-
-args+=(--domain "$domain")
 
 trapDefaultCleanup
 
