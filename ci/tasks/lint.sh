@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/set-flags.sh
 
@@ -11,7 +9,7 @@ mv control-tower/* "$GOPATH/src/github.com/EngineerBetter/control-tower"
 mv control-tower-ops/* "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
 cd "$GOPATH/src/github.com/EngineerBetter/control-tower" || exit 1
 
-go get -u all github.com/mattn/go-bindata/...
+go get -u github.com/mattn/go-bindata/...
 grep -lr --include=*.go --exclude-dir=vendor "go:generate go-bindata" . | xargs -I {} go generate {}
 gometalinter \
 --disable-all \
