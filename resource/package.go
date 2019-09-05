@@ -21,54 +21,48 @@ var resources map[string]Resource
 
 var (
 	// DirectorManifest statically defines director-manifest.yml contents
-	DirectorManifest = mustAssetString("assets/manifest.yml")
-
+	DirectorManifest = file.MustAssetString("assets/manifest.yml")
 	// AWSDirectorCloudConfig statically defines aws cloud-config.yml
-	AWSDirectorCloudConfig = mustAssetString("assets/aws/cloud-config.yml")
+	AWSDirectorCloudConfig = file.MustAssetString("assets/aws/cloud-config.yml")
 	// AWSCPIOps statically defines aws-cpi.yml contents
-	AWSCPIOps = mustAssetString("assets/aws/cpi.yml")
+	AWSCPIOps = file.MustAssetString("assets/aws/cpi.yml")
 	//GCPJumpboxUserOps statically defines gcp jumpbox-user.yml
-	GCPJumpboxUserOps = mustAssetString("assets/gcp/jumpbox-user.yml")
+	GCPJumpboxUserOps = file.MustAssetString("assets/gcp/jumpbox-user.yml")
 	// GCPDirectorCloudConfig statically defines gcp cloud-config.yml
-	GCPDirectorCloudConfig = mustAssetString("assets/gcp/cloud-config.yml")
+	GCPDirectorCloudConfig = file.MustAssetString("assets/gcp/cloud-config.yml")
 	// GCPCPIOps statically defines gcp-cpi.yml contents
-	GCPCPIOps = mustAssetString("assets/gcp/cpi.yml")
+	GCPCPIOps = file.MustAssetString("assets/gcp/cpi.yml")
 	// GCPExternalIPOps statically defines external-ip.yml contents
-	GCPExternalIPOps = mustAssetString("assets/gcp/external-ip.yml")
+	GCPExternalIPOps = file.MustAssetString("assets/gcp/external-ip.yml")
 	// GCPDirectorCustomOps statically defines custom-ops.yml contents
-	GCPDirectorCustomOps = mustAssetString("assets/gcp/custom-ops.yml")
+	GCPDirectorCustomOps = file.MustAssetString("assets/gcp/custom-ops.yml")
 
 	// AWSTerraformConfig holds the terraform conf for AWS
-	AWSTerraformConfig = mustAssetString("assets/aws/infrastructure.tf")
+	AWSTerraformConfig = file.MustAssetString("assets/aws/infrastructure.tf")
 
 	// GCPTerraformConfig holds the terraform conf for GCP
-	GCPTerraformConfig = mustAssetString("assets/gcp/infrastructure.tf")
+	GCPTerraformConfig = file.MustAssetString("assets/gcp/infrastructure.tf")
 
 	// ExternalIPOps statically defines external-ip.yml contents
-	ExternalIPOps = mustAssetString("assets/external-ip.yml")
+	ExternalIPOps = file.MustAssetString("assets/external-ip.yml")
 	// AWSDirectorCustomOps statically defines custom-ops.yml contents
-	AWSDirectorCustomOps = mustAssetString("assets/aws/custom-ops.yml")
+	AWSDirectorCustomOps = file.MustAssetString("assets/aws/custom-ops.yml")
 
 	// AWSReleaseVersions carries all versions of releases
-	AWSReleaseVersions = mustAssetString("../../control-tower-ops/ops/versions-aws.json")
+	AWSReleaseVersions = file.MustAssetString("../../control-tower-ops/ops/versions-aws.json")
 
 	// GCPReleaseVersions carries all versions of releases
-	GCPReleaseVersions = mustAssetString("../../control-tower-ops/ops/versions-gcp.json")
+	GCPReleaseVersions = file.MustAssetString("../../control-tower-ops/ops/versions-gcp.json")
 
 	// AddNewCa carries the ops file that adds a new CA required for cert rotation
-	AddNewCa = mustAssetString("assets/maintenance/add-new-ca.yml")
+	AddNewCa = file.MustAssetString("assets/maintenance/add-new-ca.yml")
 
 	// RemoveOldCa carries the ops file that removes the old CA required for cert rotation
-	RemoveOldCa = mustAssetString("assets/maintenance/remove-old-ca.yml")
+	RemoveOldCa = file.MustAssetString("assets/maintenance/remove-old-ca.yml")
 
 	// CleanupCerts moves renewed values of certs to old keys in director vars store
-	CleanupCerts = mustAssetString("assets/maintenance/cleanup-certs.yml")
+	CleanupCerts = file.MustAssetString("assets/maintenance/cleanup-certs.yml")
 )
-
-// NOTE(px) remove this in a later version of github.com/mattn/go-bindata
-func mustAssetString(name string) string {
-	return string(file.MustAsset(name))
-}
 
 func get(name string) Resource {
 	r, ok := resources[name]

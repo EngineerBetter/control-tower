@@ -9,7 +9,7 @@
 To build and test you'll need:
 
 - Golang 1.11+
-- to have installed `github.com/mattn/go-bindata`
+- to have installed `github.com/kevinburke/go-bindata`
 
 ### Building locally
 

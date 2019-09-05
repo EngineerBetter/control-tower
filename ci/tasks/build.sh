@@ -18,7 +18,7 @@ mv control-tower/* "$GOPATH/src/github.com/EngineerBetter/control-tower"
 mv control-tower-ops/* "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
 cd "$GOPATH/src/github.com/EngineerBetter/control-tower" || exit 1
 
-GOOS=linux go get -u github.com/mattn/go-bindata/...
+GOOS=linux go get -u github.com/kevinburke/go-bindata/...
 
 grep -lr --include=*.go --exclude-dir=vendor "go:generate go-bindata" . | xargs -I {} go generate {}
 go build -ldflags "
