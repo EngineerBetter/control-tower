@@ -12,6 +12,8 @@ groups:
   - system-test-m5
   - system-test-letsencrypt
   - system-test-options-and-destroy
+  - system-test-zone-delegation
+  - system-test-zone-delegation-gcp
   - system-test-options-and-destroy-gcp
   - system-test-letsencrypt-gcp
   - smoke-test-gcp
