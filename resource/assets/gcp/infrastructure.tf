@@ -101,7 +101,7 @@ data "google_dns_managed_zone" "dns_zone" {
 
 resource "google_dns_record_set" "dns" {
   managed_zone = "${data.google_dns_managed_zone.dns_zone.name}"
-  name = "${var.dns_record_set_prefix}.${data.google_dns_managed_zone.dns_zone.dns_name}"
+  name = "${var.dns_record_set_prefix}${data.google_dns_managed_zone.dns_zone.dns_name}"
   type    = "A"
   ttl     = 60
 

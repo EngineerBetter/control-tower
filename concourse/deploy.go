@@ -553,7 +553,15 @@ func (client *Client) setHostedZone(c config.ConfigView, domain string) (HostedZ
 		return zone, err
 	}
 	zone.HostedZoneID = hostedZoneID
-	zone.HostedZoneRecordPrefix = strings.TrimSuffix(domain, fmt.Sprintf(".%s", hostedZoneName))
+
+	if domain == hostedZoneName {
+		zone.HostedZoneRecordPrefix = ""
+	} else {
+		zone.HostedZoneRecordPrefix = strings.TrimSuffix(domain, fmt.Sprintf(".%s", hostedZoneName))
+		if c.GetIAAS() == "GCP" {
+			zone.HostedZoneRecordPrefix = fmt.Sprintf("%s.", zone.HostedZoneRecordPrefix)
+		}
+	}
 	zone.Domain = domain
 
 	_, err = client.stderr.Write([]byte(fmt.Sprintf(

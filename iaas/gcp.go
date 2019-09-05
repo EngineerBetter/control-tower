@@ -372,25 +372,25 @@ func (g *GCPProvider) FindLongestMatchingHostedZone(domain string) (string, stri
 		return "", "", err
 	}
 
-	var dnsNameFound, nameFound string
+	var zoneDnsName, zoneName string
 	req := cloudDNSService.ManagedZones.List(g.attrs["project"])
 	err = req.Pages(g.ctx, func(page *clouddns.ManagedZonesListResponse) error {
 		for _, zone := range page.ManagedZones {
 			name := zone.Name
 			dnsName := strings.TrimRight(zone.DnsName, ".")
-			if strings.HasSuffix(domain, dnsName) && len(dnsName) > len(dnsNameFound) {
-				dnsNameFound = dnsName
-				nameFound = name
+			if strings.HasSuffix(domain, dnsName) && len(dnsName) > len(zoneDnsName) {
+				zoneDnsName = dnsName
+				zoneName = name
 			}
 		}
 		return nil
 	})
 
-	if dnsNameFound == "" || nameFound == "" {
+	if zoneDnsName == "" || zoneName == "" {
 		return "", "", fmt.Errorf("dns zone for domain '%s' was not found in cloudDNS", domain)
 	}
 
-	return dnsNameFound, nameFound, err
+	return zoneDnsName, zoneName, err
 }
 
 func getCredentials() (string, string, error) {
