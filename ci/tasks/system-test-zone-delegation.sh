@@ -9,13 +9,9 @@ setDeploymentName del
 # Create empty array of args that is used in sourced setup functions
 args=()
 # shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/letsencrypt.sh
+# shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/assert-iaas.sh
-
-# shellcheck disable=SC1091
-[ "$IAAS" = "AWS" ] && { source control-tower/ci/tasks/lib/destroy.sh; }
-
-# shellcheck disable=SC1091
-[ "$IAAS" = "GCP" ] && { source control-tower/ci/tasks/lib/gcp-destroy.sh; }
 
 cp "$BINARY_PATH" ./cup
 chmod +x ./cup
@@ -41,8 +37,7 @@ sleep 60
 assertConcoursePresent
 assertGrafanaPresent
 
-recordDeployedState
+echo "Tests passed"
+
 echo "non-interactive destroy"
 ./cup --non-interactive destroy "$deployment" -iaas "$IAAS"
-sleep 180
-assertEverythingDeleted
