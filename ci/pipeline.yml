@@ -820,6 +820,7 @@ jobs:
   - system-test-m5
   - system-test-letsencrypt
   - system-test-options-and-destroy
+  - system-test-zone-delegation
   plan:
   - in_parallel:
     - get: control-tower
@@ -847,6 +848,7 @@ jobs:
   - system-test-update-gcp
   - system-test-letsencrypt-gcp
   - system-test-options-and-destroy-gcp
+  - system-test-zone-delegation-gcp
   plan:
   - in_parallel:
     - get: control-tower
