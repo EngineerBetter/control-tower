@@ -18,16 +18,17 @@ require (
 	github.com/lib/pq v1.0.0
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.6 // indirect
+	github.com/maxbrunsfeld/counterfeiter/v6 v6.2.2
 	github.com/miekg/dns v1.1.4 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/onsi/ginkgo v1.7.0
-	github.com/onsi/gomega v1.4.3
+	github.com/onsi/ginkgo v1.8.0
+	github.com/onsi/gomega v1.5.0
 	github.com/square/certstrap v1.1.1
 	github.com/stretchr/testify v1.3.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	github.com/xenolf/lego v2.2.0+incompatible
-	golang.org/x/crypto v0.0.0-20190228050851-31a38585487a
-	golang.org/x/net v0.0.0-20190227160552-c95aed5357e7
+	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
 	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421
 	google.golang.org/api v0.1.0
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect

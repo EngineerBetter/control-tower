@@ -18,7 +18,7 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 )
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter -generate
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
 
 // StateFilename is default name for bosh-init state file
 const StateFilename = "director-state.json"
