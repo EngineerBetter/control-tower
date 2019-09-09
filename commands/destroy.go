@@ -12,6 +12,7 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
 
@@ -83,7 +84,12 @@ func validateDestroyArgs(c *cli.Context, destroyArgs destroy.Args) (destroy.Args
 }
 
 func buildDestroyClient(name, version string, destroyArgs destroy.Args, provider iaas.Provider) (*concourse.Client, error) {
-	terraformClient, err := terraform.New(provider.IAAS(), terraform.DownloadTerraform())
+	versionFile, _ := provider.Choose(iaas.Choice{
+		AWS: resource.AWSVersionFile,
+		GCP: resource.GCPVersionFile,
+	}).([]byte)
+
+	terraformClient, err := terraform.New(provider.IAAS(), terraform.DownloadTerraform(versionFile))
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +116,7 @@ func buildDestroyClient(name, version string, destroyArgs destroy.Args, provider
 		util.EightRandomLetters,
 		util.GenerateSSHKeyPair,
 		version,
+		versionFile,
 	)
 
 	return client, nil

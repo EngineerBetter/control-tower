@@ -15,13 +15,17 @@ resource_pools:
   network: default
   env:
     bosh:
-      password: '*'
       mbus:
         cert: ((mbus_bootstrap_ssl))
+      password: '*'
+      blobstores:
+      - options:
+          blobstore_path: /var/vcap/micro_bosh/data/cache
+        provider: local
 
 disk_pools:
 - name: disks
-  disk_size: 65_536
+  disk_size: 65536
 
 networks:
 - name: default
@@ -38,7 +42,7 @@ instance_groups:
   jobs:
   - {name: bpm, release: bpm}
   - {name: nats, release: bosh}
-  - {name: postgres-9.4, release: bosh}
+  - {name: postgres-10, release: bosh}
   - {name: blobstore, release: bosh}
   - {name: director, release: bosh}
   - {name: health_monitor, release: bosh}
@@ -55,8 +59,7 @@ instance_groups:
           blobstores:
           - provider: dav
             options:
-              # todo switch to using https
-              endpoint: http://((internal_ip)):25250
+              endpoint: https://((internal_ip)):25250
               user: agent
               password: ((blobstore_agent_password))
               tls:
@@ -143,8 +146,10 @@ cloud_provider:
   mbus: https://mbus:((mbus_bootstrap_password))@((internal_ip)):6868
   cert: ((mbus_bootstrap_ssl))
   properties:
-    agent: {mbus: "https://mbus:((mbus_bootstrap_password))@0.0.0.0:6868"}
-    blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
+    agent: {mbus: https://mbus:((mbus_bootstrap_password))@0.0.0.0:6868}
+    blobstore:
+      path: /var/vcap/micro_bosh/data/cache
+      provider: local
     ntp: *ntp
 
 variables:

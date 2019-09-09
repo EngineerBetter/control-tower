@@ -101,6 +101,7 @@ func (client *GCPClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		Spot:               client.config.IsSpot(),
 		PublicKey:          client.config.GetPublicKey(),
 		CustomOperations:   customOps,
+		VersionFile:        client.versionFile,
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
 	if err1 != nil {
 		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
@@ -162,7 +163,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	}
 	publicCIDRGateway := pubGateway.String()
 
-	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{6, 7})
+	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{8})
 	if err != nil {
 		return err
 	}

@@ -13,6 +13,7 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
 	"gopkg.in/urfave/cli.v1"
@@ -106,7 +107,12 @@ func validateInfoArgs(c *cli.Context, infoArgs info.Args) (info.Args, error) {
 }
 
 func buildInfoClient(name, version string, infoArgs info.Args, provider iaas.Provider) (*concourse.Client, error) {
-	terraformClient, err := terraform.New(provider.IAAS(), terraform.DownloadTerraform())
+	versionFile, _ := provider.Choose(iaas.Choice{
+		AWS: resource.AWSVersionFile,
+		GCP: resource.GCPVersionFile,
+	}).([]byte)
+
+	terraformClient, err := terraform.New(provider.IAAS(), terraform.DownloadTerraform(versionFile))
 	if err != nil {
 		return nil, err
 	}
@@ -133,6 +139,7 @@ func buildInfoClient(name, version string, infoArgs info.Args, provider iaas.Pro
 		util.EightRandomLetters,
 		util.GenerateSSHKeyPair,
 		version,
+		versionFile,
 	)
 
 	return client, nil

@@ -40,15 +40,27 @@ type AWSEnvironment struct {
 	S3AWSSecretAccessKey  string
 	SecretAccessKey       string
 	Spot                  bool
+	VersionFile           []byte
 	VMSecurityGroup       string
 	WorkerType            string
+}
+
+func (e AWSEnvironment) ExtractBOSHandBPM() (util.Resource, util.Resource, error) {
+	resources := util.ParseVersionResources(e.VersionFile)
+
+	boshRelease := util.GetResource("bosh", resources)
+	bpmRelease := util.GetResource("bpm", resources)
+
+	return boshRelease, bpmRelease, nil
 }
 
 // ConfigureDirectorManifestCPI interpolates all the Environment parameters and
 // required release versions into ready to use Director manifest
 func (e AWSEnvironment) ConfigureDirectorManifestCPI() (string, error) {
-	cpiResource := resource.AWSCPI()
-	stemcellResource := resource.AWSStemcell()
+	resources := util.ParseVersionResources(e.VersionFile)
+
+	cpiResource := util.GetResource("cpi", resources)
+	stemcellResource := util.GetResource("stemcell", resources)
 
 	var allOperations = resource.AWSCPIOps + resource.ExternalIPOps + resource.AWSDirectorCustomOps
 

@@ -86,12 +86,13 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				directorClient = &workingdirfakes.FakeIClient{}
 				outputs := &terraformfakes.FakeOutputs{}
 				provider := setupFakeAwsProvider()
+				creds := []byte("some creds")
 
 				stdout = gbytes.NewBuffer()
 				stderr = gbytes.NewBuffer()
 
 				buildClient = func() bosh.IClient {
-					client, err := bosh.NewAWSClient(configInput, outputs, directorClient, stdout, stderr, provider, boshCLI)
+					client, err := bosh.NewAWSClient(configInput, outputs, directorClient, stdout, stderr, provider, boshCLI, creds)
 					Expect(err).ToNot(HaveOccurred())
 					return client
 				}

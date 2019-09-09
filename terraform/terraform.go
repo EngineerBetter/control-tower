@@ -3,6 +3,7 @@ package terraform
 import (
 	"bytes"
 	"crypto/rand"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
+	"github.com/EngineerBetter/control-tower/util"
 )
 
 // InputVars exposes ConfigureDirectorManifestCPI
@@ -65,9 +67,16 @@ func Path(path string) Option {
 }
 
 // DownloadTerraform returns the dowloaded CLI path Option
-func DownloadTerraform() Option {
+func DownloadTerraform(versionFile []byte) Option {
 	return func(c *CLI) error {
-		path, err := resource.DownloadTerraformCLI()
+		var binaries map[string]util.BinaryPaths
+
+		err := json.Unmarshal(versionFile, &binaries)
+		if err != nil {
+			return err
+		}
+
+		path, err := util.DownloadTerraformCLI(binaries)
 		c.Path = path
 		return err
 	}
@@ -75,8 +84,6 @@ func DownloadTerraform() Option {
 
 // New provides a new CLI
 func New(iaas iaas.Name, ops ...Option) (*CLI, error) {
-	// @Note: we will have to switch between IAASs at this point
-	// for the time being we are using directly AWS
 	cli := &CLI{
 		execCmd: exec.Command,
 		Path:    "terraform",

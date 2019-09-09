@@ -156,6 +156,7 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		Spot:                 client.config.IsSpot(),
 		WorkerType:           client.config.GetWorkerType(),
 		CustomOperations:     customOps,
+		VersionFile:          client.versionFile,
 	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
 	if err1 != nil {
 		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
@@ -206,7 +207,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		return err
 	}
 	publicCIDRGateway := pubGateway.String()
-	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{6, 8})
+	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{8})
 	if err != nil {
 		return err
 	}

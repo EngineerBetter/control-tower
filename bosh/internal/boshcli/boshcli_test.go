@@ -8,6 +8,7 @@ import (
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 	"github.com/EngineerBetter/control-tower/internal/fakeexec"
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -33,6 +34,10 @@ func (c mockIAASConfig) ConfigureDirectorCloudConfig() (string, error) {
 
 func (c mockIAASConfig) ConcourseStemcellURL() (string, error) {
 	return "a Stemcell", nil
+}
+
+func (c mockIAASConfig) ExtractBOSHandBPM() (util.Resource, util.Resource, error) {
+	return util.Resource{}, util.Resource{}, nil
 }
 
 func TestCLI_CreateEnv(t *testing.T) {

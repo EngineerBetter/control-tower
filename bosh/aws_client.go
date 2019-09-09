@@ -16,18 +16,19 @@ import (
 
 //AWSClient is an AWS specific implementation of IClient
 type AWSClient struct {
-	config     config.ConfigView
-	outputs    terraform.Outputs
-	workingdir workingdir.IClient
-	db         Opener
-	stdout     io.Writer
-	stderr     io.Writer
-	provider   iaas.Provider
-	boshCLI    boshcli.ICLI
+	config      config.ConfigView
+	outputs     terraform.Outputs
+	workingdir  workingdir.IClient
+	db          Opener
+	stdout      io.Writer
+	stderr      io.Writer
+	provider    iaas.Provider
+	boshCLI     boshcli.ICLI
+	versionFile []byte
 }
 
 //NewAWSClient returns a AWS specific implementation of IClient
-func NewAWSClient(config config.ConfigView, outputs terraform.Outputs, workingdir workingdir.IClient, stdout, stderr io.Writer, provider iaas.Provider, boshCLI boshcli.ICLI) (IClient, error) {
+func NewAWSClient(config config.ConfigView, outputs terraform.Outputs, workingdir workingdir.IClient, stdout, stderr io.Writer, provider iaas.Provider, boshCLI boshcli.ICLI, versionFile []byte) (IClient, error) {
 	directorPublicIP, err := outputs.Get("DirectorPublicIP")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get DirectorPublicIP from terraform outputs: [%v]", err)
@@ -67,14 +68,15 @@ func NewAWSClient(config config.ConfigView, outputs terraform.Outputs, workingdi
 	}
 
 	return &AWSClient{
-		config:     config,
-		outputs:    outputs,
-		workingdir: workingdir,
-		db:         db,
-		stdout:     stdout,
-		stderr:     stderr,
-		provider:   provider,
-		boshCLI:    boshCLI,
+		config:      config,
+		outputs:     outputs,
+		workingdir:  workingdir,
+		db:          db,
+		stdout:      stdout,
+		stderr:      stderr,
+		provider:    provider,
+		boshCLI:     boshCLI,
+		versionFile: versionFile,
 	}, nil
 }
 

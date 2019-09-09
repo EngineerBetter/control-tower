@@ -45,10 +45,6 @@ type IClient interface {
 	Maintain(maintain.Args) error
 }
 
-//go:generate go-bindata -pkg $GOPACKAGE ../../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json ../../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json
-var awsVersionFile = MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json")
-var gcpVersionFile = MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json")
-
 // New returns a new client
 func NewClient(
 	provider iaas.Provider,
@@ -65,11 +61,8 @@ func NewClient(
 	passwordGenerator func(int) string,
 	eightRandomLetters func() string,
 	sshGenerator func() ([]byte, []byte, string, error),
-	version string) *Client {
-	v, _ := provider.Choose(iaas.Choice{
-		AWS: awsVersionFile,
-		GCP: gcpVersionFile,
-	}).([]byte)
+	version string,
+	versionFile []byte) *Client {
 	return &Client{
 		acmeClientConstructor: acmeClientConstructor,
 		boshClientFactory:     boshClientFactory,
@@ -87,7 +80,7 @@ func NewClient(
 		tfCLI:                 tfCLI,
 		tfInputVarsFactory:    tfInputVarsFactory,
 		version:               version,
-		versionFile:           v,
+		versionFile:           versionFile,
 	}
 }
 

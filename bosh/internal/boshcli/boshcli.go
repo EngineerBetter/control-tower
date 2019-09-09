@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/EngineerBetter/control-tower/resource"
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/EngineerBetter/control-tower/util/yaml"
 )
 
@@ -50,6 +50,7 @@ type IAASEnvironment interface {
 	ConfigureDirectorManifestCPI() (string, error)
 	ConfigureDirectorCloudConfig() (string, error)
 	ConcourseStemcellURL() (string, error)
+	ExtractBOSHandBPM() (util.Resource, util.Resource, error)
 }
 
 func concourseStemcellURL(releaseVersionsFile, urlFormat string) (string, error) {
@@ -165,8 +166,10 @@ func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, 
 		return &CreateEnvFiles{}, err
 	}
 
-	boshResource := resource.BOSHRelease()
-	bpmResource := resource.BPMRelease()
+	boshResource, bpmResource, err := config.ExtractBOSHandBPM()
+	if err != nil {
+		return &CreateEnvFiles{}, err
+	}
 
 	vars := map[string]interface{}{
 		"director_name":            "bosh",

@@ -7,8 +7,6 @@ import (
 	"io"
 	"os/exec"
 
-	"github.com/EngineerBetter/control-tower/resource"
-
 	"github.com/EngineerBetter/control-tower/iaas"
 
 	"github.com/EngineerBetter/control-tower/terraform"
@@ -16,6 +14,7 @@ import (
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 	"github.com/EngineerBetter/control-tower/bosh/internal/workingdir"
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/util"
 )
 
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
@@ -54,7 +53,14 @@ func New(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.
 		return nil, err
 	}
 
-	boshCLIPath, err := resource.DownloadBOSHCLI()
+	var binaries map[string]util.BinaryPaths
+
+	err = json.Unmarshal(versionFile, &binaries)
+	if err != nil {
+		return nil, err
+	}
+
+	boshCLIPath, err := util.DownloadBOSHCLI(binaries)
 	if err != nil {
 		return nil, fmt.Errorf("failed to determine BOSH CLI path: [%v]", err)
 	}
@@ -63,9 +69,9 @@ func New(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.
 
 	switch provider.IAAS() {
 	case iaas.AWS:
-		return NewAWSClient(config, outputs, workingdir, stdout, stderr, provider, boshCLI)
+		return NewAWSClient(config, outputs, workingdir, stdout, stderr, provider, boshCLI, versionFile)
 	case iaas.GCP:
-		return NewGCPClient(config, outputs, workingdir, stdout, stderr, provider, boshCLI)
+		return NewGCPClient(config, outputs, workingdir, stdout, stderr, provider, boshCLI, versionFile)
 	}
 	return nil, fmt.Errorf("IAAS not supported: %s", provider.IAAS())
 }

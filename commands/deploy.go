@@ -18,6 +18,7 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util"
 
 	cli "gopkg.in/urfave/cli.v1"
@@ -376,7 +377,12 @@ func validateRDSSubnetSize(cidr *net.IPNet) bool {
 }
 
 func buildClient(name, version string, deployArgs deploy.Args, provider iaas.Provider) (*concourse.Client, error) {
-	terraformClient, err := terraform.New(provider.IAAS(), terraform.DownloadTerraform())
+	versionFile, _ := provider.Choose(iaas.Choice{
+		AWS: resource.AWSVersionFile,
+		GCP: resource.GCPVersionFile,
+	}).([]byte)
+
+	terraformClient, err := terraform.New(provider.IAAS(), terraform.DownloadTerraform(versionFile))
 	if err != nil {
 		return nil, err
 	}
@@ -403,6 +409,7 @@ func buildClient(name, version string, deployArgs deploy.Args, provider iaas.Pro
 		util.EightRandomLetters,
 		util.GenerateSSHKeyPair,
 		version,
+		versionFile,
 	)
 
 	return client, nil

@@ -77,15 +77,6 @@
   path: /instance_groups/name=bosh/jobs/name=blobstore
 
 - type: remove
-  path: /cloud_provider/cert
-
-- type: remove
-  path: /resource_pools/name=vms/env/bosh/mbus
-
-- type: remove
-  path: /variables/name=mbus_bootstrap_ssl
-
-- type: remove
   path: /instance_groups/name=bosh/properties/director/workers
 
 - type: replace

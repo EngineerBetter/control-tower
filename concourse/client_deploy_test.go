@@ -237,6 +237,8 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		stdout = gbytes.NewBuffer()
 		stderr = gbytes.NewBuffer()
 
+		versionFile := []byte("some versions")
+
 		buildClient = func() concourse.IClient {
 			return concourse.NewClient(
 				awsClient,
@@ -257,6 +259,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
 				"some version",
+				versionFile,
 			)
 		}
 
@@ -280,6 +283,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
 				"some version",
+				versionFile,
 			)
 		}
 	})

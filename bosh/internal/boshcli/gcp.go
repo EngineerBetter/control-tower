@@ -31,12 +31,27 @@ type GCPEnvironment struct {
 	PublicSubnetwork    string
 	Spot                bool
 	Tags                string
+	VersionFile         []byte
 	Zone                string
+}
+
+func (e GCPEnvironment) ExtractBOSHandBPM() (util.Resource, util.Resource, error) {
+	resources := util.ParseVersionResources(e.VersionFile)
+
+	boshRelease := util.GetResource("bosh", resources)
+	bpmRelease := util.GetResource("bpm", resources)
+
+	return boshRelease, bpmRelease, nil
 }
 
 // ConfigureDirectorManifestCPI interpolates all the Environment parameters and
 // required release versions into ready to use Director manifest
 func (e GCPEnvironment) ConfigureDirectorManifestCPI() (string, error) {
+	resources := util.ParseVersionResources(e.VersionFile)
+
+	cpiResource := util.GetResource("cpi", resources)
+	stemcellResource := util.GetResource("stemcell", resources)
+
 	gcpCreds, err := ioutil.ReadFile(e.GcpCredentialsJSON)
 	if err != nil {
 		return "", err
@@ -45,6 +60,11 @@ func (e GCPEnvironment) ConfigureDirectorManifestCPI() (string, error) {
 	var allOperations = resource.GCPCPIOps + resource.GCPExternalIPOps + resource.GCPDirectorCustomOps + resource.GCPJumpboxUserOps
 
 	return yaml.Interpolate(resource.DirectorManifest, allOperations+e.CustomOperations, map[string]interface{}{
+		"cpi_url":              cpiResource.URL,
+		"cpi_version":          cpiResource.Version,
+		"cpi_sha1":             cpiResource.SHA1,
+		"stemcell_url":         stemcellResource.URL,
+		"stemcell_sha1":        stemcellResource.SHA1,
 		"internal_cidr":        e.InternalCIDR,
 		"internal_gw":          e.InternalGW,
 		"internal_ip":          e.InternalIP,
