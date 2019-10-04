@@ -162,12 +162,12 @@ func determineBucketName(iaas iaas.Provider, namespace, project string) (string,
 	namespaceBucketName := createBucketName(deployment(project), namespace)
 
 	foundRegionNamedBucket, err := iaas.BucketExists(regionBucketName)
+	var foundNamespacedBucket bool
 	if err != nil {
-		return "", false, err
-	}
-	foundNamespacedBucket, err := iaas.BucketExists(namespaceBucketName)
-	if err != nil {
-		return "", false, err
+		foundNamespacedBucket, err = iaas.BucketExists(namespaceBucketName)
+		if err != nil {
+			return "", false, err
+		}
 	}
 
 	foundOne := foundRegionNamedBucket || foundNamespacedBucket
