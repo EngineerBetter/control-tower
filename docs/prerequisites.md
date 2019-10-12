@@ -28,7 +28,7 @@ If you'd like to run control-tower with it's own IAM account, create a user with
 
 ### GCP
 
-- The environment variable `GOOGLE_APPLICATION_CREDENTIALS_CONTENTS` set to the path to a GCP credentials json file
+- The environment variable `GOOGLE_APPLICATION_CREDENTIALS` set to the path to a GCP credentials json file
 
 On GCP you must also ensure the following APIs are activated in your project:
 
