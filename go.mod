@@ -1,7 +1,8 @@
 module github.com/EngineerBetter/control-tower
 
 require (
-	cloud.google.com/go v0.36.0
+	cloud.google.com/go v0.47.0 // indirect
+	cloud.google.com/go/storage v1.0.0
 	github.com/GoogleCloudPlatform/cloudsql-proxy v0.0.0-20190129172621-c8b1d7a94ddf
 	github.com/apparentlymart/go-cidr v1.0.0
 	github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf
@@ -27,10 +28,10 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	github.com/xenolf/lego v2.2.0+incompatible
-	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
-	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421
-	google.golang.org/api v0.1.0
+	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
+	google.golang.org/api v0.9.0
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.2.2

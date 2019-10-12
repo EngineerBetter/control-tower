@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All rights reserved.
+// Copyright 2019 Google LLC.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -6,13 +6,39 @@
 
 // Package sqladmin provides access to the Cloud SQL Admin API.
 //
-// See https://cloud.google.com/sql/docs/reference/latest
+// For product documentation, see: https://cloud.google.com/sql/docs/reference/latest
+//
+// Creating a client
 //
 // Usage example:
 //
 //   import "google.golang.org/api/sqladmin/v1beta4"
 //   ...
-//   sqladminService, err := sqladmin.New(oauthHttpClient)
+//   ctx := context.Background()
+//   sqladminService, err := sqladmin.NewService(ctx)
+//
+// In this example, Google Application Default Credentials are used for authentication.
+//
+// For information on how to create and obtain Application Default Credentials, see https://developers.google.com/identity/protocols/application-default-credentials.
+//
+// Other authentication options
+//
+// By default, all available scopes (see "Constants") are used to authenticate. To restrict scopes, use option.WithScopes:
+//
+//   sqladminService, err := sqladmin.NewService(ctx, option.WithScopes(sqladmin.SqlserviceAdminScope))
+//
+// To use an API key for authentication (note: some APIs do not support API keys), use option.WithAPIKey:
+//
+//   sqladminService, err := sqladmin.NewService(ctx, option.WithAPIKey("AIza..."))
+//
+// To use an OAuth token (e.g., a user token obtained via a three-legged OAuth flow), use option.WithTokenSource:
+//
+//   config := &oauth2.Config{...}
+//   // ...
+//   token, err := config.Exchange(ctx, ...)
+//   sqladminService, err := sqladmin.NewService(ctx, option.WithTokenSource(config.TokenSource(ctx, token)))
+//
+// See https://godoc.org/google.golang.org/api/option/ for details on options.
 package sqladmin // import "google.golang.org/api/sqladmin/v1beta4"
 
 import (
@@ -29,6 +55,8 @@ import (
 
 	gensupport "google.golang.org/api/gensupport"
 	googleapi "google.golang.org/api/googleapi"
+	option "google.golang.org/api/option"
+	htransport "google.golang.org/api/transport/http"
 )
 
 // Always reference these packages, just in case the auto-generated code
@@ -59,6 +87,33 @@ const (
 	SqlserviceAdminScope = "https://www.googleapis.com/auth/sqlservice.admin"
 )
 
+// NewService creates a new Service.
+func NewService(ctx context.Context, opts ...option.ClientOption) (*Service, error) {
+	scopesOption := option.WithScopes(
+		"https://www.googleapis.com/auth/cloud-platform",
+		"https://www.googleapis.com/auth/sqlservice.admin",
+	)
+	// NOTE: prepend, so we don't override user-specified scopes.
+	opts = append([]option.ClientOption{scopesOption}, opts...)
+	client, endpoint, err := htransport.NewClient(ctx, opts...)
+	if err != nil {
+		return nil, err
+	}
+	s, err := New(client)
+	if err != nil {
+		return nil, err
+	}
+	if endpoint != "" {
+		s.BasePath = endpoint
+	}
+	return s, nil
+}
+
+// New creates a new Service. It uses the provided http.Client for requests.
+//
+// Deprecated: please use NewService instead.
+// To provide a custom HTTP client, use option.WithHTTPClient.
+// If you are using google.golang.org/api/googleapis/transport.APIKey, use option.WithAPIKey with NewService instead.
 func New(client *http.Client) (*Service, error) {
 	if client == nil {
 		return nil, errors.New("client is nil")
@@ -258,6 +313,9 @@ type BackupConfiguration struct {
 	// Kind: This is always sql#backupConfiguration.
 	Kind string `json:"kind,omitempty"`
 
+	// Location: The location of the backup.
+	Location string `json:"location,omitempty"`
+
 	// ReplicationLogArchivingEnabled: Reserved for future use.
 	ReplicationLogArchivingEnabled bool `json:"replicationLogArchivingEnabled,omitempty"`
 
@@ -316,6 +374,9 @@ type BackupRun struct {
 
 	// Kind: This is always sql#backupRun.
 	Kind string `json:"kind,omitempty"`
+
+	// Location: The location of the backup.
+	Location string `json:"location,omitempty"`
 
 	// SelfLink: The URI of this resource.
 	SelfLink string `json:"selfLink,omitempty"`
@@ -598,9 +659,17 @@ type DatabaseInstance struct {
 	// DatabaseVersion: The database engine type and version. The
 	// databaseVersion field can not be changed after instance creation.
 	// MySQL Second Generation instances: MYSQL_5_7 (default) or MYSQL_5_6.
-	// PostgreSQL instances: POSTGRES_9_6 MySQL First Generation instances:
-	// MYSQL_5_6 (default) or MYSQL_5_5
+	// PostgreSQL instances: POSTGRES_9_6 (default) or POSTGRES_11 Beta.
+	// MySQL First Generation instances: MYSQL_5_6 (default) or MYSQL_5_5
 	DatabaseVersion string `json:"databaseVersion,omitempty"`
+
+	// DiskEncryptionConfiguration: Disk encryption configuration specific
+	// to an instance. Applies only to Second Generation instances.
+	DiskEncryptionConfiguration *DiskEncryptionConfiguration `json:"diskEncryptionConfiguration,omitempty"`
+
+	// DiskEncryptionStatus: Disk encryption status specific to an instance.
+	// Applies only to Second Generation instances.
+	DiskEncryptionStatus *DiskEncryptionStatus `json:"diskEncryptionStatus,omitempty"`
 
 	// Etag: This field is deprecated and will be removed from a future
 	// version of the API. Use the settings.settingsVersion field instead.
@@ -668,6 +737,9 @@ type DatabaseInstance struct {
 
 	// ReplicaNames: The replicas of the instance.
 	ReplicaNames []string `json:"replicaNames,omitempty"`
+
+	// RootPassword: Initial root password. Use only on creation.
+	RootPassword string `json:"rootPassword,omitempty"`
 
 	// SelfLink: The URI of this resource.
 	SelfLink string `json:"selfLink,omitempty"`
@@ -931,11 +1003,72 @@ func (s *DemoteMasterMySqlReplicaConfiguration) MarshalJSON() ([]byte, error) {
 	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
 }
 
+// DiskEncryptionConfiguration: Disk encryption configuration.
+type DiskEncryptionConfiguration struct {
+	// Kind: This is always sql#diskEncryptionConfiguration.
+	Kind string `json:"kind,omitempty"`
+
+	// KmsKeyName: KMS key resource name
+	KmsKeyName string `json:"kmsKeyName,omitempty"`
+
+	// ForceSendFields is a list of field names (e.g. "Kind") to
+	// unconditionally include in API requests. By default, fields with
+	// empty values are omitted from API requests. However, any non-pointer,
+	// non-interface field appearing in ForceSendFields will be sent to the
+	// server regardless of whether the field is empty or not. This may be
+	// used to include empty fields in Patch requests.
+	ForceSendFields []string `json:"-"`
+
+	// NullFields is a list of field names (e.g. "Kind") to include in API
+	// requests with the JSON null value. By default, fields with empty
+	// values are omitted from API requests. However, any field with an
+	// empty value appearing in NullFields will be sent to the server as
+	// null. It is an error if a field in this list has a non-empty value.
+	// This may be used to include null fields in Patch requests.
+	NullFields []string `json:"-"`
+}
+
+func (s *DiskEncryptionConfiguration) MarshalJSON() ([]byte, error) {
+	type NoMethod DiskEncryptionConfiguration
+	raw := NoMethod(*s)
+	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
+}
+
+// DiskEncryptionStatus: Disk encryption status.
+type DiskEncryptionStatus struct {
+	// Kind: This is always sql#diskEncryptionStatus.
+	Kind string `json:"kind,omitempty"`
+
+	// KmsKeyVersionName: KMS key version used to encrypt the Cloud SQL
+	// instance disk
+	KmsKeyVersionName string `json:"kmsKeyVersionName,omitempty"`
+
+	// ForceSendFields is a list of field names (e.g. "Kind") to
+	// unconditionally include in API requests. By default, fields with
+	// empty values are omitted from API requests. However, any non-pointer,
+	// non-interface field appearing in ForceSendFields will be sent to the
+	// server regardless of whether the field is empty or not. This may be
+	// used to include empty fields in Patch requests.
+	ForceSendFields []string `json:"-"`
+
+	// NullFields is a list of field names (e.g. "Kind") to include in API
+	// requests with the JSON null value. By default, fields with empty
+	// values are omitted from API requests. However, any field with an
+	// empty value appearing in NullFields will be sent to the server as
+	// null. It is an error if a field in this list has a non-empty value.
+	// This may be used to include null fields in Patch requests.
+	NullFields []string `json:"-"`
+}
+
+func (s *DiskEncryptionStatus) MarshalJSON() ([]byte, error) {
+	type NoMethod DiskEncryptionStatus
+	raw := NoMethod(*s)
+	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
+}
+
 // ExportContext: Database instance export context.
 type ExportContext struct {
 	// CsvExportOptions: Options for exporting data as CSV.
-	// Exporting in CSV format using the Cloud SQL Admin API is not
-	// supported for PostgreSQL instances.
 	CsvExportOptions *ExportContextCsvExportOptions `json:"csvExportOptions,omitempty"`
 
 	// Databases: Databases to be exported.
@@ -944,15 +1077,14 @@ type ExportContext struct {
 	// fileType is CSV, you can specify one database, either by using this
 	// property or by using the csvExportOptions.selectQuery property, which
 	// takes precedence over this property.
-	// PostgreSQL instances: If fileType is SQL, you must specify one
-	// database to be exported. A fileType of CSV is not supported for
-	// PostgreSQL instances.
+	// PostgreSQL instances: Specify exactly one database to be exported. If
+	// fileType is CSV, this database must match the database used in the
+	// csvExportOptions.selectQuery property.
 	Databases []string `json:"databases,omitempty"`
 
 	// FileType: The file type for the specified uri.
 	// SQL: The file contains SQL statements.
 	// CSV: The file contains CSV data.
-	// CSV is not supported for PostgreSQL instances.
 	FileType string `json:"fileType,omitempty"`
 
 	// Kind: This is always sql#exportContext.
@@ -992,10 +1124,7 @@ func (s *ExportContext) MarshalJSON() ([]byte, error) {
 	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
 }
 
-// ExportContextCsvExportOptions: Options for exporting data as
-// CSV.
-// Exporting in CSV format using the Cloud SQL Admin API is not
-// supported for PostgreSQL instances.
+// ExportContextCsvExportOptions: Options for exporting data as CSV.
 type ExportContextCsvExportOptions struct {
 	// SelectQuery: The select query used to extract the data.
 	SelectQuery string `json:"selectQuery,omitempty"`
@@ -1138,6 +1267,9 @@ type Flag struct {
 	// Second Generation instances.
 	AppliesTo []string `json:"appliesTo,omitempty"`
 
+	// InBeta: True if the flag is only released in Beta.
+	InBeta bool `json:"inBeta,omitempty"`
+
 	// Kind: This is always sql#flag.
 	Kind string `json:"kind,omitempty"`
 
@@ -1222,8 +1354,6 @@ func (s *FlagsListResponse) MarshalJSON() ([]byte, error) {
 // ImportContext: Database instance import context.
 type ImportContext struct {
 	// CsvImportOptions: Options for importing data as CSV.
-	// Importing CSV data using the Cloud SQL Admin API is not supported for
-	// PostgreSQL instances.
 	CsvImportOptions *ImportContextCsvImportOptions `json:"csvImportOptions,omitempty"`
 
 	// Database: The target database for the import. If fileType is SQL,
@@ -1235,12 +1365,10 @@ type ImportContext struct {
 	// FileType: The file type for the specified uri.
 	// SQL: The file contains SQL statements.
 	// CSV: The file contains CSV data.
-	// Importing CSV data using the Cloud SQL Admin API is not supported for
-	// PostgreSQL instances.
 	FileType string `json:"fileType,omitempty"`
 
-	// ImportUser: The PostgreSQL user for this import operation. Defaults
-	// to cloudsqlsuperuser. PostgreSQL instances only.
+	// ImportUser: The PostgreSQL user for this import operation. PostgreSQL
+	// instances only.
 	ImportUser string `json:"importUser,omitempty"`
 
 	// Kind: This is always sql#importContext.
@@ -1276,10 +1404,7 @@ func (s *ImportContext) MarshalJSON() ([]byte, error) {
 	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
 }
 
-// ImportContextCsvImportOptions: Options for importing data as
-// CSV.
-// Importing CSV data using the Cloud SQL Admin API is not supported for
-// PostgreSQL instances.
+// ImportContextCsvImportOptions: Options for importing data as CSV.
 type ImportContextCsvImportOptions struct {
 	// Columns: The columns to which CSV data is imported. If not specified,
 	// all columns of the database table are loaded with CSV data.
@@ -1682,10 +1807,11 @@ type IpMapping struct {
 	// available when the IP is scheduled to be retired.
 	TimeToRetire string `json:"timeToRetire,omitempty"`
 
-	// Type: The type of this IP address. A PRIMARY address is an address
-	// that can accept incoming connections. An OUTGOING address is the
-	// source address of connections originating from the instance, if
-	// supported.
+	// Type: The type of this IP address. A PRIMARY address is a public
+	// address that can accept incoming connections. A PRIVATE address is a
+	// private address that can accept incoming connections. An OUTGOING
+	// address is the source address of connections originating from the
+	// instance, if supported.
 	Type string `json:"type,omitempty"`
 
 	// ForceSendFields is a list of field names (e.g. "IpAddress") to
@@ -2146,6 +2272,9 @@ type RestoreBackupContext struct {
 
 	// Kind: This is always sql#restoreBackupContext.
 	Kind string `json:"kind,omitempty"`
+
+	// Project: The full project ID of the source instance.
+	Project string `json:"project,omitempty"`
 
 	// ForceSendFields is a list of field names (e.g. "BackupRunId") to
 	// unconditionally include in API requests. By default, fields with
@@ -2819,6 +2948,7 @@ func (c *BackupRunsDeleteCall) Header() http.Header {
 
 func (c *BackupRunsDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -2979,6 +3109,7 @@ func (c *BackupRunsGetCall) Header() http.Header {
 
 func (c *BackupRunsGetCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -3132,6 +3263,7 @@ func (c *BackupRunsInsertCall) Header() http.Header {
 
 func (c *BackupRunsInsertCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -3306,6 +3438,7 @@ func (c *BackupRunsListCall) Header() http.Header {
 
 func (c *BackupRunsListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -3481,6 +3614,7 @@ func (c *DatabasesDeleteCall) Header() http.Header {
 
 func (c *DatabasesDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -3641,6 +3775,7 @@ func (c *DatabasesGetCall) Header() http.Header {
 
 func (c *DatabasesGetCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -3793,6 +3928,7 @@ func (c *DatabasesInsertCall) Header() http.Header {
 
 func (c *DatabasesInsertCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -3950,6 +4086,7 @@ func (c *DatabasesListCall) Header() http.Header {
 
 func (c *DatabasesListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4096,6 +4233,7 @@ func (c *DatabasesPatchCall) Header() http.Header {
 
 func (c *DatabasesPatchCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4255,6 +4393,7 @@ func (c *DatabasesUpdateCall) Header() http.Header {
 
 func (c *DatabasesUpdateCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4424,6 +4563,7 @@ func (c *FlagsListCall) Header() http.Header {
 
 func (c *FlagsListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4554,6 +4694,7 @@ func (c *InstancesAddServerCaCall) Header() http.Header {
 
 func (c *InstancesAddServerCaCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4695,6 +4836,7 @@ func (c *InstancesCloneCall) Header() http.Header {
 
 func (c *InstancesCloneCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4841,6 +4983,7 @@ func (c *InstancesDeleteCall) Header() http.Header {
 
 func (c *InstancesDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -4982,6 +5125,7 @@ func (c *InstancesDemoteMasterCall) Header() http.Header {
 
 func (c *InstancesDemoteMasterCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -5131,6 +5275,7 @@ func (c *InstancesExportCall) Header() http.Header {
 
 func (c *InstancesExportCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -5278,6 +5423,7 @@ func (c *InstancesFailoverCall) Header() http.Header {
 
 func (c *InstancesFailoverCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -5436,6 +5582,7 @@ func (c *InstancesGetCall) Header() http.Header {
 
 func (c *InstancesGetCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -5580,6 +5727,7 @@ func (c *InstancesImportCall) Header() http.Header {
 
 func (c *InstancesImportCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -5725,6 +5873,7 @@ func (c *InstancesInsertCall) Header() http.Header {
 
 func (c *InstancesInsertCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -5895,6 +6044,7 @@ func (c *InstancesListCall) Header() http.Header {
 
 func (c *InstancesListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6080,6 +6230,7 @@ func (c *InstancesListServerCasCall) Header() http.Header {
 
 func (c *InstancesListServerCasCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6226,6 +6377,7 @@ func (c *InstancesPatchCall) Header() http.Header {
 
 func (c *InstancesPatchCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6373,6 +6525,7 @@ func (c *InstancesPromoteReplicaCall) Header() http.Header {
 
 func (c *InstancesPromoteReplicaCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6512,6 +6665,7 @@ func (c *InstancesResetSslConfigCall) Header() http.Header {
 
 func (c *InstancesResetSslConfigCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6650,6 +6804,7 @@ func (c *InstancesRestartCall) Header() http.Header {
 
 func (c *InstancesRestartCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6790,6 +6945,7 @@ func (c *InstancesRestoreBackupCall) Header() http.Header {
 
 func (c *InstancesRestoreBackupCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -6940,6 +7096,7 @@ func (c *InstancesRotateServerCaCall) Header() http.Header {
 
 func (c *InstancesRotateServerCaCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -7086,6 +7243,7 @@ func (c *InstancesStartReplicaCall) Header() http.Header {
 
 func (c *InstancesStartReplicaCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -7224,6 +7382,7 @@ func (c *InstancesStopReplicaCall) Header() http.Header {
 
 func (c *InstancesStopReplicaCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -7364,6 +7523,7 @@ func (c *InstancesTruncateLogCall) Header() http.Header {
 
 func (c *InstancesTruncateLogCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -7514,6 +7674,7 @@ func (c *InstancesUpdateCall) Header() http.Header {
 
 func (c *InstancesUpdateCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -7672,6 +7833,7 @@ func (c *OperationsGetCall) Header() http.Header {
 
 func (c *OperationsGetCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -7840,6 +8002,7 @@ func (c *OperationsListCall) Header() http.Header {
 
 func (c *OperationsListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8017,6 +8180,7 @@ func (c *SslCertsCreateEphemeralCall) Header() http.Header {
 
 func (c *SslCertsCreateEphemeralCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8166,6 +8330,7 @@ func (c *SslCertsDeleteCall) Header() http.Header {
 
 func (c *SslCertsDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8327,6 +8492,7 @@ func (c *SslCertsGetCall) Header() http.Header {
 
 func (c *SslCertsGetCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8480,6 +8646,7 @@ func (c *SslCertsInsertCall) Header() http.Header {
 
 func (c *SslCertsInsertCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8637,6 +8804,7 @@ func (c *SslCertsListCall) Header() http.Header {
 
 func (c *SslCertsListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8788,6 +8956,7 @@ func (c *TiersListCall) Header() http.Header {
 
 func (c *TiersListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -8923,6 +9092,7 @@ func (c *UsersDeleteCall) Header() http.Header {
 
 func (c *UsersDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -9077,6 +9247,7 @@ func (c *UsersInsertCall) Header() http.Header {
 
 func (c *UsersInsertCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -9234,6 +9405,7 @@ func (c *UsersListCall) Header() http.Header {
 
 func (c *UsersListCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
@@ -9385,6 +9557,7 @@ func (c *UsersUpdateCall) Header() http.Header {
 
 func (c *UsersUpdateCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders := make(http.Header)
+	reqHeaders.Set("x-goog-api-client", "gl-go/1.11.0 gdcl/20190802")
 	for k, v := range c.header_ {
 		reqHeaders[k] = v
 	}
