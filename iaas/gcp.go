@@ -194,10 +194,13 @@ func (g *GCPProvider) LoadFile(bucket, path string) ([]byte, error) {
 
 func (g *GCPProvider) WriteFile(bucket, path string, contents []byte) error {
 	wc := g.storage.Bucket(bucket).Object(path).NewWriter(g.ctx)
-	defer wc.Close()
 
 	if _, err := wc.Write(contents); err != nil {
-		return err
+		return fmt.Errorf("failed to write %s to bucket: [%s]", path, err)
+	}
+
+	if err := wc.Close(); err != nil {
+		return fmt.Errorf("failed to close writer for %s: [%s]", path, err)
 	}
 
 	return nil
