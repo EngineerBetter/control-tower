@@ -213,7 +213,7 @@ resource "aws_route" "internet_access" {
   depends_on = ["aws_internet_gateway.default"]
 
     tags {
-    name = "${var.deployment}"
+    Name = "${var.deployment}"
     control-tower-project = "${var.project}"
   }
 }
@@ -279,7 +279,7 @@ resource "aws_eip" "director" {
   depends_on = ["aws_internet_gateway.default"]
 
     tags {
-    name = "${var.deployment}-director"
+    Name = "${var.deployment}-director"
     control-tower-project = "${var.project}"
   }
 }
@@ -289,7 +289,7 @@ resource "aws_eip" "atc" {
   depends_on = ["aws_internet_gateway.default"]
 
     tags {
-    name = "${var.deployment}-atc"
+    Name = "${var.deployment}-atc"
     control-tower-project = "${var.project}"
   }
 }
@@ -299,7 +299,7 @@ resource "aws_eip" "nat" {
   depends_on = ["aws_internet_gateway.default"]
 
     tags {
-    name = "${var.deployment}-nat"
+    Name = "${var.deployment}-nat"
     control-tower-project = "${var.project}"
   }
 }
