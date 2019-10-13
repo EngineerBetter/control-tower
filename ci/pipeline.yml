@@ -55,6 +55,7 @@ resource_types:
   type: docker-image
   source:
     repository: ljfranklin/terraform-resource
+    tag: latest
 
 resources:
 - name: this-pipeline
