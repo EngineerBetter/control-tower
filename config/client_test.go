@@ -3,9 +3,10 @@ package config_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 	"reflect"
 	"testing"
+
+	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 
 	. "github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/iaas"
@@ -186,7 +187,7 @@ func TestNew(t *testing.T) {
 				if name == "control-tower-aProject-someNamespace-config" {
 					return true, nil
 				}
-				return false, nil
+				return false, fmt.Errorf("an error")
 			},
 		},
 		{
