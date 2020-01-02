@@ -31,7 +31,7 @@ The goal of Control Tower is to be the world's easiest way to deploy and operate
 
 In just one command you can deploy a new Concourse environment for your team, on either AWS or GCP. Your Control Tower deployment will *upgrade itself* and self-heal, restoring the underlying VMs if needed. Using the same command-line tool you can do things like manage DNS, scale your environment, or manage firewall policy. CredHub is provided for secrets management and Grafana for viewing your Concourse metrics.
 
-You can keep up to date on Control Tower announcements by reading the [EngineerBetter Blog](http://www.engineerbetter.com/blog/) and by joining the discussion on our [Community Slack](https://join.slack.com/t/concourse-up/shared_invite/enQtNDMzNjY1MjczNDU3LTA1NzIxYTZkYjFkMjA2ODBmY2E2OTM3OGE3YTc2OGViNTMxYTY4MjYwNGNjOTAxNDNiOGE5NzhmMTQ2NWVhNzQ).
+You can keep up to date on Control Tower announcements by reading the [EngineerBetter Blog](http://www.engineerbetter.com/blog/) and by joining the discussion on our [Community Slack](https://join.slack.com/t/concourse-up/shared_invite/enQtNDMzNjY1MjczNDU3LWVkZDllYjE0NTI2M2NkMjM5ZWY0NGM1MzM2N2VhYzgxN2NkM2I0ZDdiOGUxMjRkZjg3ZGQwOWIwNTNjMmU3OTg).
 
 ## Features
 
