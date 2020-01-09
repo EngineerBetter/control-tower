@@ -9,6 +9,7 @@ groups:
   - smoke-test
   - system-test
   - system-test-update
+  - system-test-rds-ca
   - system-test-m5
   - system-test-letsencrypt
   - system-test-options-and-destroy
@@ -392,6 +393,26 @@ jobs:
         text: |
           <!channel> Control-Tower *((branch))* branch *system-test-gcp* failure!
 
+- name: system-test-rds-ca
+  serial_groups:
+  - system-test-rds-ca
+  serial: true
+  plan:
+  - in_parallel: *system-test-gets
+  - task: run-system-test-rds-ca
+    file: control-tower/ci/tasks/system-test-rds-ca.yml
+    params:
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
+      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      IAAS: AWS
+    on_failure:
+      put: slack-alert
+      params:
+        channel: "#integrations"
+        text: |
+          <!channel> Control-Tower *((branch))* branch *system-test-rds-ca* failure!
+
 - name: system-test-update
   serial_groups:
   - system-test-update
@@ -592,6 +613,7 @@ jobs:
       passed: &system-tests
       - system-test
       - system-test-update
+      - system-test-rds-ca
       - system-test-m5
       - system-test-letsencrypt
       - system-test-options-and-destroy
@@ -819,6 +841,7 @@ jobs:
   - smoke-test
   - system-test
   - system-test-update
+  - system-test-rds-ca
   - system-test-m5
   - system-test-letsencrypt
   - system-test-options-and-destroy
