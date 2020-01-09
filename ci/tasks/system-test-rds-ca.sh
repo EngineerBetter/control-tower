@@ -26,18 +26,6 @@ config=$(./cup info --json "$deployment")
 [[ -n $config ]]
 domain=$(echo "$config" | jq -r '.config.domain')
 
-echo "Waiting for bosh lock to become available"
-wait_time=0
-until [[ $(bosh locks --json | jq -r '.Tables[].Rows | length') -eq 0 ]]; do
-  (( ++wait_time ))
-  if [[ $wait_time -ge 10 ]]; then
-    echo "Waited too long for lock" && exit 1
-  fi
-  printf '.'
-  sleep 60
-done
-echo "Bosh lock available - Proceeding"
-
 echo "Changing to new cert"
 aws --region "$region" s3 cp "s3://control-tower-$deployment-$region-config/terraform.tfstate" terraform.tfstate
 db_identifier="$(jq -r '.modules[0].resources."aws_db_instance.default".primary.id' < terraform.tfstate)"
