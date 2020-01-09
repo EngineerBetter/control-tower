@@ -45,7 +45,7 @@ aws rds modify-db-instance --db-instance-identifier "$db_identifier" --ca-certif
 
 echo "Waiting for CA cert to change"
 wait_time=0
-until [[ $(aws --region $region rds describe-db-instances --db-instance-identifier="$db_identifier" | jq -r '.DBInstances[0].PendingModifiedValues') == '{}' ]]; do
+until [[ $(aws --region "$region" rds describe-db-instances --db-instance-identifier="$db_identifier" | jq -r '.DBInstances[0].PendingModifiedValues') == '{}' ]]; do
   (( ++wait_time ))
   if [[ $wait_time -ge 24 ]]; then
     echo "Waited too long for AWS to effect CA cert change" && exit 1
@@ -56,6 +56,7 @@ done
 echo "AWS have changed the CA cert - proceeding"
 
 config=$(./cup info --json "$deployment")
+# shellcheck disable=SC2034
 domain=$(echo "$config" | jq -r '.config.domain')
 # shellcheck disable=SC2034
 username=$(echo "$config" | jq -r '.config.concourse_username')
