@@ -43,6 +43,9 @@ until [[ $(aws --region "$region" rds describe-db-instances --db-instance-identi
 done
 echo "AWS have changed the CA cert - proceeding"
 
+echo "Sleeping for one minute whilst database connections are re-established"
+sleep 60
+
 config=$(./cup info --json "$deployment")
 # shellcheck disable=SC2034
 domain=$(echo "$config" | jq -r '.config.domain')
