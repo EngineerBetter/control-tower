@@ -12,14 +12,13 @@
     url: ((stemcell_url))
     sha1: ((stemcell_sha1))
 
-# Configure AWS sizes
 - type: replace
   path: /resource_pools/name=vms/cloud_properties?
   value:
-    instance_type: m4.xlarge
+    instance_type: m5.xlarge
     ephemeral_disk:
       type: gp2
-      size: 25_000
+      size: 25000
     availability_zone: ((az))
 
 - type: replace
@@ -32,7 +31,6 @@
   value:
     subnet: ((subnet_id))
 
-# Enable registry job
 - type: replace
   path: /instance_groups/name=bosh/jobs/-
   value:
@@ -44,7 +42,7 @@
   value:
     address: ((internal_ip))
     host: ((internal_ip))
-    db: # todo remove
+    db:
       host: 127.0.0.1
       user: postgres
       password: ((postgres_password))
@@ -58,7 +56,6 @@
     password: ((registry_password))
     port: 25777
 
-# Add CPI job
 - type: replace
   path: /instance_groups/name=bosh/jobs/-
   value: &cpi_job

@@ -62,7 +62,7 @@ func (e AWSEnvironment) ConfigureDirectorManifestCPI() (string, error) {
 	cpiResource := util.GetResource("cpi", resources)
 	stemcellResource := util.GetResource("stemcell", resources)
 
-	var allOperations = resource.AWSCPIOps + resource.ExternalIPOps + resource.AWSDirectorCustomOps
+	var allOperations = resource.AWSCPIOps + resource.AWSExternalIPOps + resource.AWSBlobstoreOps + resource.AWSDirectorCustomOps
 
 	return yaml.Interpolate(resource.DirectorManifest, allOperations+e.CustomOperations, map[string]interface{}{
 		"cpi_url":                  cpiResource.URL,

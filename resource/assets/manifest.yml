@@ -147,9 +147,6 @@ cloud_provider:
   cert: ((mbus_bootstrap_ssl))
   properties:
     agent: {mbus: https://mbus:((mbus_bootstrap_password))@0.0.0.0:6868}
-    blobstore:
-      path: /var/vcap/micro_bosh/data/cache
-      provider: local
     ntp: *ntp
 
 variables:

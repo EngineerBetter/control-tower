@@ -13,8 +13,12 @@ var (
 	AWSDirectorCloudConfig = file.MustAssetString("assets/aws/cloud-config.yml")
 	// AWSCPIOps statically defines aws-cpi.yml contents
 	AWSCPIOps = file.MustAssetString("assets/aws/cpi.yml")
-	//GCPJumpboxUserOps statically defines gcp jumpbox-user.yml
-	GCPJumpboxUserOps = file.MustAssetString("assets/gcp/jumpbox-user.yml")
+	// ExternalIPOps statically defines external-ip.yml contents
+	AWSExternalIPOps = file.MustAssetString("assets/aws/external-ip.yml")
+	// AWSDirectorCustomOps statically defines custom-ops.yml contents
+	AWSDirectorCustomOps = file.MustAssetString("assets/aws/custom-ops.yml")
+	// AWSBlobstoreOps defines s3-blobstore-ops.yml contents
+	AWSBlobstoreOps = file.MustAssetString("assets/aws/s3-blobstore-ops.yml")
 	// GCPDirectorCloudConfig statically defines gcp cloud-config.yml
 	GCPDirectorCloudConfig = file.MustAssetString("assets/gcp/cloud-config.yml")
 	// GCPCPIOps statically defines gcp-cpi.yml contents
@@ -23,17 +27,14 @@ var (
 	GCPExternalIPOps = file.MustAssetString("assets/gcp/external-ip.yml")
 	// GCPDirectorCustomOps statically defines custom-ops.yml contents
 	GCPDirectorCustomOps = file.MustAssetString("assets/gcp/custom-ops.yml")
+	//GCPJumpboxUserOps statically defines gcp jumpbox-user.yml
+	GCPJumpboxUserOps = file.MustAssetString("assets/gcp/jumpbox-user.yml")
 
 	// AWSTerraformConfig holds the terraform conf for AWS
 	AWSTerraformConfig = file.MustAssetString("assets/aws/infrastructure.tf")
 
 	// GCPTerraformConfig holds the terraform conf for GCP
 	GCPTerraformConfig = file.MustAssetString("assets/gcp/infrastructure.tf")
-
-	// ExternalIPOps statically defines external-ip.yml contents
-	ExternalIPOps = file.MustAssetString("assets/external-ip.yml")
-	// AWSDirectorCustomOps statically defines custom-ops.yml contents
-	AWSDirectorCustomOps = file.MustAssetString("assets/aws/custom-ops.yml")
 
 	// AWSReleaseVersions carries all versions of releases
 	AWSReleaseVersions = file.MustAssetString("../../control-tower-ops/ops/versions-aws.json")
