@@ -1,3 +1,4 @@
+---
 - type: replace
   path: /releases/-
   value:

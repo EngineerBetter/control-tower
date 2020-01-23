@@ -31,7 +31,7 @@ require (
 	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
-	golang.org/x/tools/gopls v0.2.2 // indirect
+	golang.org/x/tools v0.0.0-20191206201009-952e2c076240 // indirect
 	google.golang.org/api v0.9.0
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0

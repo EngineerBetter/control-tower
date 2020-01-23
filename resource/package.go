@@ -29,7 +29,8 @@ var (
 	GCPDirectorCustomOps = file.MustAssetString("assets/gcp/custom-ops.yml")
 	//GCPJumpboxUserOps statically defines gcp jumpbox-user.yml
 	GCPJumpboxUserOps = file.MustAssetString("assets/gcp/jumpbox-user.yml")
-
+	// GCPBlobstoreOps defines gcs-blobstore-ops.yml contents
+	GCPBlobstoreOps = file.MustAssetString("assets/gcp/gcs-blobstore-ops.yml")
 	// AWSTerraformConfig holds the terraform conf for AWS
 	AWSTerraformConfig = file.MustAssetString("assets/aws/infrastructure.tf")
 

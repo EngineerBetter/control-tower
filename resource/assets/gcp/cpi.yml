@@ -13,7 +13,6 @@
     url: ((stemcell_url))
     sha1: ((stemcell_sha1))
 
-# Configure sizes
 - type: replace
   path: /resource_pools/name=vms/cloud_properties?
   value:
@@ -24,7 +23,8 @@
 
 - type: replace
   path: /disk_pools/name=disks/cloud_properties?
-  value: {type: pd-standard}
+  value:
+    type: pd-standard
 
 - type: replace
   path: /networks/name=default/subnets/0/cloud_properties?
@@ -34,7 +34,6 @@
     ephemeral_external_ip: false
     tags: ((tags))
 
-# Add CPI job
 - type: replace
   path: /instance_groups/name=bosh/jobs/-
   value: &cpi_job
@@ -59,7 +58,6 @@
   path: /cloud_provider/properties/google?
   value: *cpi_conf
 
-# Use GCP NTP
 - type: replace
   path: /instance_groups/name=bosh/properties/ntp
   value: &ntp [169.254.169.254]
