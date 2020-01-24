@@ -22,11 +22,21 @@ var _ = Describe("Client", func() {
 	var directorClient *workingdirfakes.FakeIClient
 	var stdout, stderr *gbytes.Buffer
 	var configInput config.Config
+	var terraformOutputs *terraformfakes.FakeOutputs
+	var provider *iaasfakes.FakeProvider
+	var versionFile []byte
 
 	var setupFakeAwsProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
 		provider.DBTypeStub = func(size string) string {
-			return "db.t2." + size
+			switch size {
+			case "small":
+				return "db-g1-small"
+			case "medium":
+				return "db-custom-2-4096"
+			default:
+				return "big-db-is-big"
+			}
 		}
 		provider.RegionReturns("eu-west-1")
 		provider.IAASReturns(iaas.AWS)
@@ -44,6 +54,33 @@ var _ = Describe("Client", func() {
 			return "", "", errors.New("hosted zone not found")
 		}
 		return provider
+	}
+
+	var setupFakeGcpProvider = func() *iaasfakes.FakeProvider {
+		provider := &iaasfakes.FakeProvider{}
+		provider.DBTypeStub = func(size string) string {
+			return "db.t2." + size
+		}
+		provider.RegionReturns("eu-west-1")
+		provider.IAASReturns(iaas.GCP)
+		provider.CheckForWhitelistedIPStub = func(ip, securityGroup string) (bool, error) {
+			if ip == "1.2.3.4" {
+				return false, nil
+			}
+			return true, nil
+		}
+		provider.FindLongestMatchingHostedZoneStub = func(subdomain string) (string, string, error) {
+			if subdomain == "ci.google.com" {
+				return "google.com", "ABC123", nil
+			}
+
+			return "", "", errors.New("hosted zone not found")
+		}
+		return provider
+	}
+
+	var setupUnknownProvider = func() *iaasfakes.FakeProvider {
+		return &iaasfakes.FakeProvider{}
 	}
 
 	BeforeEach(func() {
@@ -79,20 +116,123 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		}
 	})
 
+	Describe("New", func() {
+		Context("When provider is AWS", func() {
+			JustBeforeEach(func() {
+				boshCLI = &boshclifakes.FakeICLI{}
+				directorClient = &workingdirfakes.FakeIClient{}
+				terraformOutputs = &terraformfakes.FakeOutputs{}
+				provider = setupFakeAwsProvider()
+
+				stdout = gbytes.NewBuffer()
+				stderr = gbytes.NewBuffer()
+			})
+
+			Context("When Bosh CLI url is in versionFile", func() {
+				JustBeforeEach(func() {
+					versionFile = []byte(`{
+						"bosh-cli": {
+							"mac": "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.0.1-darwin-amd64",
+							"linux": "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.0.1-linux-amd64"
+						}
+					}`)
+				})
+
+				It("returns an AWSClient", func() {
+					client, err := bosh.New(configInput, terraformOutputs, stdout, stderr, provider, versionFile)
+					Expect(err).ToNot(HaveOccurred())
+					Expect(client).To(BeAssignableToTypeOf(&bosh.AWSClient{}))
+				})
+			})
+
+			Context("When Bosh CLI url is not in versionFile", func() {
+				JustBeforeEach(func() {
+					versionFile = []byte(`{}`)
+				})
+
+				It("returns an appropriate error", func() {
+					_, err := bosh.New(configInput, terraformOutputs, stdout, stderr, provider, versionFile)
+					Expect(err.Error()).To(HavePrefix("failed to determine BOSH CLI path:"))
+				})
+			})
+		})
+		Context("When provider is GCP", func() {
+			JustBeforeEach(func() {
+				boshCLI = &boshclifakes.FakeICLI{}
+				directorClient = &workingdirfakes.FakeIClient{}
+				terraformOutputs = &terraformfakes.FakeOutputs{}
+				provider = setupFakeGcpProvider()
+
+				stdout = gbytes.NewBuffer()
+				stderr = gbytes.NewBuffer()
+			})
+
+			Context("When Bosh CLI url is in versionFile", func() {
+				JustBeforeEach(func() {
+					versionFile = []byte(`{
+						"bosh-cli": {
+							"mac": "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.0.1-darwin-amd64",
+							"linux": "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.0.1-linux-amd64"
+						}
+					}`)
+				})
+
+				It("returns an AWSClient", func() {
+					client, err := bosh.New(configInput, terraformOutputs, stdout, stderr, provider, versionFile)
+					Expect(err).ToNot(HaveOccurred())
+					Expect(client).To(BeAssignableToTypeOf(&bosh.GCPClient{}))
+				})
+			})
+
+			Context("When Bosh CLI url is not in versionFile", func() {
+				JustBeforeEach(func() {
+					versionFile = []byte(`{}`)
+				})
+
+				It("returns an appropriate error", func() {
+					_, err := bosh.New(configInput, terraformOutputs, stdout, stderr, provider, versionFile)
+					Expect(err.Error()).To(HavePrefix("failed to determine BOSH CLI path:"))
+				})
+			})
+		})
+		Context("When provider is unknown", func() {
+			JustBeforeEach(func() {
+				boshCLI = &boshclifakes.FakeICLI{}
+				directorClient = &workingdirfakes.FakeIClient{}
+				terraformOutputs = &terraformfakes.FakeOutputs{}
+				provider = setupUnknownProvider()
+				versionFile = []byte(`{
+					"bosh-cli": {
+						"mac": "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.0.1-darwin-amd64",
+						"linux": "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.0.1-linux-amd64"
+					}
+				}`)
+
+				stdout = gbytes.NewBuffer()
+				stderr = gbytes.NewBuffer()
+			})
+
+			It("returns an appropriate error", func() {
+				_, err := bosh.New(configInput, terraformOutputs, stdout, stderr, provider, versionFile)
+				Expect(err.Error()).To(HavePrefix("IAAS not supported: Unknown"))
+			})
+		})
+	})
+
 	Describe("Instances", func() {
 		Context("When on AWS", func() {
 			JustBeforeEach(func() {
 				boshCLI = &boshclifakes.FakeICLI{}
 				directorClient = &workingdirfakes.FakeIClient{}
-				outputs := &terraformfakes.FakeOutputs{}
-				provider := setupFakeAwsProvider()
-				creds := []byte("some creds")
+				terraformOutputs = &terraformfakes.FakeOutputs{}
+				provider = setupFakeAwsProvider()
+				versionFile = []byte("{}")
 
 				stdout = gbytes.NewBuffer()
 				stderr = gbytes.NewBuffer()
 
 				buildClient = func() bosh.IClient {
-					client, err := bosh.NewAWSClient(configInput, outputs, directorClient, stdout, stderr, provider, boshCLI, creds)
+					client, err := bosh.NewAWSClient(configInput, terraformOutputs, directorClient, stdout, stderr, provider, boshCLI, versionFile)
 					Expect(err).ToNot(HaveOccurred())
 					return client
 				}
