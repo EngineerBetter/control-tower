@@ -8,7 +8,7 @@ A tool for easily deploying self-healing, self-updating [Concourse](https://conc
 
 ## TL;DR
 
-(Don't forget to read the [pre-requisites](docs/prerequisites.md)!)
+Install [pre-requisites](docs/prerequisites.md), install the [latest Control-Tower release](https://github.com/EngineerBetter/control-tower/releases/latest), and then...
 
 ### AWS
 
