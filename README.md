@@ -2,7 +2,7 @@
 
 [![asciicast](https://asciinema.org/a/xVKD0dQuXdEmOcExt4A9WfbEN.svg)](https://asciinema.org/a/xVKD0dQuXdEmOcExt4A9WfbEN)
 
-A tool for easily deploying [Concourse](https://concourse-ci.org) in a single command.
+A tool for easily deploying self-healing, self-updating [Concourse](https://concourse-ci.org) (and Grafana and CredHub!) in a single command.
 
 ![CI build badge](https://ci.engineerbetter.com/api/v1/teams/main/pipelines/control-tower/jobs/system-test/badge)
 
