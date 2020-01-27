@@ -25,6 +25,8 @@ $ GOOGLE_APPLICATION_CREDENTIALS=<path/to/googlecreds.json> \
   control-tower deploy --iaas gcp <your-project-name>
 ```
 
+:clipboard: ...then don't forget to **please complete our [quick 7-question survey](http://bit.ly/eb-ctower)** so we can understand how and why you use Control Tower, and how we can make it better. :clipboard:
+
 ## Why Control Tower?
 
 The goal of Control Tower is to be the world's easiest way to deploy and operate Concourse CI in production.
