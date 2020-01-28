@@ -579,6 +579,8 @@ Metrics available at https://{{.Domain}}:3000 using the same username and passwo
 
 Log into credhub with:
 eval "$(control-tower info --region {{.Region}} {{ if ne .Namespace .Region }} --namespace {{ .Namespace }} {{ end }} --iaas {{ .IAAS }} --env {{.Project}})"
+
+Please complete our quick 7-question survey so that we can learn how & why you use Control Tower! http://bit.ly/eb-ctower
 `
 
 type deployMessageParams struct {
