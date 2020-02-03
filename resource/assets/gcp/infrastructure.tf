@@ -355,6 +355,7 @@ resource "google_sql_user" "director" {
 resource "google_storage_bucket" "blobstore" {
   name     = "${var.deployment}-{{ .Namespace }}-blobstore"
   location = "${var.region}"
+  force_destroy = true
 }
 
 output "blobstore_bucket" {
