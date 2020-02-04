@@ -84,13 +84,8 @@ func (client *GCPClient) CreateEnv(state, creds []byte, customOps string) (newSt
 	if err1 != nil {
 		return state, creds, err1
 	}
-	blobstoreBucket, err1 := client.outputs.Get("BlobstoreBucket")
-	if err1 != nil {
-		return state, creds, err1
-	}
 
 	createEnvFiles, err1 := client.boshCLI.CreateEnv(&boshcli.CreateEnvFiles{StateFileContents: state, VarsFileContents: creds}, boshcli.GCPEnvironment{
-		BlobstoreBucket:    blobstoreBucket,
 		InternalCIDR:       client.config.GetPublicCIDR(),
 		InternalGW:         internalGateway.String(),
 		InternalIP:         directorInternalIP.String(),

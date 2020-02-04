@@ -156,10 +156,9 @@ var _ = Describe("client", func() {
 		}
 
 		terraformOutputs := terraform.GCPOutputs{
-			ATCPublicIP:     terraform.MetadataStringValue{Value: "77.77.77.77"},
-			BlobstoreBucket: terraform.MetadataStringValue{Value: "blobs.aws.com"},
-			BoshDBAddress:   terraform.MetadataStringValue{Value: "rds.aws.com"},
-			DBName:          terraform.MetadataStringValue{Value: "bosh-foo"},
+			ATCPublicIP:   terraform.MetadataStringValue{Value: "77.77.77.77"},
+			BoshDBAddress: terraform.MetadataStringValue{Value: "rds.aws.com"},
+			DBName:        terraform.MetadataStringValue{Value: "bosh-foo"},
 			DirectorAccountCreds: terraform.MetadataStringValue{Value: `{
 				"type": "service_account",
 				"project_id": "control-tower-foo",

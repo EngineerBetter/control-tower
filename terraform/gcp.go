@@ -44,7 +44,6 @@ func (v *GCPInputVars) ConfigureTerraform(terraformContents string) (string, err
 // Metadata represents output from terraform on GCP or GCP
 type GCPOutputs struct {
 	ATCPublicIP                 MetadataStringValue `json:"atc_public_ip" valid:"required"`
-	BlobstoreBucket             MetadataStringValue `json:"blobstore_bucket" valid:"required"`
 	BoshDBAddress               MetadataStringValue `json:"bosh_db_address" valid:"required"`
 	DBName                      MetadataStringValue `json:"db_name" valid:"required"`
 	DirectorAccountCreds        MetadataStringValue `json:"director_account_creds" valid:"required"`

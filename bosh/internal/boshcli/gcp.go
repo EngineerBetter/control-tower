@@ -10,7 +10,6 @@ import (
 
 // Environment holds all the parameters GCP IAAS needs
 type GCPEnvironment struct {
-	BlobstoreBucket     string
 	CustomOperations    string
 	DirectorName        string
 	ExternalIP          string
@@ -58,10 +57,9 @@ func (e GCPEnvironment) ConfigureDirectorManifestCPI() (string, error) {
 		return "", err
 	}
 
-	var allOperations = resource.GCPCPIOps + resource.GCPExternalIPOps + resource.GCPBlobstoreOps + resource.GCPDirectorCustomOps + resource.GCPJumpboxUserOps
+	var allOperations = resource.GCPCPIOps + resource.GCPExternalIPOps + resource.GCPDirectorCustomOps + resource.GCPJumpboxUserOps
 
 	return yaml.Interpolate(resource.DirectorManifest, allOperations+e.CustomOperations, map[string]interface{}{
-		"blobstore_bucket":     e.BlobstoreBucket,
 		"cpi_url":              cpiResource.URL,
 		"cpi_version":          cpiResource.Version,
 		"cpi_sha1":             cpiResource.SHA1,
