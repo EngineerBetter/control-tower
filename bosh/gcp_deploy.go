@@ -157,16 +157,19 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
+
 	pubGateway, err := cidr.Host(pubCIDR, 1)
 	if err != nil {
 		return err
 	}
+
 	publicCIDRGateway := pubGateway.String()
 
-	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{7, 8})
+	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{6, 7})
 	if err != nil {
 		return err
 	}
+
 	publicCIDRReserved, err := formatIPRange(publicCIDR, "-", []int{1, 5})
 	if err != nil {
 		return err
@@ -177,15 +180,18 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
+
 	privGateway, err := cidr.Host(privCIDR, 1)
 	if err != nil {
 		return err
 	}
+
 	privateCIDRGateway := privGateway.String()
 	privateCIDRReserved, err := formatIPRange(privateCIDR, "-", []int{1, 5})
 	if err != nil {
 		return err
 	}
+
 	return bosh.UpdateCloudConfig(boshcli.GCPEnvironment{
 		PublicCIDR:          client.config.GetPublicCIDR(),
 		PublicCIDRGateway:   publicCIDRGateway,
