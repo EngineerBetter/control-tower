@@ -41,6 +41,11 @@ until [[ $(bosh locks --json | jq -r '.Tables[].Rows | length') -eq 0 ]]; do
 done
 echo "Bosh lock available - Proceeding"
 
+if [[ "${IAAS}" == "GCP" ]]; then
+  echo "removing previous blobs from .bosh to resolve strange golang corruption"
+  rm -rf /root/.bosh/installations/*
+fi
+
 echo "UPDATE TO NEW VERSION"
 rm -rf cup
 cp "$BINARY_PATH" ./cup
