@@ -165,7 +165,7 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 
 	publicCIDRGateway := pubGateway.String()
 
-	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{6, 7})
+	publicCIDRStatic, err := formatIPRange(publicCIDR, ", ", []int{7})
 	if err != nil {
 		return err
 	}
