@@ -52,9 +52,6 @@ cp "$BINARY_PATH" ./cup
 chmod +x ./cup
 ./cup deploy "$deployment"
 
-echo "Waiting for 30 seconds to let detached upgrade start"
-sleep 30
-
 echo "Waiting for update to complete"
 wait_time=0
 until curl -skIfo/dev/null "https://$domain"; do
