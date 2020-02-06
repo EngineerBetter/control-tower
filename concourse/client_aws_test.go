@@ -8,8 +8,6 @@ import (
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
-	"github.com/EngineerBetter/control-tower/certs"
-	"github.com/EngineerBetter/control-tower/certs/certsfakes"
 	"github.com/EngineerBetter/control-tower/commands/deploy"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
@@ -25,7 +23,6 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	. "github.com/tjarratt/gcounterfeiter"
-	"github.com/xenolf/lego/lego"
 )
 
 var _ = Describe("client", func() {
@@ -131,13 +128,6 @@ var _ = Describe("client", func() {
 		Expect(err).ToNot(HaveOccurred())
 		directorCredsFixture, err = ioutil.ReadFile("fixtures/director-creds.yml")
 		Expect(err).ToNot(HaveOccurred())
-
-		certGenerator := func(c func(u *certs.User) (*lego.Client, error), caName string, provider iaas.Provider, ip ...string) (*certs.Certs, error) {
-			actions = append(actions, fmt.Sprintf("generating cert ca: %s, cn: %s", caName, ip))
-			return &certs.Certs{
-				CACert: []byte("----EXAMPLE CERT----"),
-			}, nil
-		}
 
 		awsClient := setupFakeAwsProvider()
 		tfInputVarsFactory = setupFakeTfInputVarsFactory()
@@ -298,13 +288,11 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func(iaas.Provider, fly.Credentials, io.Writer, io.Writer, []byte) (fly.IClient, error) {
 					return flyClient, nil
 				},
-				certGenerator,
 				configClient,
 				args,
 				stdout,
 				stderr,
 				ipChecker,
-				certsfakes.NewFakeAcmeClient,
 				func(size int) string { return fmt.Sprintf("generatedPassword%d", size) },
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },

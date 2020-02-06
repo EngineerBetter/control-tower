@@ -13,59 +13,56 @@ import (
 	"github.com/imdario/mergo"
 )
 
-func (client *Client) getInitialConfig() (config.Config, bool, error) {
+func (client *Client) getInitialConfig() (config.Config, error) {
 	priorConfigExists, err := client.configClient.ConfigExists()
 	if err != nil {
-		return config.Config{}, false, fmt.Errorf("error determining if config already exists [%v]", err)
+		return config.Config{}, fmt.Errorf("error determining if config already exists [%v]", err)
 	}
 
-	var isDomainUpdated bool
 	var conf config.Config
 
 	defaultConf := client.configClient.NewConfig()
 	defaultConf, err = populateConfigWithDefaults(defaultConf, client.provider, client.passwordGenerator, client.sshGenerator, client.eightRandomLetters)
 	if err != nil {
-		return config.Config{}, false, fmt.Errorf("error generating default config: [%v]", err)
+		return config.Config{}, fmt.Errorf("error generating default config: [%v]", err)
 	}
 
 	if priorConfigExists {
 		conf, err = client.configClient.Load()
 		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error loading existing config [%v]", err)
+			return config.Config{}, fmt.Errorf("error loading existing config [%v]", err)
 		}
 		writeConfigLoadedSuccessMessage(client.stdout)
 
 		err = mergo.Merge(&conf, defaultConf)
 		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error layering stored config on top default config [%v]", err)
+			return config.Config{}, fmt.Errorf("error layering stored config on top default config [%v]", err)
 		}
 
 		err = assertImmutableFieldsNotChanging(client.deployArgs, conf)
 		if err != nil {
-			return config.Config{}, false, err
+			return config.Config{}, err
 		}
 
-		conf, isDomainUpdated, err = applyArgumentsToConfig(conf, client.deployArgs, client.provider)
+		conf, err = applyArgumentsToConfig(conf, client.deployArgs, client.provider)
 		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error merging new options with existing config: [%v]", err)
+			return config.Config{}, fmt.Errorf("error merging new options with existing config: [%v]", err)
 		}
 	} else {
-		conf, _, err = applyArgumentsToConfig(defaultConf, client.deployArgs, client.provider)
+		conf, err = applyArgumentsToConfig(defaultConf, client.deployArgs, client.provider)
 		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error applying arguments to default config: [%v]", err)
+			return config.Config{}, fmt.Errorf("error applying arguments to default config: [%v]", err)
 		}
 
 		conf = applyImmutableArgumentsToConfig(conf, client.deployArgs, client.provider)
 
 		err = client.configClient.Update(conf)
 		if err != nil {
-			return config.Config{}, false, fmt.Errorf("error persisting new config after setting values [%v]", err)
+			return config.Config{}, fmt.Errorf("error persisting new config after setting values [%v]", err)
 		}
-
-		isDomainUpdated = true
 	}
 
-	return conf, isDomainUpdated, nil
+	return conf, nil
 }
 
 func assertImmutableFieldsNotChanging(deployArgs *deploy.Args, conf config.ConfigView) error {
@@ -120,15 +117,15 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	return conf, nil
 }
 
-func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, bool, error) {
+func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provider iaas.Provider) (config.Config, error) {
 	allow, err := parseAllowedIPsCIDRs(deployArgs.AllowIPs)
 	if err != nil {
-		return config.Config{}, false, fmt.Errorf("error determining IP addresses to allow access from: [%v]", err)
+		return config.Config{}, fmt.Errorf("error determining IP addresses to allow access from: [%v]", err)
 	}
 
 	allowedIPs, err := getUpdatedAllowedIPs(allow)
 	if err != nil {
-		return config.Config{}, false, fmt.Errorf("error updating IP addresses to allow access from: [%v]", err)
+		return config.Config{}, fmt.Errorf("error updating IP addresses to allow access from: [%v]", err)
 	}
 
 	conf.AllowIPs = allowedIPs
@@ -162,11 +159,7 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.WorkerType = deployArgs.WorkerType
 	}
 
-	var isDomainUpdated bool
 	if deployArgs.DomainIsSet {
-		if conf.Domain != deployArgs.Domain {
-			isDomainUpdated = true
-		}
 		conf.Domain = deployArgs.Domain
 	} else {
 		if govalidator.IsIPv4(conf.Domain) {
@@ -174,7 +167,7 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		}
 	}
 
-	return conf, isDomainUpdated, nil
+	return conf, nil
 }
 
 // Set config fields that are only valid on first deployment

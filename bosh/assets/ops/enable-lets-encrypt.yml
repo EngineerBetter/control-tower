@@ -1,0 +1,6 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/lets_encrypt?/enabled
+  value: true
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=web/properties/tls/cert

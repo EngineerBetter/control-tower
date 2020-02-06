@@ -8,8 +8,6 @@ import (
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
-	"github.com/EngineerBetter/control-tower/certs"
-	"github.com/EngineerBetter/control-tower/certs/certsfakes"
 	"github.com/EngineerBetter/control-tower/commands/deploy"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
@@ -25,11 +23,9 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	. "github.com/tjarratt/gcounterfeiter"
-	"github.com/xenolf/lego/lego"
 )
 
 var _ = Describe("client", func() {
-	var certGenerationActions []string
 	var stdout *gbytes.Buffer
 	var stderr *gbytes.Buffer
 	var args *deploy.Args
@@ -144,8 +140,6 @@ var _ = Describe("client", func() {
 			VPCID:                    terraform.MetadataStringValue{Value: "vpc-112233"},
 		}
 
-		certGenerationActions = []string{}
-
 		// Initial config in bucket from an existing deployment
 		configInBucket = config.Config{
 			AvailabilityZone:         "eu-west-1a",
@@ -210,12 +204,6 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 	})
 
 	JustBeforeEach(func() {
-		certGenerator := func(c func(u *certs.User) (*lego.Client, error), caName string, provider iaas.Provider, ip ...string) (*certs.Certs, error) {
-			certGenerationActions = append(certGenerationActions, fmt.Sprintf("generating cert ca: %s, cn: %s", caName, ip))
-			return &certs.Certs{
-				CACert: []byte("----EXAMPLE CERT----"),
-			}, nil
-		}
 
 		flyClient = &flyfakes.FakeIClient{}
 		awsClient := setupFakeAwsProvider()
@@ -248,13 +236,11 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func(iaas.Provider, fly.Credentials, io.Writer, io.Writer, []byte) (fly.IClient, error) {
 					return flyClient, nil
 				},
-				certGenerator,
 				configClient,
 				args,
 				stdout,
 				stderr,
 				ipChecker,
-				certsfakes.NewFakeAcmeClient,
 				func(size int) string { return fmt.Sprintf("generatedPassword%d", size) },
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
@@ -272,13 +258,11 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func(iaas.Provider, fly.Credentials, io.Writer, io.Writer, []byte) (fly.IClient, error) {
 					return flyClient, nil
 				},
-				certGenerator,
 				configClient,
 				args,
 				stdout,
 				stderr,
 				ipChecker,
-				certsfakes.NewFakeAcmeClient,
 				func(size int) string { return fmt.Sprintf("generatedPassword%d", size) },
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
@@ -396,10 +380,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					Expect(terraformCLI).To(HaveReceived("Apply").With(terraformInputVars))
 					Expect(terraformCLI).To(HaveReceived("BuildOutput").With(terraformInputVars))
 					Expect(configClient).To(HaveReceived("Update").With(configAfterLoad))
-
-					Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-happymeal, cn: [99.99.99.99 10.0.0.6]"))
-					Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-happymeal, cn: [77.77.77.77]"))
-
 					Expect(configClient).To(HaveReceived("HasAsset").With("director-state.json"))
 					Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
 					Expect(configClient).To(HaveReceived("LoadAsset").With("director-state.json"))
@@ -504,6 +484,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 
 					configAfterLoad = configInBucket
 					configAfterLoad.AllowIPs = "\"88.98.225.40/32\""
+					configAfterLoad.AutoCert = false
 					configAfterLoad.ConcourseWebSize = args.WebSize
 					configAfterLoad.ConcourseWorkerCount = args.WorkerCount
 					configAfterLoad.ConcourseWorkerSize = args.WorkerSize
@@ -550,7 +531,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterCreateEnv = configAfterLoad
 					configAfterCreateEnv.ConcourseCert = args.TLSCert
 					configAfterCreateEnv.ConcourseKey = args.TLSKey
-					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 					configAfterCreateEnv.Tags = append([]string{"control-tower-version=some version"}, args.Tags...)
 					configAfterCreateEnv.Version = "some version"
@@ -644,12 +624,11 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				//Mutations we expect to have been done after load
 				configAfterLoad = defaultGeneratedConfig
 				configAfterLoad.AllowIPs = "\"0.0.0.0/0\""
+				configAfterLoad.AutoCert = false
 				configAfterLoad.SourceAccessIP = "192.0.2.0"
 
 				//Mutations we expect to have been done after deploying the director
 				configAfterCreateEnv = configAfterLoad
-				configAfterCreateEnv.ConcourseCACert = "----EXAMPLE CERT----"
-				configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 				configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 				configAfterCreateEnv.Domain = "77.77.77.77"
 				configAfterCreateEnv.Tags = []string{"control-tower-version=some version"}
@@ -689,6 +668,9 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				configAfterConcourseDeploy.CredhubPassword = "f4b12bc0166cad1bc02b050e4e79ac4c"
 				configAfterConcourseDeploy.CredhubURL = "https://77.77.77.77:8844/"
 				configAfterConcourseDeploy.CredhubUsername = "credhub-cli"
+				configAfterConcourseDeploy.ConcourseCACert = "----EXAMPLE CERT----"
+				configAfterConcourseDeploy.ConcourseCert = "some cert"
+				configAfterConcourseDeploy.ConcourseKey = "some key"
 			})
 
 			JustBeforeEach(func() {
@@ -704,7 +686,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				configClient.HasAssetReturnsOnCall(1, false, nil)
 			})
 
-			It("does the right things in the right order", func() {
+			FIt("does the right things in the right order", func() {
 				client := buildClient()
 				err := client.Deploy()
 				Expect(err).ToNot(HaveOccurred())
@@ -743,16 +725,11 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				Expect(terraformCLI).To(HaveReceived("Apply").With(terraformInputVars))
 				Expect(terraformCLI).To(HaveReceived("BuildOutput").With(terraformInputVars))
 				Expect(configClient).To(HaveReceived("Update").With(configAfterLoad))
-
-				Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-initial-deployment, cn: [99.99.99.99 10.0.0.6]"))
-				Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-initial-deployment, cn: [77.77.77.77]"))
-
 				Expect(configClient).To(HaveReceived("HasAsset").With("director-state.json"))
 				Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
 				Expect(configClient).To(HaveReceived("HasAsset").With("director-creds.yml"))
 				Expect(configClient.HasAssetArgsForCall(1)).To(Equal("director-creds.yml"))
 				Expect(boshClient).To(HaveReceived("Deploy").With([]byte{}, []byte{}, false))
-
 				Expect(configClient).To(HaveReceived("StoreAsset").With("director-state.json", directorStateFixture))
 				Expect(configClient).To(HaveReceived("StoreAsset").With("director-creds.yml", directorCredsFixture))
 				Expect(boshClient).To(HaveReceived("Cleanup"))
@@ -785,14 +762,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(stderr).To(gbytes.Say("WARNING: adding record ci.google.com to DNS zone google.com with name ABC123"))
-			})
-
-			It("Generates certificates for that domain and not the public IP", func() {
-				client := buildClient()
-				err := client.Deploy()
-				Expect(err).ToNot(HaveOccurred())
-
-				Expect(certGenerationActions).To(ContainElement("generating cert ca: control-tower-happymeal, cn: [ci.google.com]"))
 			})
 
 			Context("and a custom cert is provided", func() {

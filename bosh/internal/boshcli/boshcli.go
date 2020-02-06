@@ -17,9 +17,11 @@ import (
 	"github.com/EngineerBetter/control-tower/util/yaml"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 //counterfeiter:generate . ICLI
 type ICLI interface {
-	CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) (*CreateEnvFiles, error)
+	CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password string, tags map[string]string) (*CreateEnvFiles, error)
 	RunAuthenticatedCommand(action, ip, password, ca string, detach bool, stdout io.Writer, flags ...string) error
 	Locks(config IAASEnvironment, ip, password, ca string) ([]byte, error)
 	Recreate(config IAASEnvironment, ip, password, ca string) error
@@ -160,7 +162,7 @@ func (c *CLI) Recreate(config IAASEnvironment, ip, password, ca string) error {
 	return cmd.Run()
 }
 
-func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password, cert, key, ca string, tags map[string]string) (*CreateEnvFiles, error) {
+func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, password string, tags map[string]string) (*CreateEnvFiles, error) {
 	manifest, err := config.ConfigureDirectorManifestCPI()
 	if err != nil {
 		return &CreateEnvFiles{}, err
@@ -172,18 +174,15 @@ func (c *CLI) CreateEnv(createEnvFiles *CreateEnvFiles, config IAASEnvironment, 
 	}
 
 	vars := map[string]interface{}{
-		"director_name":            "bosh",
-		"admin_password":           password,
-		"director_ssl.certificate": cert,
-		"director_ssl.private_key": key,
-		"director_ssl.ca":          ca,
-		"bosh_url":                 boshResource.URL,
-		"bosh_version":             boshResource.Version,
-		"bosh_sha1":                boshResource.SHA1,
-		"bpm_url":                  bpmResource.URL,
-		"bpm_version":              bpmResource.Version,
-		"bpm_sha1":                 bpmResource.SHA1,
-		"tags":                     tags,
+		"director_name":  "bosh",
+		"admin_password": password,
+		"bosh_url":       boshResource.URL,
+		"bosh_version":   boshResource.Version,
+		"bosh_sha1":      boshResource.SHA1,
+		"bpm_url":        bpmResource.URL,
+		"bpm_version":    bpmResource.Version,
+		"bpm_sha1":       bpmResource.SHA1,
+		"tags":           tags,
 	}
 	manifest, err = yaml.Interpolate(manifest, "", vars)
 	if err != nil {

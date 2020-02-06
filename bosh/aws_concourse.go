@@ -100,6 +100,10 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		return creds, fmt.Errorf("failed to retrieve director IP: [%v]", err)
 	}
 
+	if client.config.GetAutoCert() {
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(letsEncryptFilename))
+	}
+
 	err = client.boshCLI.RunAuthenticatedCommand(
 		"deploy",
 		directorPublicIP,

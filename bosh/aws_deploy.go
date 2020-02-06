@@ -9,7 +9,7 @@ import (
 )
 
 // Deploy implements deploy for AWS client
-func (client *AWSClient) Deploy(state, creds []byte, detach bool) (newState, newCreds []byte, err error) {
+func (client *AWSClient) Deploy(state, creds []byte, detach bool) (newState, newBoshAndConcourseCreds []byte, err error) {
 	state, creds, err = client.CreateEnv(state, creds, "")
 	if err != nil {
 		return state, creds, err
@@ -25,12 +25,12 @@ func (client *AWSClient) Deploy(state, creds []byte, detach bool) (newState, new
 		return state, creds, err
 	}
 
-	creds, err = client.deployConcourse(creds, detach)
+	boshAndConcourseCreds, err := client.deployConcourse(creds, detach)
 	if err != nil {
 		return state, creds, err
 	}
 
-	return state, creds, err
+	return state, boshAndConcourseCreds, err
 }
 
 // Locks implements locks for AWS client
@@ -157,7 +157,7 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		WorkerType:           client.config.GetWorkerType(),
 		CustomOperations:     customOps,
 		VersionFile:          client.versionFile,
-	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
+	}, client.config.GetDirectorPassword(), tags)
 	if err1 != nil {
 		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
 	}

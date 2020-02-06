@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 // Choice is an interface which can help on the abstraction of provider data
 // by defining any kind of data mapped against the available providers
 type Choice struct {

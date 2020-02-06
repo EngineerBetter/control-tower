@@ -16,6 +16,8 @@ import (
 	"github.com/EngineerBetter/control-tower/util"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 // InputVars exposes ConfigureDirectorManifestCPI
 type InputVars interface {
 	ConfigureTerraform(string) (string, error)

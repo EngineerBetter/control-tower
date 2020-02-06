@@ -10,6 +10,8 @@ import (
 const terraformStateFileName = "terraform.tfstate"
 const configFilePath = "config.json"
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 //go:generate counterfeiter . IClient
 type IClient interface {
 	Load() (Config, error)

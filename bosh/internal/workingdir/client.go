@@ -4,6 +4,8 @@ import (
 	"github.com/EngineerBetter/control-tower/util"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 //counterfeiter:generate . IClient
 // IClient represents client for interacting with a working directory
 type IClient interface {

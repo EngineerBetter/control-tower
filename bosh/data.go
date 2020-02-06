@@ -10,12 +10,14 @@ const concourseCompatibilityFilename = "cup_compatibility.yml"
 const concourseGitHubAuthFilename = "github-auth.yml"
 const extraTagsFilename = "extra_tags.yml"
 const uaaCertFilename = "uaa-cert.yml"
+const letsEncryptFilename = "enable-lets-encrypt.yml"
 
 //go:generate go-bindata -pkg $GOPACKAGE -ignore \.git assets/... ../../control-tower-ops/... ../resource/assets/...
 var concourseGrafana = MustAsset("assets/grafana_dashboard.yml")
 var concourseCompatibility = MustAsset("assets/ops/cup_compatibility.yml")
 var concourseGitHubAuth = MustAsset("assets/ops/github-auth.yml")
 var extraTags = MustAsset("assets/ops/extra_tags.yml")
+var letsEncryptOps = MustAsset("assets/ops/enable-lets-encrypt.yml")
 var concourseManifestContents = MustAsset("../../control-tower-ops/manifest.yml")
 var awsConcourseVersions = MustAsset("../../control-tower-ops/ops/versions-aws.json")
 var awsConcourseSHAs = MustAsset("../../control-tower-ops/ops/shas-aws.json")

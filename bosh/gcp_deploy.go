@@ -102,7 +102,7 @@ func (client *GCPClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		PublicKey:          client.config.GetPublicKey(),
 		CustomOperations:   customOps,
 		VersionFile:        client.versionFile,
-	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
+	}, client.config.GetDirectorPassword(), tags)
 	if err1 != nil {
 		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
 	}

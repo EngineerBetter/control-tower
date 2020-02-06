@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/EngineerBetter/control-tower/bosh"
-	"github.com/EngineerBetter/control-tower/certs"
 	"github.com/EngineerBetter/control-tower/commands/destroy"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/config"
@@ -105,13 +104,11 @@ func buildDestroyClient(name, version string, destroyArgs destroy.Args, provider
 		tfInputVarsFactory,
 		bosh.New,
 		fly.New,
-		certs.Generate,
 		config.New(provider, name, destroyArgs.Namespace),
 		nil,
 		os.Stdout,
 		os.Stderr,
 		util.FindUserIP,
-		certs.NewAcmeClient,
 		util.GeneratePasswordWithLength,
 		util.EightRandomLetters,
 		util.GenerateSSHKeyPair,

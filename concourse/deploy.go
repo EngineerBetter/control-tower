@@ -1,32 +1,29 @@
 package concourse
 
 import (
-	"crypto/x509"
-	"encoding/pem"
 	"fmt"
 	"io"
-	"net"
 	"text/template"
-	"time"
-
-	"github.com/apparentlymart/go-cidr/cidr"
 
 	"strings"
 
 	"github.com/EngineerBetter/control-tower/bosh"
-	"github.com/EngineerBetter/control-tower/certs"
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/terraform"
-	"github.com/xenolf/lego/lego"
+	"github.com/EngineerBetter/control-tower/util"
 	"gopkg.in/yaml.v2"
 )
 
 // BoshParams represents the params used and produced by a BOSH deploy
 type BoshParams struct {
+	AutoCert                 bool
 	CredhubPassword          string
 	CredhubAdminClientSecret string
 	CredhubCACert            string
+	ConcourseCACert          string
+	ConcourseCert            string
+	ConcourseKey             string
 	CredhubURL               string
 	CredhubUsername          string
 	ConcourseUsername        string
@@ -54,7 +51,7 @@ func (client *Client) Deploy() error {
 		return fmt.Errorf("error ensuring config bucket exists before deploy: [%v]", err)
 	}
 
-	conf, isDomainUpdated, err := client.getInitialConfig()
+	conf, err := client.getInitialConfig()
 	if err != nil {
 		return fmt.Errorf("error getting initial config before deploy: [%v]", err)
 	}
@@ -90,19 +87,17 @@ func (client *Client) Deploy() error {
 
 	conf.Version = client.version
 
-	cr, err := client.checkPreDeployConfigRequirements(client.acmeClientConstructor, isDomainUpdated, conf, tfOutputs)
+	cr, err := client.checkPreDeployConfigRequirements(conf, tfOutputs)
 	if err != nil {
 		return err
 	}
 
-	conf.Domain = cr.Domain
-	conf.DirectorPublicIP = cr.DirectorPublicIP
-	conf.DirectorCACert = cr.DirectorCerts.DirectorCACert
-	conf.DirectorCert = cr.DirectorCerts.DirectorCert
-	conf.DirectorKey = cr.DirectorCerts.DirectorKey
+	conf.AutoCert = cr.Certs.Autocert
 	conf.ConcourseCert = cr.Certs.ConcourseCert
 	conf.ConcourseKey = cr.Certs.ConcourseKey
 	conf.ConcourseCACert = cr.Certs.ConcourseCACert
+	conf.Domain = cr.Domain
+	conf.DirectorPublicIP = cr.DirectorPublicIP
 
 	var bp BoshParams
 	if client.deployArgs.SelfUpdate {
@@ -291,15 +286,9 @@ func (client *Client) checkPreTerraformConfigRequirements(conf config.ConfigView
 	return r, nil
 }
 
-// DirectorCerts represents the certificate of a Director
-type DirectorCerts struct {
-	DirectorCACert string
-	DirectorCert   string
-	DirectorKey    string
-}
-
 // Certs represents the certificate of a Concourse
 type Certs struct {
+	Autocert        bool
 	ConcourseCert   string
 	ConcourseKey    string
 	ConcourseCACert string
@@ -309,11 +298,10 @@ type Certs struct {
 type Requirements struct {
 	Domain           string
 	DirectorPublicIP string
-	DirectorCerts    DirectorCerts
 	Certs            Certs
 }
 
-func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*lego.Client, error), isDomainUpdated bool, cfg config.ConfigView, tfOutputs terraform.Outputs) (Requirements, error) {
+func (client *Client) checkPreDeployConfigRequirements(cfg config.ConfigView, tfOutputs terraform.Outputs) (Requirements, error) {
 	cr := Requirements{
 		Domain:           cfg.GetDomain(),
 		DirectorPublicIP: cfg.GetDirectorPublicIP(),
@@ -327,26 +315,14 @@ func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*l
 		cr.Domain = domain
 	}
 
-	dc := DirectorCerts{
-		DirectorCACert: cfg.GetDirectorCACert(),
-		DirectorCert:   cfg.GetDirectorCert(),
-		DirectorKey:    cfg.GetDirectorKey(),
-	}
-
-	dc, err := client.ensureDirectorCerts(c, dc, cfg.GetDeployment(), tfOutputs, cfg.GetPublicCIDR())
-	if err != nil {
-		return cr, err
-	}
-
-	cr.DirectorCerts = dc
-
 	cc := Certs{
+		Autocert:        cfg.GetAutoCert(),
 		ConcourseCert:   cfg.GetConcourseCert(),
 		ConcourseKey:    cfg.GetConcourseKey(),
 		ConcourseCACert: cfg.GetConcourseCACert(),
 	}
 
-	cc, err = client.ensureConcourseCerts(c, isDomainUpdated, cc, cfg.GetDeployment(), cr.Domain)
+	cc, err := client.ensureConcourseCerts(cc, cr.Domain)
 	if err != nil {
 		return cr, err
 	}
@@ -361,59 +337,7 @@ func (client *Client) checkPreDeployConfigRequirements(c func(u *certs.User) (*l
 	return cr, nil
 }
 
-func (client *Client) ensureDirectorCerts(c func(u *certs.User) (*lego.Client, error), dc DirectorCerts, deployment string, tfOutputs terraform.Outputs, publicCIDR string) (DirectorCerts, error) {
-	// If we already have director certificates, don't regenerate as changing them will
-	// force a bosh director re-deploy even if there are no other changes
-	certs := dc
-	if certs.DirectorCACert != "" {
-		return certs, nil
-	}
-
-	// @Note: Duplicate code retrieving director internal IP needs to find a home
-	_, pubCIDR, err1 := net.ParseCIDR(publicCIDR)
-	if err1 != nil {
-		return certs, nil
-	}
-	directorInternalIP, err1 := cidr.Host(pubCIDR, 6)
-	if err1 != nil {
-		return certs, nil
-	}
-
-	ip, err := tfOutputs.Get("DirectorPublicIP")
-	if err != nil {
-		return certs, err
-	}
-	_, err = client.stdout.Write(
-		[]byte(fmt.Sprintf("\nGENERATING BOSH DIRECTOR CERTIFICATE (%s, %s)\n", ip, directorInternalIP.String())))
-	if err != nil {
-		return certs, err
-	}
-
-	directorCerts, err := client.certGenerator(c, deployment, client.provider, ip, directorInternalIP.String())
-	if err != nil {
-		return certs, err
-	}
-
-	certs.DirectorCACert = string(directorCerts.CACert)
-	certs.DirectorCert = string(directorCerts.Cert)
-	certs.DirectorKey = string(directorCerts.Key)
-
-	return certs, nil
-}
-
-func timeTillExpiry(cert string) time.Duration {
-	block, _ := pem.Decode([]byte(cert))
-	if block == nil {
-		return 0
-	}
-	c, err := x509.ParseCertificate(block.Bytes)
-	if err != nil {
-		return 0
-	}
-	return time.Until(c.NotAfter)
-}
-
-func (client *Client) ensureConcourseCerts(c func(u *certs.User) (*lego.Client, error), domainUpdated bool, cc Certs, deployment, domain string) (Certs, error) {
+func (client *Client) ensureConcourseCerts(cc Certs, domain string) (Certs, error) {
 	certs := cc
 
 	if client.deployArgs.TLSCert != "" {
@@ -422,27 +346,19 @@ func (client *Client) ensureConcourseCerts(c func(u *certs.User) (*lego.Client, 
 		return certs, nil
 	}
 
-	// Skip concourse re-deploy if certs have already been set,
-	// unless domain has changed
-	if certs.ConcourseCert != "" && !domainUpdated && timeTillExpiry(certs.ConcourseCert) > 28*24*time.Hour {
-		return certs, nil
+	// If a TLS cert has not been provided by the user
+	// and a domain (non-IP) has been provided
+	// use lets encrypt to generate cert
+	if !util.IsIP(domain) {
+		certs.Autocert = true
 	}
-
-	// If no domain has been provided by the user, the value of cfg.Domain is set to the ATC's public IP in checkPreDeployConfigRequirements
-	Certs, err := client.certGenerator(c, deployment, client.provider, domain)
-	if err != nil {
-		return certs, err
-	}
-
-	certs.ConcourseCert = string(Certs.Cert)
-	certs.ConcourseKey = string(Certs.Key)
-	certs.ConcourseCACert = string(Certs.CACert)
 
 	return certs, nil
 }
 
 func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.Outputs, detach bool) (BoshParams, error) {
 	bp := BoshParams{
+		AutoCert:                 config.GetAutoCert(),
 		CredhubPassword:          config.GetCredhubPassword(),
 		CredhubAdminClientSecret: config.GetCredhubAdminClientSecret(),
 		CredhubCACert:            config.GetCredhubCACert(),
@@ -450,6 +366,9 @@ func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.O
 		CredhubUsername:          config.GetCredhubUsername(),
 		ConcourseUsername:        config.GetConcourseUsername(),
 		ConcoursePassword:        config.GetConcoursePassword(),
+		ConcourseCACert:          config.GetConcourseCACert(),
+		ConcourseCert:            config.GetConcourseCert(),
+		ConcourseKey:             config.GetConcourseKey(),
 		GrafanaPassword:          config.GetGrafanaPassword(),
 		DirectorUsername:         config.GetDirectorUsername(),
 		DirectorPassword:         config.GetDirectorPassword(),
@@ -471,12 +390,13 @@ func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.O
 		return bp, err
 	}
 
-	boshStateBytes, boshCredsBytes, err = boshClient.Deploy(boshStateBytes, boshCredsBytes, detach)
+	boshStateBytes, boshAndConcourseCredsBytes, err := boshClient.Deploy(boshStateBytes, boshCredsBytes, detach)
+
 	err1 := client.configClient.StoreAsset(bosh.StateFilename, boshStateBytes)
 	if err == nil {
 		err = err1
 	}
-	err1 = client.configClient.StoreAsset(bosh.CredsFilename, boshCredsBytes)
+	err1 = client.configClient.StoreAsset(bosh.CredsFilename, boshAndConcourseCredsBytes)
 	if err == nil {
 		err = err1
 	}
@@ -491,12 +411,24 @@ func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.O
 			CA string `yaml:"ca"`
 		} `yaml:"internal_tls"`
 		AtcPassword string `yaml:"atc_password"`
+		DirectorCA  struct {
+			Cert string `yaml:"certificate"`
+		} `yaml:"default_ca"`
+		ConcourseCA struct {
+			Cert string `yaml:"certificate"`
+		} `yaml:"ca"`
+		ConcourseTLS struct {
+			Cert string `yaml:"certificate"`
+			Key  string `yaml:"private_key"`
+		} `yaml:"external_tls"`
 	}
 
-	err = yaml.Unmarshal(boshCredsBytes, &cc)
+	err = yaml.Unmarshal(boshAndConcourseCredsBytes, &cc)
 	if err != nil {
 		return bp, err
 	}
+
+	fmt.Printf("%+v\n", cc)
 
 	bp.CredhubPassword = cc.CredhubPassword
 	bp.CredhubAdminClientSecret = cc.CredhubAdminClientSecret
@@ -504,9 +436,15 @@ func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.O
 	bp.CredhubURL = fmt.Sprintf("https://%s:8844/", config.GetDomain())
 	bp.CredhubUsername = "credhub-cli"
 	bp.ConcourseUsername = "admin"
+	bp.DirectorCACert = cc.DirectorCA.Cert
 	if len(cc.AtcPassword) > 0 {
 		bp.ConcoursePassword = cc.AtcPassword
 		bp.GrafanaPassword = cc.AtcPassword
+	}
+	if !bp.AutoCert {
+		bp.ConcourseCACert = cc.ConcourseCA.Cert
+		bp.ConcourseCert = cc.ConcourseTLS.Cert
+		bp.ConcourseKey = cc.ConcourseTLS.Key
 	}
 
 	return bp, nil
