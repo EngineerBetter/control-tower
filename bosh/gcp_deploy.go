@@ -3,6 +3,7 @@ package bosh
 import (
 	"net"
 
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/apparentlymart/go-cidr/cidr"
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
@@ -10,32 +11,33 @@ import (
 
 // Deploy deploys a new Bosh director or converges an existing deployment
 // Returns new contents of bosh state file
-func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, newCreds []byte, err error) {
-	if err != nil {
-		return state, creds, err
-	}
-
+func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, newBoshAndConcourseCreds []byte, err error) {
 	state, creds, err = client.CreateEnv(state, creds, "")
 	if err != nil {
 		return state, creds, err
 	}
 
-	if err = client.updateCloudConfig(client.boshCLI); err != nil {
+	directorCACert, err := util.GetDirectorCACertFromCreds(creds)
+	if err != nil {
 		return state, creds, err
 	}
-	if err = client.uploadConcourseStemcell(client.boshCLI); err != nil {
+
+	if err = client.updateCloudConfig(client.boshCLI, directorCACert); err != nil {
+		return state, creds, err
+	}
+	if err = client.uploadConcourseStemcell(client.boshCLI, directorCACert); err != nil {
 		return state, creds, err
 	}
 	if err = client.createDefaultDatabases(); err != nil {
 		return state, creds, err
 	}
 
-	creds, err = client.deployConcourse(creds, detach)
+	newBoshAndConcourseCreds, err = client.deployConcourse(creds, detach)
 	if err != nil {
 		return state, creds, err
 	}
 
-	return state, creds, err
+	return state, newBoshAndConcourseCreds, err
 }
 
 // CreateEnv exposes bosh create-env functionality
@@ -103,7 +105,7 @@ func (client *GCPClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		PublicKey:          client.config.GetPublicKey(),
 		CustomOperations:   customOps,
 		VersionFile:        client.versionFile,
-	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
+	}, client.config.GetDirectorPassword(), tags)
 	if err1 != nil {
 		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
 	}
@@ -133,7 +135,7 @@ func (client *GCPClient) Locks() ([]byte, error) {
 
 }
 
-func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
+func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI, directorCACert string) error {
 
 	privateSubnetwork, err := client.outputs.Get("PrivateSubnetworkName")
 	if err != nil {
@@ -206,14 +208,15 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		PrivateSubnetwork:   privateSubnetwork,
 		Zone:                zone,
 		Network:             network,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
+	}, directorPublicIP, client.config.GetDirectorPassword(), directorCACert)
 }
-func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
+
+func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI, directorCACert string) error {
 	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
 	if err != nil {
 		return err
 	}
 	return bosh.UploadConcourseStemcell(boshcli.GCPEnvironment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
+	}, directorPublicIP, client.config.GetDirectorPassword(), directorCACert)
 }

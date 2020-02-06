@@ -5,32 +5,38 @@ import (
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 	"github.com/EngineerBetter/control-tower/db"
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 
 // Deploy implements deploy for AWS client
-func (client *AWSClient) Deploy(state, creds []byte, detach bool) (newState, newCreds []byte, err error) {
+func (client *AWSClient) Deploy(state, creds []byte, detach bool) (newState, newBoshAndConcourseCreds []byte, err error) {
 	state, creds, err = client.CreateEnv(state, creds, "")
 	if err != nil {
 		return state, creds, err
 	}
 
-	if err = client.updateCloudConfig(client.boshCLI); err != nil {
+	directorCACert, err := util.GetDirectorCACertFromCreds(creds)
+	if err != nil {
 		return state, creds, err
 	}
-	if err = client.uploadConcourseStemcell(client.boshCLI); err != nil {
+
+	if err = client.updateCloudConfig(client.boshCLI, directorCACert); err != nil {
+		return state, creds, err
+	}
+	if err = client.uploadConcourseStemcell(client.boshCLI, directorCACert); err != nil {
 		return state, creds, err
 	}
 	if err = client.createDefaultDatabases(); err != nil {
 		return state, creds, err
 	}
 
-	creds, err = client.deployConcourse(creds, detach)
+	newBoshAndConcourseCreds, err = client.deployConcourse(creds, detach)
 	if err != nil {
 		return state, creds, err
 	}
 
-	return state, creds, err
+	return state, newBoshAndConcourseCreds, err
 }
 
 // Locks implements locks for AWS client
@@ -157,7 +163,7 @@ func (client *AWSClient) CreateEnv(state, creds []byte, customOps string) (newSt
 		WorkerType:           client.config.GetWorkerType(),
 		CustomOperations:     customOps,
 		VersionFile:          client.versionFile,
-	}, client.config.GetDirectorPassword(), client.config.GetDirectorCert(), client.config.GetDirectorKey(), client.config.GetDirectorCACert(), tags)
+	}, client.config.GetDirectorPassword(), tags)
 	if err1 != nil {
 		return createEnvFiles.StateFileContents, createEnvFiles.VarsFileContents, err1
 	}
@@ -175,7 +181,7 @@ func (client *AWSClient) Recreate() error {
 	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
 }
 
-func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
+func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI, directorCACert string) error {
 	publicSubnetID, err := client.outputs.Get("PublicSubnetID")
 	if err != nil {
 		return err
@@ -247,14 +253,15 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		PrivateCIDR:         privateCIDR,
 		PrivateCIDRGateway:  privateCIDRGateway,
 		PrivateCIDRReserved: privateCIDRReserved,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
+	}, directorPublicIP, client.config.GetDirectorPassword(), directorCACert)
 }
-func (client *AWSClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
+
+func (client *AWSClient) uploadConcourseStemcell(bosh boshcli.ICLI, directorCACert string) error {
 	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
 	if err != nil {
 		return err
 	}
 	return bosh.UploadConcourseStemcell(boshcli.AWSEnvironment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
+	}, directorPublicIP, client.config.GetDirectorPassword(), directorCACert)
 }

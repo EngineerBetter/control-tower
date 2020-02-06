@@ -9,7 +9,6 @@ import (
 	"gopkg.in/urfave/cli.v1"
 
 	"github.com/EngineerBetter/control-tower/bosh"
-	"github.com/EngineerBetter/control-tower/certs"
 	"github.com/EngineerBetter/control-tower/commands/info"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/config"
@@ -130,13 +129,11 @@ func buildInfoClient(name, version string, infoArgs info.Args, provider iaas.Pro
 		tfInputVarsFactory,
 		bosh.New,
 		fly.New,
-		certs.Generate,
 		config.New(provider, name, infoArgs.Namespace),
 		nil,
 		os.Stdout,
 		os.Stderr,
 		util.FindUserIP,
-		certs.NewAcmeClient,
 		util.GeneratePasswordWithLength,
 		util.EightRandomLetters,
 		util.GenerateSSHKeyPair,

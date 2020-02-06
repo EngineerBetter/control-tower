@@ -22,6 +22,7 @@ const (
 	concourseEphemeralWorkersFilename     = "ephemeral_workers.yml"
 	concourseNoMetricsFilename            = "no_metrics.yml"
 	extraTagsFilename                     = "extra_tags.yml"
+	letsEncryptFilename                   = "enable-lets-encrypt.yml"
 	uaaCertFilename                       = "uaa-cert.yml"
 )
 
@@ -52,6 +53,9 @@ var (
 
 	//go:embed assets/ops/extra_tags.yml
 	extraTags []byte
+
+	//go:embed assets/ops/enable-lets-encrypt.yml
+	letsEncryptOps []byte
 
 	concourseManifestContents = opsassets.ConcourseManifestContents
 	awsConcourseVersions      = opsassets.AwsConcourseVersions

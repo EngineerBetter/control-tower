@@ -9,16 +9,13 @@ import (
 )
 
 type FakeICLI struct {
-	CreateEnvStub        func(*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, string, string, string, map[string]string) (*boshcli.CreateEnvFiles, error)
+	CreateEnvStub        func(*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, map[string]string) (*boshcli.CreateEnvFiles, error)
 	createEnvMutex       sync.RWMutex
 	createEnvArgsForCall []struct {
 		arg1 *boshcli.CreateEnvFiles
 		arg2 boshcli.IAASEnvironment
 		arg3 string
-		arg4 string
-		arg5 string
-		arg6 string
-		arg7 map[string]string
+		arg4 map[string]string
 	}
 	createEnvReturns struct {
 		result1 *boshcli.CreateEnvFiles
@@ -107,22 +104,19 @@ type FakeICLI struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeICLI) CreateEnv(arg1 *boshcli.CreateEnvFiles, arg2 boshcli.IAASEnvironment, arg3 string, arg4 string, arg5 string, arg6 string, arg7 map[string]string) (*boshcli.CreateEnvFiles, error) {
+func (fake *FakeICLI) CreateEnv(arg1 *boshcli.CreateEnvFiles, arg2 boshcli.IAASEnvironment, arg3 string, arg4 map[string]string) (*boshcli.CreateEnvFiles, error) {
 	fake.createEnvMutex.Lock()
 	ret, specificReturn := fake.createEnvReturnsOnCall[len(fake.createEnvArgsForCall)]
 	fake.createEnvArgsForCall = append(fake.createEnvArgsForCall, struct {
 		arg1 *boshcli.CreateEnvFiles
 		arg2 boshcli.IAASEnvironment
 		arg3 string
-		arg4 string
-		arg5 string
-		arg6 string
-		arg7 map[string]string
-	}{arg1, arg2, arg3, arg4, arg5, arg6, arg7})
-	fake.recordInvocation("CreateEnv", []interface{}{arg1, arg2, arg3, arg4, arg5, arg6, arg7})
+		arg4 map[string]string
+	}{arg1, arg2, arg3, arg4})
+	fake.recordInvocation("CreateEnv", []interface{}{arg1, arg2, arg3, arg4})
 	fake.createEnvMutex.Unlock()
 	if fake.CreateEnvStub != nil {
-		return fake.CreateEnvStub(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+		return fake.CreateEnvStub(arg1, arg2, arg3, arg4)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -137,17 +131,17 @@ func (fake *FakeICLI) CreateEnvCallCount() int {
 	return len(fake.createEnvArgsForCall)
 }
 
-func (fake *FakeICLI) CreateEnvCalls(stub func(*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, string, string, string, map[string]string) (*boshcli.CreateEnvFiles, error)) {
+func (fake *FakeICLI) CreateEnvCalls(stub func(*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, map[string]string) (*boshcli.CreateEnvFiles, error)) {
 	fake.createEnvMutex.Lock()
 	defer fake.createEnvMutex.Unlock()
 	fake.CreateEnvStub = stub
 }
 
-func (fake *FakeICLI) CreateEnvArgsForCall(i int) (*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, string, string, string, map[string]string) {
+func (fake *FakeICLI) CreateEnvArgsForCall(i int) (*boshcli.CreateEnvFiles, boshcli.IAASEnvironment, string, map[string]string) {
 	fake.createEnvMutex.RLock()
 	defer fake.createEnvMutex.RUnlock()
 	argsForCall := fake.createEnvArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5, argsForCall.arg6, argsForCall.arg7
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
 }
 
 func (fake *FakeICLI) CreateEnvReturns(result1 *boshcli.CreateEnvFiles, result2 error) {

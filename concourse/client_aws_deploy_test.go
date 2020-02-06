@@ -6,15 +6,12 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/go-acme/lego/v4/lego"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
-	"github.com/EngineerBetter/control-tower/certs"
-	"github.com/EngineerBetter/control-tower/certs/certsfakes"
 	"github.com/EngineerBetter/control-tower/commands/deploy"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
@@ -31,7 +28,6 @@ import (
 )
 
 var _ = Describe("client", func() {
-	var certGenerationActions []string
 	var stdout *gbytes.Buffer
 	var stderr *gbytes.Buffer
 	var args *deploy.Args
@@ -148,8 +144,6 @@ var _ = Describe("client", func() {
 			VPCID:                    terraform.MetadataStringValue{Value: "vpc-112233"},
 		}
 
-		certGenerationActions = []string{}
-
 		// Initial config in bucket from an existing deployment
 		configInBucket = config.Config{
 			AvailabilityZone:         "eu-west-1a",
@@ -215,12 +209,6 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 	})
 
 	JustBeforeEach(func() {
-		certGenerator := func(c func(u *certs.User) (*lego.Client, error), caName string, provider iaas.Provider, ip ...string) (*certs.Certs, error) {
-			certGenerationActions = append(certGenerationActions, fmt.Sprintf("generating cert ca: %s, cn: %s", caName, ip))
-			return &certs.Certs{
-				CACert: []byte("----EXAMPLE CERT----"),
-			}, nil
-		}
 
 		flyClient = &flyfakes.FakeIClient{}
 		awsClient = setupFakeAwsProvider()
@@ -254,13 +242,11 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func(iaas.Provider, fly.Credentials, io.Writer, io.Writer, []byte) (fly.IClient, error) {
 					return flyClient, nil
 				},
-				certGenerator,
 				configClient,
 				args,
 				stdout,
 				stderr,
 				ipChecker,
-				certsfakes.NewFakeAcmeClient,
 				func(size int) string { return fmt.Sprintf("generatedPassword%d", size) },
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
@@ -281,13 +267,11 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func(iaas.Provider, fly.Credentials, io.Writer, io.Writer, []byte) (fly.IClient, error) {
 					return flyClient, nil
 				},
-				certGenerator,
 				configClient,
 				args,
 				stdout,
 				stderr,
 				ipChecker,
-				certsfakes.NewFakeAcmeClient,
 				func(size int) string { return fmt.Sprintf("generatedPassword%d", size) },
 				func() string { return "8letters" },
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
@@ -307,6 +291,37 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 
 			Context("and no CLI args were provided", func() {
 				BeforeEach(func() {
+					configInBucket.ConcourseCACert = `-----BEGIN CERTIFICATE-----
+MIIEXTCCAsWgAwIBAgIQZiZWMIod+NGTx+jJ8mBIbzANBgkqhkiG9w0BAQsFADA4
+MQwwCgYDVQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkxEDAOBgNVBAMM
+B2Jvc2hfY2EwHhcNMTkwMjEzMTAyNTM1WhcNMjAwMjEzMTAyNTM1WjAmMQwwCgYD
+VQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkwggGiMA0GCSqGSIb3DQEB
+AQUAA4IBjwAwggGKAoIBgQDCSub74gKqpTNFLeeEHNAH9a4Cf1ITQ11iK6OmzCM0
+NloX6/o2ER23AHAXBIJLPEVX4qnQKNeQjKFcicSdTK0kVVuLa5mlFY4/ieCmXKA+
+jmeXPJQGdzFi8BgoLAITcnFGGZY8kwPCzhhrPfa7TcvJnK/2RtKOwgWMxK2kxqs+
+EtA2fxZb57EV05kS7ctoHfiSjAOKqWlsMGOon0z22HItuvV8hcEB85oyv9AbN6Ni
+GoaktghNEz3A9T0d2iJBMX7uZgEKmq1VwhqTUAXbr+kxN23Dc1m2b7eMHZ0GyOes
+Puwj6ZG9Zqypf+wyb5ndZWwxFAex6Ery02W0rBFKne9J4VRxOzy/IgJKc1bvqtjs
+EpU1FbDCw6tLb9PKltEO7AQMrx70ubYuVt4exWfZVhzHNBzhII7gmLegHB0eGWou
+KLWV2hDM9OgDdbfmSubqTN+7szTvlUZTAwsLiTUQMCT7JpJSjqs7jXOO59PT0qSn
+W/QT8Q/BwiQrCeNAjzVhHU8CAwEAAaN1MHMwDgYDVR0PAQH/BAQDAgWgMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFMaEYqmheOXo
+GU3n6SiMLazbnxh5MB8GA1UdIwQYMBaAFHii4fiqAwJSnNhi6C+ibr/4OOTyMA0G
+CSqGSIb3DQEBCwUAA4IBgQCmjAuwHHby7HlvBgGGkBwqEtwX6r4rgh0XNXJVyh6J
+cCvGpKzDBl+XX8a1KQ4T1f5L81TR4JeV94DUMQ9xvOD2foBa6BMjDD4rQB216HlF
+sTh05eHp3TnLD7+Usu3iLQX2kYViEXdFh33xs3SD63PoKl2xS8h4PRenouaDH8Lz
+QT2zsqZMAy7zTwLa6A746OVwUT2xngkpTpFFsyIrNbwtvYuF54mqCQ7lw1Rfx1KE
+eXZl7o48YRh/IOuDZPjdyQqgOQeOhBqH8MLd3iWTyat/0jwd/VhIKpwxRZqlhlI+
+gEjWiNnil1JTl/I1AetpHX2oACkhg67IUR0MsbGSL2/KruVlHuLZdQMSNq0wBh6H
+Ni/w26gJvipll4mPV/Kr/LyWXQy2tkqhF00/fdhoZpWh93xzbaffriy+eaPqvFCc
+9HeOuco3Br39wORSRNL5Gb5ARgb30Z8syPEPSkt/g93Kj7wKiiiIFp+psuiIgnxh
+EWtqtr5TdtFYrxertqRY2vI=
+-----END CERTIFICATE-----
+`
+
+					configInBucket.ConcourseCert = "existing Cert"
+					configInBucket.ConcourseKey = "existing Key"
+
 					//Mutations we expect to have been done after load
 					configAfterLoad = configInBucket
 					configAfterLoad.AllowIPs = "\"0.0.0.0/0\""
@@ -345,8 +360,6 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 
 					//Mutations we expect to have been done after deploying the director
 					configAfterCreateEnv = configAfterLoad
-					configAfterCreateEnv.ConcourseCACert = "----EXAMPLE CERT----"
-					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 					configAfterCreateEnv.Domain = "77.77.77.77"
 					configAfterCreateEnv.Tags = []string{"control-tower-version=some version"}
@@ -385,6 +398,33 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterConcourseDeploy.CredhubPassword = "f4b12bc0166cad1bc02b050e4e79ac4c"
 					configAfterConcourseDeploy.CredhubURL = "https://77.77.77.77:8844/"
 					configAfterConcourseDeploy.CredhubUsername = "credhub-cli"
+					configAfterConcourseDeploy.DirectorCACert = `-----BEGIN CERTIFICATE-----
+MIIEXTCCAsWgAwIBAgIQZiZWMIod+NGTx+jJ8mBIbzANBgkqhkiG9w0BAQsFADA4
+MQwwCgYDVQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkxEDAOBgNVBAMM
+B2Jvc2hfY2EwHhcNMTkwMjEzMTAyNTM1WhcNMjAwMjEzMTAyNTM1WjAmMQwwCgYD
+VQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkwggGiMA0GCSqGSIb3DQEB
+AQUAA4IBjwAwggGKAoIBgQDCSub74gKqpTNFLeeEHNAH9a4Cf1ITQ11iK6OmzCM0
+NloX6/o2ER23AHAXBIJLPEVX4qnQKNeQjKFcicSdTK0kVVuLa5mlFY4/ieCmXKA+
+jmeXPJQGdzFi8BgoLAITcnFGGZY8kwPCzhhrPfa7TcvJnK/2RtKOwgWMxK2kxqs+
+EtA2fxZb57EV05kS7ctoHfiSjAOKqWlsMGOon0z22HItuvV8hcEB85oyv9AbN6Ni
+GoaktghNEz3A9T0d2iJBMX7uZgEKmq1VwhqTUAXbr+kxN23Dc1m2b7eMHZ0GyOes
+Puwj6ZG9Zqypf+wyb5ndZWwxFAex6Ery02W0rBFKne9J4VRxOzy/IgJKc1bvqtjs
+EpU1FbDCw6tLb9PKltEO7AQMrx70ubYuVt4exWfZVhzHNBzhII7gmLegHB0eGWou
+KLWV2hDM9OgDdbfmSubqTN+7szTvlUZTAwsLiTUQMCT7JpJSjqs7jXOO59PT0qSn
+W/QT8Q/BwiQrCeNAjzVhHU8CAwEAAaN1MHMwDgYDVR0PAQH/BAQDAgWgMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFMaEYqmheOXo
+GU3n6SiMLazbnxh5MB8GA1UdIwQYMBaAFHii4fiqAwJSnNhi6C+ibr/4OOTyMA0G
+CSqGSIb3DQEBCwUAA4IBgQCmjAuwHHby7HlvBgGGkBwqEtwX6r4rgh0XNXJVyh6J
+cCvGpKzDBl+XX8a1KQ4T1f5L81TR4JeV94DUMQ9xvOD2foBa6BMjDD4rQB216HlF
+sTh05eHp3TnLD7+Usu3iLQX2kYViEXdFh33xs3SD63PoKl2xS8h4PRenouaDH8Lz
+QT2zsqZMAy7zTwLa6A746OVwUT2xngkpTpFFsyIrNbwtvYuF54mqCQ7lw1Rfx1KE
+eXZl7o48YRh/IOuDZPjdyQqgOQeOhBqH8MLd3iWTyat/0jwd/VhIKpwxRZqlhlI+
+gEjWiNnil1JTl/I1AetpHX2oACkhg67IUR0MsbGSL2/KruVlHuLZdQMSNq0wBh6H
+Ni/w26gJvipll4mPV/Kr/LyWXQy2tkqhF00/fdhoZpWh93xzbaffriy+eaPqvFCc
+9HeOuco3Br39wORSRNL5Gb5ARgb30Z8syPEPSkt/g93Kj7wKiiiIFp+psuiIgnxh
+EWtqtr5TdtFYrxertqRY2vI=
+-----END CERTIFICATE-----
+`
 				})
 
 				JustBeforeEach(func() {
@@ -418,9 +458,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 
 					Expect(configClient.UpdateCallCount()).To(Equal(2))
 					Expect(configClient.UpdateArgsForCall(0)).To(Equal(configAfterLoad))
-
-					Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-happymeal, cn: [99.99.99.99 10.0.0.6]"))
-					Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-happymeal, cn: [77.77.77.77]"))
 
 					Expect(configClient.HasAssetCallCount()).To(Equal(2))
 					Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
@@ -492,8 +529,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					args.PrivateCIDRIsSet = true
 					args.PublicCIDR = "10.0.1.0/24"
 					args.PublicCIDRIsSet = true
-					args.RDS1CIDR = "10.0.2.0/24"
-					args.RDS2CIDR = "10.0.3.0/24"
 				})
 
 				JustBeforeEach(func() {
@@ -552,6 +587,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterLoad.AllowIPsUnformatted = "88.98.225.40"
 					configAfterLoad.BitbucketClientID = args.BitbucketAuthClientID
 					configAfterLoad.BitbucketClientSecret = args.BitbucketAuthClientSecret
+					configAfterLoad.AutoCert = false
 					configAfterLoad.ConcourseWebSize = args.WebSize
 					configAfterLoad.ConcourseWorkerCount = args.WorkerCount
 					configAfterLoad.ConcourseWorkerSize = args.WorkerSize
@@ -604,13 +640,42 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterCreateEnv = configAfterLoad
 					configAfterCreateEnv.ConcourseCert = args.TLSCert
 					configAfterCreateEnv.ConcourseKey = args.TLSKey
-					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 					configAfterCreateEnv.Tags = append([]string{"control-tower-version=some version"}, args.Tags...)
 					configAfterCreateEnv.Version = "some version"
 
 					configAfterConcourseDeploy = configAfterCreateEnv
 					configAfterConcourseDeploy.CredhubURL = "https://ci.google.com:8844/"
+					configAfterConcourseDeploy.ConcourseCACert = ""
+					configAfterConcourseDeploy.ConcourseCert = "i-am-a-tls-cert"
+					configAfterConcourseDeploy.ConcourseKey = "i-am-a-tls-key"
+					configAfterConcourseDeploy.DirectorCACert = `-----BEGIN CERTIFICATE-----
+MIIEXTCCAsWgAwIBAgIQZiZWMIod+NGTx+jJ8mBIbzANBgkqhkiG9w0BAQsFADA4
+MQwwCgYDVQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkxEDAOBgNVBAMM
+B2Jvc2hfY2EwHhcNMTkwMjEzMTAyNTM1WhcNMjAwMjEzMTAyNTM1WjAmMQwwCgYD
+VQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkwggGiMA0GCSqGSIb3DQEB
+AQUAA4IBjwAwggGKAoIBgQDCSub74gKqpTNFLeeEHNAH9a4Cf1ITQ11iK6OmzCM0
+NloX6/o2ER23AHAXBIJLPEVX4qnQKNeQjKFcicSdTK0kVVuLa5mlFY4/ieCmXKA+
+jmeXPJQGdzFi8BgoLAITcnFGGZY8kwPCzhhrPfa7TcvJnK/2RtKOwgWMxK2kxqs+
+EtA2fxZb57EV05kS7ctoHfiSjAOKqWlsMGOon0z22HItuvV8hcEB85oyv9AbN6Ni
+GoaktghNEz3A9T0d2iJBMX7uZgEKmq1VwhqTUAXbr+kxN23Dc1m2b7eMHZ0GyOes
+Puwj6ZG9Zqypf+wyb5ndZWwxFAex6Ery02W0rBFKne9J4VRxOzy/IgJKc1bvqtjs
+EpU1FbDCw6tLb9PKltEO7AQMrx70ubYuVt4exWfZVhzHNBzhII7gmLegHB0eGWou
+KLWV2hDM9OgDdbfmSubqTN+7szTvlUZTAwsLiTUQMCT7JpJSjqs7jXOO59PT0qSn
+W/QT8Q/BwiQrCeNAjzVhHU8CAwEAAaN1MHMwDgYDVR0PAQH/BAQDAgWgMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFMaEYqmheOXo
+GU3n6SiMLazbnxh5MB8GA1UdIwQYMBaAFHii4fiqAwJSnNhi6C+ibr/4OOTyMA0G
+CSqGSIb3DQEBCwUAA4IBgQCmjAuwHHby7HlvBgGGkBwqEtwX6r4rgh0XNXJVyh6J
+cCvGpKzDBl+XX8a1KQ4T1f5L81TR4JeV94DUMQ9xvOD2foBa6BMjDD4rQB216HlF
+sTh05eHp3TnLD7+Usu3iLQX2kYViEXdFh33xs3SD63PoKl2xS8h4PRenouaDH8Lz
+QT2zsqZMAy7zTwLa6A746OVwUT2xngkpTpFFsyIrNbwtvYuF54mqCQ7lw1Rfx1KE
+eXZl7o48YRh/IOuDZPjdyQqgOQeOhBqH8MLd3iWTyat/0jwd/VhIKpwxRZqlhlI+
+gEjWiNnil1JTl/I1AetpHX2oACkhg67IUR0MsbGSL2/KruVlHuLZdQMSNq0wBh6H
+Ni/w26gJvipll4mPV/Kr/LyWXQy2tkqhF00/fdhoZpWh93xzbaffriy+eaPqvFCc
+9HeOuco3Br39wORSRNL5Gb5ARgb30Z8syPEPSkt/g93Kj7wKiiiIFp+psuiIgnxh
+EWtqtr5TdtFYrxertqRY2vI=
+-----END CERTIFICATE-----
+`
 				})
 
 				JustBeforeEach(func() {
@@ -721,12 +786,11 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				configAfterLoad = defaultGeneratedConfig
 				configAfterLoad.AllowIPs = "\"0.0.0.0/0\""
 				configAfterLoad.AllowIPsUnformatted = "0.0.0.0/0"
+				configAfterLoad.AutoCert = false
 				configAfterLoad.SourceAccessIP = "192.0.2.0"
 
 				//Mutations we expect to have been done after deploying the director
 				configAfterCreateEnv = configAfterLoad
-				configAfterCreateEnv.ConcourseCACert = "----EXAMPLE CERT----"
-				configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 				configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
 				configAfterCreateEnv.Domain = "77.77.77.77"
 				configAfterCreateEnv.Tags = []string{"control-tower-version=some version"}
@@ -766,6 +830,62 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				configAfterConcourseDeploy.CredhubPassword = "f4b12bc0166cad1bc02b050e4e79ac4c"
 				configAfterConcourseDeploy.CredhubURL = "https://77.77.77.77:8844/"
 				configAfterConcourseDeploy.CredhubUsername = "credhub-cli"
+				configAfterConcourseDeploy.ConcourseCACert = `-----BEGIN CERTIFICATE-----
+MIIEXTCCAsWgAwIBAgIQZiZWMIod+NGTx+jJ8mBIbzANBgkqhkiG9w0BAQsFADA4
+MQwwCgYDVQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkxEDAOBgNVBAMM
+B2Jvc2hfY2EwHhcNMTkwMjEzMTAyNTM1WhcNMjAwMjEzMTAyNTM1WjAmMQwwCgYD
+VQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkwggGiMA0GCSqGSIb3DQEB
+AQUAA4IBjwAwggGKAoIBgQDCSub74gKqpTNFLeeEHNAH9a4Cf1ITQ11iK6OmzCM0
+NloX6/o2ER23AHAXBIJLPEVX4qnQKNeQjKFcicSdTK0kVVuLa5mlFY4/ieCmXKA+
+jmeXPJQGdzFi8BgoLAITcnFGGZY8kwPCzhhrPfa7TcvJnK/2RtKOwgWMxK2kxqs+
+EtA2fxZb57EV05kS7ctoHfiSjAOKqWlsMGOon0z22HItuvV8hcEB85oyv9AbN6Ni
+GoaktghNEz3A9T0d2iJBMX7uZgEKmq1VwhqTUAXbr+kxN23Dc1m2b7eMHZ0GyOes
+Puwj6ZG9Zqypf+wyb5ndZWwxFAex6Ery02W0rBFKne9J4VRxOzy/IgJKc1bvqtjs
+EpU1FbDCw6tLb9PKltEO7AQMrx70ubYuVt4exWfZVhzHNBzhII7gmLegHB0eGWou
+KLWV2hDM9OgDdbfmSubqTN+7szTvlUZTAwsLiTUQMCT7JpJSjqs7jXOO59PT0qSn
+W/QT8Q/BwiQrCeNAjzVhHU8CAwEAAaN1MHMwDgYDVR0PAQH/BAQDAgWgMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFMaEYqmheOXo
+GU3n6SiMLazbnxh5MB8GA1UdIwQYMBaAFHii4fiqAwJSnNhi6C+ibr/4OOTyMA0G
+CSqGSIb3DQEBCwUAA4IBgQCmjAuwHHby7HlvBgGGkBwqEtwX6r4rgh0XNXJVyh6J
+cCvGpKzDBl+XX8a1KQ4T1f5L81TR4JeV94DUMQ9xvOD2foBa6BMjDD4rQB216HlF
+sTh05eHp3TnLD7+Usu3iLQX2kYViEXdFh33xs3SD63PoKl2xS8h4PRenouaDH8Lz
+QT2zsqZMAy7zTwLa6A746OVwUT2xngkpTpFFsyIrNbwtvYuF54mqCQ7lw1Rfx1KE
+eXZl7o48YRh/IOuDZPjdyQqgOQeOhBqH8MLd3iWTyat/0jwd/VhIKpwxRZqlhlI+
+gEjWiNnil1JTl/I1AetpHX2oACkhg67IUR0MsbGSL2/KruVlHuLZdQMSNq0wBh6H
+Ni/w26gJvipll4mPV/Kr/LyWXQy2tkqhF00/fdhoZpWh93xzbaffriy+eaPqvFCc
+9HeOuco3Br39wORSRNL5Gb5ARgb30Z8syPEPSkt/g93Kj7wKiiiIFp+psuiIgnxh
+EWtqtr5TdtFYrxertqRY2vI=
+-----END CERTIFICATE-----
+`
+				configAfterConcourseDeploy.ConcourseCert = "existing Cert"
+				configAfterConcourseDeploy.ConcourseKey = "existing Key"
+				configAfterConcourseDeploy.DirectorCACert = `-----BEGIN CERTIFICATE-----
+MIIEXTCCAsWgAwIBAgIQZiZWMIod+NGTx+jJ8mBIbzANBgkqhkiG9w0BAQsFADA4
+MQwwCgYDVQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkxEDAOBgNVBAMM
+B2Jvc2hfY2EwHhcNMTkwMjEzMTAyNTM1WhcNMjAwMjEzMTAyNTM1WjAmMQwwCgYD
+VQQGEwNVU0ExFjAUBgNVBAoTDUNsb3VkIEZvdW5kcnkwggGiMA0GCSqGSIb3DQEB
+AQUAA4IBjwAwggGKAoIBgQDCSub74gKqpTNFLeeEHNAH9a4Cf1ITQ11iK6OmzCM0
+NloX6/o2ER23AHAXBIJLPEVX4qnQKNeQjKFcicSdTK0kVVuLa5mlFY4/ieCmXKA+
+jmeXPJQGdzFi8BgoLAITcnFGGZY8kwPCzhhrPfa7TcvJnK/2RtKOwgWMxK2kxqs+
+EtA2fxZb57EV05kS7ctoHfiSjAOKqWlsMGOon0z22HItuvV8hcEB85oyv9AbN6Ni
+GoaktghNEz3A9T0d2iJBMX7uZgEKmq1VwhqTUAXbr+kxN23Dc1m2b7eMHZ0GyOes
+Puwj6ZG9Zqypf+wyb5ndZWwxFAex6Ery02W0rBFKne9J4VRxOzy/IgJKc1bvqtjs
+EpU1FbDCw6tLb9PKltEO7AQMrx70ubYuVt4exWfZVhzHNBzhII7gmLegHB0eGWou
+KLWV2hDM9OgDdbfmSubqTN+7szTvlUZTAwsLiTUQMCT7JpJSjqs7jXOO59PT0qSn
+W/QT8Q/BwiQrCeNAjzVhHU8CAwEAAaN1MHMwDgYDVR0PAQH/BAQDAgWgMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFMaEYqmheOXo
+GU3n6SiMLazbnxh5MB8GA1UdIwQYMBaAFHii4fiqAwJSnNhi6C+ibr/4OOTyMA0G
+CSqGSIb3DQEBCwUAA4IBgQCmjAuwHHby7HlvBgGGkBwqEtwX6r4rgh0XNXJVyh6J
+cCvGpKzDBl+XX8a1KQ4T1f5L81TR4JeV94DUMQ9xvOD2foBa6BMjDD4rQB216HlF
+sTh05eHp3TnLD7+Usu3iLQX2kYViEXdFh33xs3SD63PoKl2xS8h4PRenouaDH8Lz
+QT2zsqZMAy7zTwLa6A746OVwUT2xngkpTpFFsyIrNbwtvYuF54mqCQ7lw1Rfx1KE
+eXZl7o48YRh/IOuDZPjdyQqgOQeOhBqH8MLd3iWTyat/0jwd/VhIKpwxRZqlhlI+
+gEjWiNnil1JTl/I1AetpHX2oACkhg67IUR0MsbGSL2/KruVlHuLZdQMSNq0wBh6H
+Ni/w26gJvipll4mPV/Kr/LyWXQy2tkqhF00/fdhoZpWh93xzbaffriy+eaPqvFCc
+9HeOuco3Br39wORSRNL5Gb5ARgb30Z8syPEPSkt/g93Kj7wKiiiIFp+psuiIgnxh
+EWtqtr5TdtFYrxertqRY2vI=
+-----END CERTIFICATE-----
+`
 			})
 
 			JustBeforeEach(func() {
@@ -830,9 +950,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				Expect(configClient.UpdateCallCount()).To(Equal(3))
 				Expect(configClient.UpdateArgsForCall(1)).To(Equal(configAfterLoad))
 
-				Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-initial-deployment, cn: [99.99.99.99 10.0.0.6]"))
-				Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-initial-deployment, cn: [77.77.77.77]"))
-
 				Expect(configClient.HasAssetCallCount()).To(Equal(2))
 				Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
 				Expect(configClient.HasAssetArgsForCall(1)).To(Equal("director-creds.yml"))
@@ -885,14 +1002,6 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(stderr).To(gbytes.Say("WARNING: adding record ci.google.com to DNS zone google.com with name ABC123"))
-			})
-
-			It("Generates certificates for that domain and not the public IP", func() {
-				client := buildClient()
-				err := client.Deploy()
-				Expect(err).ToNot(HaveOccurred())
-
-				Expect(certGenerationActions).To(ContainElement("generating cert ca: control-tower-happymeal, cn: [ci.google.com]"))
 			})
 
 			Context("and a custom cert is provided", func() {

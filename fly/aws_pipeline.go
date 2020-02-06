@@ -82,13 +82,12 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_ACCESS_KEY_ID: "{{ .AWSAccessKeyID }}"
       AWS_REGION: "{{ .Region }}"
-      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+      AWS_SECRET_ACCESS_KEY: "{{ .AWSSecretAccessKey }}"
       DEPLOYMENT: "{{ .Deployment }}"
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
-      ALLOW_IPS: "{{ .AllowIPs }}"
       SELF_UPDATE: true
     config:
       platform: linux

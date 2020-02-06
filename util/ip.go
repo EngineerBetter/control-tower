@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -29,4 +30,9 @@ func FindUserIP() (string, error) {
 		time.Sleep(time.Duration(i) * time.Second)
 	}
 	return "", errors.New("timed out getting user IP")
+}
+
+// IsIP determines if the inputted string is an IP
+func IsIP(val string) bool {
+	return net.ParseIP(val) != nil
 }

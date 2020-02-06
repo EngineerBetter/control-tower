@@ -85,10 +85,9 @@ jobs:
     params:
       AWS_REGION: "{{ .Region }}"
       DEPLOYMENT: "{{ .Deployment }}"
-      GCPCreds: ((google_self_update_credentials))
+      GCPCreds: '{{ .GCPCreds }}'
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
-      ALLOW_IPS: "{{ .AllowIPs }}"
       SELF_UPDATE: true
     config:
       platform: linux

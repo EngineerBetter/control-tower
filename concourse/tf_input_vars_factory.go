@@ -8,9 +8,7 @@ import (
 	"github.com/EngineerBetter/control-tower/terraform"
 )
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
-
-//counterfeiter:generate . TFInputVarsFactory
+//go:generate counterfeiter . TFInputVarsFactory
 type TFInputVarsFactory interface {
 	NewInputVars(conf config.ConfigView) terraform.InputVars
 }
@@ -70,6 +68,8 @@ func (f *AWSInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputV
 	}
 }
 
+// Note in GPC the project is the GCP project everything is deployed to
+// In AWS it is the name of the Control Tower deployment
 type GCPInputVarsFactory struct {
 	credentialsPath string
 	project         string

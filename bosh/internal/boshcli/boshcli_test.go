@@ -49,7 +49,7 @@ func TestCLI_CreateEnv(t *testing.T) {
 		require.Equal(t, "bosh", command)
 		require.Equal(t, "create-env", args[0])
 	})
-	c.CreateEnv(&boshcli.CreateEnvFiles{}, config, "password", "cert", "key", "ca", map[string]string{})
+	c.CreateEnv(&boshcli.CreateEnvFiles{}, config, "password", map[string]string{})
 }
 
 func TestCLI_UpdateCloudConfig(t *testing.T) {

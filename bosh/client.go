@@ -142,6 +142,7 @@ func saveFilesToWorkingDir(workingdir workingdir.IClient, provider iaas.Provider
 		concourseNoMetricsFilename:            concourseNoMetrics,
 		credsFilename:                         creds,
 		extraTagsFilename:                     extraTags,
+		letsEncryptFilename:                   letsEncryptOps,
 	}
 
 	for filename, contents := range filesToSave {

@@ -7,8 +7,6 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas"
 )
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
-
 const terraformStateFileName = "terraform.tfstate"
 const configFilePath = "config.json"
 

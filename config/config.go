@@ -15,6 +15,7 @@ func ConvertSpotBoolToVMProvisioningType(spot bool) string {
 type Config struct {
 	AllowIPs                 string `json:"allow_ips"`
 	AllowIPsUnformatted      string `json:"allow_ips_unformatted"`
+	AutoCert                 bool   `json:"autocert"`
 	AvailabilityZone         string `json:"availability_zone"`
 	BitbucketClientID        string `json:"bitbucket_client_id"`
 	BitbucketClientSecret    string `json:"bitbucket_client_secret"`
@@ -34,9 +35,7 @@ type Config struct {
 	CredhubUsername          string `json:"credhub_username"`
 	Deployment               string `json:"deployment"`
 	DirectorCACert           string `json:"director_ca_cert"`
-	DirectorCert             string `json:"director_cert"`
 	DirectorHMUserPassword   string `json:"director_hm_user_password"`
-	DirectorKey              string `json:"director_key"`
 	DirectorMbusPassword     string `json:"director_mbus_password"`
 	DirectorNATSPassword     string `json:"director_nats_password"`
 	DirectorPassword         string `json:"director_password"`
@@ -90,6 +89,7 @@ type Config struct {
 type ConfigView interface {
 	GetAllowIPs() string
 	GetAllowIPsUnformatted() string
+	GetAutoCert() bool
 	GetAvailabilityZone() string
 	GetBitbucketClientID() string
 	GetBitbucketClientSecret() string
@@ -109,9 +109,7 @@ type ConfigView interface {
 	GetCredhubUsername() string
 	GetDeployment() string
 	GetDirectorCACert() string
-	GetDirectorCert() string
 	GetDirectorHMUserPassword() string
-	GetDirectorKey() string
 	GetDirectorMbusPassword() string
 	GetDirectorNATSPassword() string
 	GetDirectorPassword() string
@@ -171,6 +169,10 @@ func (c Config) GetAllowIPs() string {
 
 func (c Config) GetAllowIPsUnformatted() string {
 	return c.AllowIPsUnformatted
+}
+
+func (c Config) GetAutoCert() bool {
+	return c.AutoCert
 }
 
 func (c Config) GetAvailabilityZone() string {
@@ -249,16 +251,8 @@ func (c Config) GetDirectorCACert() string {
 	return c.DirectorCACert
 }
 
-func (c Config) GetDirectorCert() string {
-	return c.DirectorCert
-}
-
 func (c Config) GetDirectorHMUserPassword() string {
 	return c.DirectorHMUserPassword
-}
-
-func (c Config) GetDirectorKey() string {
-	return c.DirectorKey
 }
 
 func (c Config) GetDirectorMbusPassword() string {

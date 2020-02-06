@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 
@@ -147,11 +148,20 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		return nil, fmt.Errorf("failed to retrieve director IP: [%v]", err)
 	}
 
+	if client.config.GetAutoCert() {
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(letsEncryptFilename))
+	}
+
+	directorCACert, err := util.GetDirectorCACertFromCreds(creds)
+	if err != nil {
+		return nil, err
+	}
+
 	err = client.boshCLI.RunAuthenticatedCommand(
 		"deploy",
 		directorPublicIP,
 		client.config.GetDirectorPassword(),
-		client.config.GetDirectorCACert(),
+		directorCACert,
 		detach,
 		os.Stdout,
 		append(flagFiles, vs...)...)
