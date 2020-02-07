@@ -9,7 +9,7 @@ import (
 
 // Deploy deploys a new Bosh director or converges an existing deployment
 // Returns new contents of bosh state file
-func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, newCreds []byte, err error) {
+func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, newBoshAndConcourseCreds []byte, err error) {
 	if err != nil {
 		return state, creds, err
 	}
@@ -29,12 +29,12 @@ func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, new
 		return state, creds, err
 	}
 
-	creds, err = client.deployConcourse(creds, detach)
+	newBoshAndConcourseCreds, err = client.deployConcourse(creds, detach)
 	if err != nil {
 		return state, creds, err
 	}
 
-	return state, creds, err
+	return state, newBoshAndConcourseCreds, err
 }
 
 // CreateEnv exposes bosh create-env functionality
