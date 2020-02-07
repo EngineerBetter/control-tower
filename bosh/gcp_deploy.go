@@ -10,10 +10,6 @@ import (
 // Deploy deploys a new Bosh director or converges an existing deployment
 // Returns new contents of bosh state file
 func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, newBoshAndConcourseCreds []byte, err error) {
-	if err != nil {
-		return state, creds, err
-	}
-
 	state, creds, err = client.CreateEnv(state, creds, "")
 	if err != nil {
 		return state, creds, err
