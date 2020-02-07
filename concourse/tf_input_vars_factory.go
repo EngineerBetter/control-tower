@@ -68,6 +68,8 @@ func (f *AWSInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputV
 	}
 }
 
+// Note in GPC the project is the GCP project everything is deployed to
+// In AWS it is the name of the Control Tower deployment
 type GCPInputVarsFactory struct {
 	credentialsPath string
 	project         string

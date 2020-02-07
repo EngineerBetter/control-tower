@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
@@ -30,7 +31,7 @@ var _ = Describe("client", func() {
 	var stderr *gbytes.Buffer
 	var args *deploy.Args
 	var configInBucket config.Config
-	var terraformOutputs terraform.AWSOutputs
+	var terraformOutputs terraform.GCPOutputs
 
 	var directorStateFixture, directorCredsFixture []byte
 
@@ -43,14 +44,14 @@ var _ = Describe("client", func() {
 	var configClient *configfakes.FakeIClient
 	var boshClient *boshfakes.FakeIClient
 
-	var setupFakeAwsProvider = func() *iaasfakes.FakeProvider {
+	var setupFakeGcpProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
 		provider.DBTypeStub = func(size string) string {
 			return "db.t2." + size
 		}
-		provider.RegionReturns("eu-west-1")
-		provider.ZoneReturns("eu-west-1a")
-		provider.IAASReturns(iaas.AWS)
+		provider.RegionReturns("europe-west1")
+		provider.ZoneReturns("europe-west1-b")
+		provider.IAASReturns(iaas.GCP)
 		provider.CheckForWhitelistedIPStub = func(ip, securityGroup string) (bool, error) {
 			if ip == "1.2.3.4" {
 				return false, nil
@@ -69,25 +70,25 @@ var _ = Describe("client", func() {
 
 	var setupFakeOtherRegionProvider = func() *iaasfakes.FakeProvider {
 		otherRegionClient := &iaasfakes.FakeProvider{}
-		otherRegionClient.IAASReturns(iaas.AWS)
-		otherRegionClient.RegionReturns("eu-central-1")
+		otherRegionClient.IAASReturns(iaas.GCP)
+		otherRegionClient.RegionReturns("europe-west2")
 		return otherRegionClient
 	}
 
 	var setupFakeTfInputVarsFactory = func() *concoursefakes.FakeTFInputVarsFactory {
 		tfInputVarsFactory = &concoursefakes.FakeTFInputVarsFactory{}
 
-		provider, err := iaas.New(iaas.AWS, "eu-west-1")
+		provider, err := iaas.New(iaas.GCP, "europe-west1")
 		Expect(err).ToNot(HaveOccurred())
-		awsInputVarsFactory, err := concourse.NewTFInputVarsFactory(provider)
+		gcpInputVarsFactory, err := concourse.NewTFInputVarsFactory(provider)
 		Expect(err).ToNot(HaveOccurred())
 		tfInputVarsFactory.NewInputVarsStub = func(i config.ConfigView) terraform.InputVars {
-			return awsInputVarsFactory.NewInputVars(i)
+			return gcpInputVarsFactory.NewInputVars(i)
 		}
 		return tfInputVarsFactory
 	}
 
-	var setupFakeTerraformCLI = func(terraformOutputs terraform.AWSOutputs) *terraformfakes.FakeCLIInterface {
+	var setupFakeTerraformCLI = func(terraformOutputs terraform.GCPOutputs) *terraformfakes.FakeCLIInterface {
 		terraformCLI = &terraformfakes.FakeCLIInterface{}
 		terraformCLI.BuildOutputReturns(&terraformOutputs, nil)
 		return terraformCLI
@@ -95,6 +96,16 @@ var _ = Describe("client", func() {
 
 	BeforeEach(func() {
 		var err error
+
+		json := `{"project_id": "gcp-project", "type": "service_account"}`
+		filePath, err := ioutil.TempFile("", "")
+		Expect(err).ToNot(HaveOccurred())
+		_, err = filePath.WriteString(json)
+		Expect(err).ToNot(HaveOccurred())
+		filePath.Close()
+		err = os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", filePath.Name())
+		Expect(err).ToNot(HaveOccurred())
+
 		directorStateFixture, err = ioutil.ReadFile("fixtures/director-state.json")
 		Expect(err).ToNot(HaveOccurred())
 		directorCredsFixture, err = ioutil.ReadFile("fixtures/director-creds.yml")
@@ -106,7 +117,7 @@ var _ = Describe("client", func() {
 			AllowIPsIsSet:    false,
 			DBSize:           "small",
 			DBSizeIsSet:      false,
-			IAAS:             "AWS",
+			IAAS:             "GCP",
 			IAASIsSet:        false,
 			Spot:             true,
 			SpotIsSet:        false,
@@ -120,29 +131,38 @@ var _ = Describe("client", func() {
 			WorkerTypeIsSet:  false,
 		}
 
-		terraformOutputs = terraform.AWSOutputs{
-			ATCPublicIP:              terraform.MetadataStringValue{Value: "77.77.77.77"},
-			ATCSecurityGroupID:       terraform.MetadataStringValue{Value: "sg-999"},
-			BlobstoreBucket:          terraform.MetadataStringValue{Value: "blobs.aws.com"},
-			BlobstoreSecretAccessKey: terraform.MetadataStringValue{Value: "abc123"},
-			BlobstoreUserAccessKeyID: terraform.MetadataStringValue{Value: "abc123"},
-			BoshDBAddress:            terraform.MetadataStringValue{Value: "rds.aws.com"},
-			BoshDBPort:               terraform.MetadataStringValue{Value: "5432"},
-			BoshSecretAccessKey:      terraform.MetadataStringValue{Value: "abc123"},
-			BoshUserAccessKeyID:      terraform.MetadataStringValue{Value: "abc123"},
-			DirectorKeyPair:          terraform.MetadataStringValue{Value: "-- KEY --"},
-			DirectorPublicIP:         terraform.MetadataStringValue{Value: "99.99.99.99"},
-			DirectorSecurityGroupID:  terraform.MetadataStringValue{Value: "sg-123"},
-			NatGatewayIP:             terraform.MetadataStringValue{Value: "88.88.88.88"},
-			PrivateSubnetID:          terraform.MetadataStringValue{Value: "sn-private-123"},
-			PublicSubnetID:           terraform.MetadataStringValue{Value: "sn-public-123"},
-			VMsSecurityGroupID:       terraform.MetadataStringValue{Value: "sg-456"},
-			VPCID:                    terraform.MetadataStringValue{Value: "vpc-112233"},
+		terraformOutputs = terraform.GCPOutputs{
+			ATCPublicIP:   terraform.MetadataStringValue{Value: "77.77.77.77"},
+			BoshDBAddress: terraform.MetadataStringValue{Value: "rds.aws.com"},
+			DBName:        terraform.MetadataStringValue{Value: "bosh-foo"},
+			DirectorAccountCreds: terraform.MetadataStringValue{Value: `{
+				"type": "service_account",
+				"project_id": "control-tower-foo",
+				"private_key_id": "4738698f315fc4d268",
+				"private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCgKZ28OqflRjm+\n",
+				"client_email": "control-tower-cs-control-bosh@control-tower-foo.iam.gserviceaccount.com",
+				"client_id": "109135524897347086276",
+				"auth_uri": "https://accounts.google.com/o/oauth2/auth",
+				"token_uri": "https://oauth2.googleapis.com/token",
+				"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+				"client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/control-tower-cs-control-bosh%40control-tower-foo.iam.gserviceaccount.com"
+			}`},
+			DirectorPublicIP:            terraform.MetadataStringValue{Value: "99.99.99.99"},
+			DirectorSecurityGroupID:     terraform.MetadataStringValue{Value: "sg-123"},
+			NatGatewayIP:                terraform.MetadataStringValue{Value: "88.88.88.88"},
+			Network:                     terraform.MetadataStringValue{Value: "control-tower-foo"},
+			PrivateSubnetworkInternalGw: terraform.MetadataStringValue{Value: "10.0.1.1"},
+			PrivateSubnetworkName:       terraform.MetadataStringValue{Value: "control-tower-foo-europe-west1-private"},
+			PublicSubnetworkInternalGw:  terraform.MetadataStringValue{Value: "10.0.0.1"},
+			PublicSubnetworkName:        terraform.MetadataStringValue{Value: "control-tower-foo-europe-west1-public"},
+			SQLServerCert: terraform.MetadataStringValue{Value: `-----BEGIN CERTIFICATE-----
+			MIIDfzCCAmegAwIBAgIBADANBgkqhkiG9w0BAQsFADB3MS0wKwYDVQQuEyQzY2Nl
+			-----END CERTIFICATE-----`},
 		}
 
 		// Initial config in bucket from an existing deployment
 		configInBucket = config.Config{
-			AvailabilityZone:         "eu-west-1a",
+			AvailabilityZone:         "europe-west1a",
 			ConcoursePassword:        "s3cret",
 			ConcourseUsername:        "admin",
 			ConcourseWebSize:         "medium",
@@ -156,7 +176,7 @@ var _ = Describe("client", func() {
 			DirectorRegistryPassword: "original-password",
 			DirectorUsername:         "admin",
 			EncryptionKey:            "123456789a123456789b123456789c",
-			IAAS:                     "AWS",
+			IAAS:                     "GCP",
 			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA2spClkDkFfy2c91Z7N3AImPf0v3o5OoqXUS6nE2NbV2bP/o7
 Oa3KnpzeQ5DBmW3EW7tuvA4bAHxPuk25T9tM8jiItg0TNtMlxzFYVxFq8jMmokEi
@@ -187,10 +207,10 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			Project:                "happymeal",
 			PublicKey:              "example-public-key",
 			RDSDefaultDatabaseName: "bosh_abcdefgh",
-			RDSInstanceClass:       "db.t2.medium",
+			RDSInstanceClass:       "db-g1-small",
 			RDSPassword:            "s3cret",
 			RDSUsername:            "admin",
-			Region:                 "eu-west-1",
+			Region:                 "europe-west1",
 			Spot:                   true,
 			TFStatePath:            "example-path",
 			//These come from fixtures/director-creds.yml
@@ -206,7 +226,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 	JustBeforeEach(func() {
 
 		flyClient = &flyfakes.FakeIClient{}
-		awsClient := setupFakeAwsProvider()
+		gcpClient := setupFakeGcpProvider()
 		otherRegionClient := setupFakeOtherRegionProvider()
 		tfInputVarsFactory = setupFakeTfInputVarsFactory()
 		configClient = &configfakes.FakeIClient{}
@@ -229,7 +249,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 
 		buildClient = func() concourse.IClient {
 			return concourse.NewClient(
-				awsClient,
+				gcpClient,
 				terraformCLI,
 				tfInputVarsFactory,
 				boshClientFactory,
@@ -275,7 +295,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 	Describe("Deploy", func() {
 		Context("when there is an existing config", func() {
 			var configAfterLoad, configAfterCreateEnv, configAfterConcourseDeploy config.Config
-			var terraformInputVars *terraform.AWSInputVars
+			var terraformInputVars *terraform.GCPInputVars
 
 			Context("and no CLI args were provided", func() {
 				BeforeEach(func() {
@@ -313,35 +333,32 @@ EWtqtr5TdtFYrxertqRY2vI=
 					//Mutations we expect to have been done after load
 					configAfterLoad = configInBucket
 					configAfterLoad.AllowIPs = "\"0.0.0.0/0\""
-					configAfterLoad.SourceAccessIP = "192.0.2.0"
-					configAfterLoad.NetworkCIDR = "10.0.0.0/16"
-					configAfterLoad.PublicCIDR = "10.0.0.0/24"
+					configAfterLoad.HostedZoneID = ""
+					configAfterLoad.HostedZoneRecordPrefix = ""
+					configAfterLoad.SourceAccessIP = ""
 					configAfterLoad.PrivateCIDR = "10.0.1.0/24"
-					configAfterLoad.RDS1CIDR = "10.0.4.0/24"
-					configAfterLoad.RDS2CIDR = "10.0.5.0/24"
+					configAfterLoad.PublicCIDR = "10.0.0.0/24"
+					configAfterLoad.SourceAccessIP = "192.0.2.0"
 
-					terraformInputVars = &terraform.AWSInputVars{
-						AllowIPs:               configAfterLoad.AllowIPs,
-						AvailabilityZone:       configAfterLoad.AvailabilityZone,
-						ConfigBucket:           configAfterLoad.ConfigBucket,
-						Deployment:             configAfterLoad.Deployment,
-						HostedZoneID:           configAfterLoad.HostedZoneID,
-						HostedZoneRecordPrefix: configAfterLoad.HostedZoneRecordPrefix,
-						Namespace:              configAfterLoad.Namespace,
-						NetworkCIDR:            configAfterLoad.NetworkCIDR,
-						PrivateCIDR:            configAfterLoad.PrivateCIDR,
-						Project:                configAfterLoad.Project,
-						PublicCIDR:             configAfterLoad.PublicCIDR,
-						PublicKey:              configAfterLoad.PublicKey,
-						RDS1CIDR:               configAfterLoad.RDS1CIDR,
-						RDS2CIDR:               configAfterLoad.RDS2CIDR,
-						RDSDefaultDatabaseName: configAfterLoad.RDSDefaultDatabaseName,
-						RDSInstanceClass:       configAfterLoad.RDSInstanceClass,
-						RDSPassword:            configAfterLoad.RDSPassword,
-						RDSUsername:            configAfterLoad.RDSUsername,
-						Region:                 configAfterLoad.Region,
-						SourceAccessIP:         configAfterLoad.SourceAccessIP,
-						TFStatePath:            configAfterLoad.TFStatePath,
+					terraformInputVars = &terraform.GCPInputVars{
+						AllowIPs:           configAfterLoad.AllowIPs,
+						ConfigBucket:       configAfterLoad.ConfigBucket,
+						DBName:             configAfterLoad.RDSDefaultDatabaseName,
+						DBPassword:         configAfterLoad.RDSPassword,
+						DBTier:             configAfterLoad.RDSInstanceClass,
+						DBUsername:         configAfterLoad.RDSUsername,
+						Deployment:         configAfterLoad.Deployment,
+						DNSManagedZoneName: configAfterLoad.HostedZoneID,
+						DNSRecordSetPrefix: configAfterLoad.HostedZoneRecordPrefix,
+						ExternalIP:         configAfterLoad.SourceAccessIP,
+						GCPCredentialsJSON: os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"),
+						Namespace:          configAfterLoad.Namespace,
+						PrivateCIDR:        configAfterLoad.PrivateCIDR,
+						Project:            "gcp-project",
+						PublicCIDR:         configAfterLoad.PublicCIDR,
+						Region:             configAfterLoad.Region,
+						Tags:               "",
+						Zone:               "europe-west1-b",
 					}
 
 					//Mutations we expect to have been done after deploying the director
@@ -548,40 +565,34 @@ EWtqtr5TdtFYrxertqRY2vI=
 					configAfterLoad.GithubClientID = args.GithubAuthClientID
 					configAfterLoad.GithubClientSecret = args.GithubAuthClientSecret
 					configAfterLoad.HostedZoneID = "ABC123"
-					configAfterLoad.HostedZoneRecordPrefix = "ci"
-					configAfterLoad.NetworkCIDR = "10.0.0.0/16"
+					configAfterLoad.HostedZoneRecordPrefix = "ci."
 					configAfterLoad.PrivateCIDR = "10.0.1.0/24"
 					configAfterLoad.PublicCIDR = "10.0.0.0/24"
-					configAfterLoad.RDS1CIDR = "10.0.4.0/24"
-					configAfterLoad.RDS2CIDR = "10.0.5.0/24"
 					configAfterLoad.RDSInstanceClass = "db.t2.4xlarge"
 					configAfterLoad.SourceAccessIP = "192.0.2.0"
 					configAfterLoad.Tags = args.Tags
 					configAfterLoad.WorkerType = args.WorkerType
 					configAfterLoad.VMProvisioningType = config.ON_DEMAND
 
-					terraformInputVars = &terraform.AWSInputVars{
-						AllowIPs:               configAfterLoad.AllowIPs,
-						AvailabilityZone:       configAfterLoad.AvailabilityZone,
-						ConfigBucket:           configAfterLoad.ConfigBucket,
-						Deployment:             configAfterLoad.Deployment,
-						HostedZoneID:           configAfterLoad.HostedZoneID,
-						HostedZoneRecordPrefix: configAfterLoad.HostedZoneRecordPrefix,
-						Namespace:              configAfterLoad.Namespace,
-						NetworkCIDR:            configAfterLoad.NetworkCIDR,
-						PrivateCIDR:            configAfterLoad.PrivateCIDR,
-						Project:                configAfterLoad.Project,
-						PublicCIDR:             configAfterLoad.PublicCIDR,
-						PublicKey:              configAfterLoad.PublicKey,
-						RDS1CIDR:               configAfterLoad.RDS1CIDR,
-						RDS2CIDR:               configAfterLoad.RDS2CIDR,
-						RDSDefaultDatabaseName: configAfterLoad.RDSDefaultDatabaseName,
-						RDSInstanceClass:       configAfterLoad.RDSInstanceClass,
-						RDSPassword:            configAfterLoad.RDSPassword,
-						RDSUsername:            configAfterLoad.RDSUsername,
-						Region:                 configAfterLoad.Region,
-						SourceAccessIP:         configAfterLoad.SourceAccessIP,
-						TFStatePath:            configAfterLoad.TFStatePath,
+					terraformInputVars = &terraform.GCPInputVars{
+						AllowIPs:           configAfterLoad.AllowIPs,
+						ConfigBucket:       configAfterLoad.ConfigBucket,
+						DBName:             configAfterLoad.RDSDefaultDatabaseName,
+						DBPassword:         configAfterLoad.RDSPassword,
+						DBTier:             configAfterLoad.RDSInstanceClass,
+						DBUsername:         configAfterLoad.RDSUsername,
+						Deployment:         configAfterLoad.Deployment,
+						DNSManagedZoneName: configAfterLoad.HostedZoneID,
+						DNSRecordSetPrefix: configAfterLoad.HostedZoneRecordPrefix,
+						ExternalIP:         configAfterLoad.SourceAccessIP,
+						GCPCredentialsJSON: os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"),
+						Namespace:          configAfterLoad.Namespace,
+						PrivateCIDR:        configAfterLoad.PrivateCIDR,
+						Project:            "gcp-project",
+						PublicCIDR:         configAfterLoad.PublicCIDR,
+						Region:             configAfterLoad.Region,
+						Tags:               "",
+						Zone:               "europe-west1-b",
 					}
 
 					configAfterCreateEnv = configAfterLoad
@@ -672,13 +683,13 @@ EWtqtr5TdtFYrxertqRY2vI=
 				// Config generated by default for a new deployment
 				defaultGeneratedConfig = config.Config{
 					AllowIPs:                 "\"0.0.0.0/0\"",
-					AvailabilityZone:         "eu-west-1a",
+					AvailabilityZone:         "europe-west1-b",
 					ConcoursePassword:        "",
 					ConcourseUsername:        "",
 					ConcourseWebSize:         "small",
 					ConcourseWorkerCount:     1,
 					ConcourseWorkerSize:      "xlarge",
-					ConfigBucket:             "control-tower-initial-deployment-eu-west-1-config",
+					ConfigBucket:             "control-tower-initial-deployment-europe-west1-config",
 					DirectorHMUserPassword:   "generatedPassword20",
 					DirectorMbusPassword:     "generatedPassword20",
 					DirectorNATSPassword:     "generatedPassword20",
@@ -687,20 +698,17 @@ EWtqtr5TdtFYrxertqRY2vI=
 					DirectorRegistryPassword: "generatedPassword20",
 					DirectorUsername:         "admin",
 					EncryptionKey:            "generatedPassword32",
-					IAAS:                     "AWS",
-					NetworkCIDR:              "10.0.0.0/16",
+					IAAS:                     "GCP",
 					PrivateCIDR:              "10.0.1.0/24",
 					PrivateKey:               "private",
-					Project:                  "initial-deployment",
+					Project:                  "sample_project",
 					PublicCIDR:               "10.0.0.0/24",
 					PublicKey:                "public",
-					RDS1CIDR:                 "10.0.4.0/24",
-					RDS2CIDR:                 "10.0.5.0/24",
-					RDSDefaultDatabaseName:   "bosh_8letters",
+					RDSDefaultDatabaseName:   "bosh-8letters",
 					RDSInstanceClass:         "db.t2.small",
 					RDSPassword:              "generatedPassword20",
 					RDSUsername:              "admingeneratedPassword7",
-					Region:                   "eu-west-1",
+					Region:                   "europe-west1",
 					SourceAccessIP:           "192.0.2.0",
 					TFStatePath:              "terraform.tfstate",
 					WorkerType:               "m4",
@@ -814,11 +822,11 @@ EWtqtr5TdtFYrxertqRY2vI=
 
 			JustBeforeEach(func() {
 				configClient.NewConfigReturns(config.Config{
-					ConfigBucket: "control-tower-initial-deployment-eu-west-1-config",
+					ConfigBucket: "control-tower-initial-deployment-europe-west1-config",
 					Deployment:   "control-tower-initial-deployment",
 					Namespace:    "",
-					Project:      "initial-deployment",
-					Region:       "eu-west-1",
+					Project:      "sample_project",
+					Region:       "europe-west1",
 					TFStatePath:  "terraform.tfstate",
 				})
 				configClient.HasAssetReturnsOnCall(0, false, nil)
@@ -830,28 +838,25 @@ EWtqtr5TdtFYrxertqRY2vI=
 				err := client.Deploy()
 				Expect(err).ToNot(HaveOccurred())
 
-				terraformInputVars := &terraform.AWSInputVars{
-					NetworkCIDR:            defaultGeneratedConfig.NetworkCIDR,
-					PublicCIDR:             defaultGeneratedConfig.PublicCIDR,
-					PrivateCIDR:            defaultGeneratedConfig.PrivateCIDR,
-					AllowIPs:               defaultGeneratedConfig.AllowIPs,
-					AvailabilityZone:       defaultGeneratedConfig.AvailabilityZone,
-					ConfigBucket:           defaultGeneratedConfig.ConfigBucket,
-					Deployment:             defaultGeneratedConfig.Deployment,
-					HostedZoneID:           defaultGeneratedConfig.HostedZoneID,
-					HostedZoneRecordPrefix: defaultGeneratedConfig.HostedZoneRecordPrefix,
-					Namespace:              defaultGeneratedConfig.Namespace,
-					Project:                defaultGeneratedConfig.Project,
-					PublicKey:              defaultGeneratedConfig.PublicKey,
-					RDS1CIDR:               defaultGeneratedConfig.RDS1CIDR,
-					RDS2CIDR:               defaultGeneratedConfig.RDS2CIDR,
-					RDSDefaultDatabaseName: defaultGeneratedConfig.RDSDefaultDatabaseName,
-					RDSInstanceClass:       defaultGeneratedConfig.RDSInstanceClass,
-					RDSPassword:            defaultGeneratedConfig.RDSPassword,
-					RDSUsername:            defaultGeneratedConfig.RDSUsername,
-					Region:                 defaultGeneratedConfig.Region,
-					SourceAccessIP:         defaultGeneratedConfig.SourceAccessIP,
-					TFStatePath:            defaultGeneratedConfig.TFStatePath,
+				terraformInputVars := &terraform.GCPInputVars{
+					AllowIPs:           defaultGeneratedConfig.AllowIPs,
+					ConfigBucket:       defaultGeneratedConfig.ConfigBucket,
+					DBName:             defaultGeneratedConfig.RDSDefaultDatabaseName,
+					DBPassword:         defaultGeneratedConfig.RDSPassword,
+					DBTier:             defaultGeneratedConfig.RDSInstanceClass,
+					DBUsername:         defaultGeneratedConfig.RDSUsername,
+					Deployment:         defaultGeneratedConfig.Deployment,
+					DNSManagedZoneName: defaultGeneratedConfig.HostedZoneID,
+					DNSRecordSetPrefix: defaultGeneratedConfig.HostedZoneRecordPrefix,
+					ExternalIP:         defaultGeneratedConfig.SourceAccessIP,
+					GCPCredentialsJSON: os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"),
+					Namespace:          defaultGeneratedConfig.Namespace,
+					PrivateCIDR:        defaultGeneratedConfig.PrivateCIDR,
+					Project:            "gcp-project",
+					PublicCIDR:         defaultGeneratedConfig.PublicCIDR,
+					Region:             defaultGeneratedConfig.Region,
+					Tags:               "",
+					Zone:               "europe-west1-b",
 				}
 
 				tfInputVarsFactory.NewInputVarsReturns(terraformInputVars)
@@ -923,7 +928,7 @@ EWtqtr5TdtFYrxertqRY2vI=
 
 		Context("When the user tries to change the region of an existing deployment", func() {
 			BeforeEach(func() {
-				args.Region = "eu-central-1"
+				args.Region = "europe-west2"
 			})
 
 			JustBeforeEach(func() {
@@ -933,13 +938,13 @@ EWtqtr5TdtFYrxertqRY2vI=
 			It("Returns a meaningful error message", func() {
 				client := buildClientOtherRegion()
 				err := client.Deploy()
-				Expect(err).To(MatchError("found previous deployment in eu-west-1. Refusing to deploy to eu-central-1 as changing regions for existing deployments is not supported"))
+				Expect(err).To(MatchError("found previous deployment in europe-west1. Refusing to deploy to europe-west2 as changing regions for existing deployments is not supported"))
 			})
 		})
 
 		Context("When the user tries to change the availability zone of an existing deployment", func() {
 			BeforeEach(func() {
-				args.Zone = "eu-west-1c"
+				args.Zone = "europe-west1c"
 				args.ZoneIsSet = true
 			})
 
@@ -950,7 +955,7 @@ EWtqtr5TdtFYrxertqRY2vI=
 			It("Returns a meaningful error message", func() {
 				client := buildClient()
 				err := client.Deploy()
-				Expect(err).To(MatchError("error getting initial config before deploy: [Existing deployment uses zone eu-west-1a and cannot change to zone eu-west-1c]"))
+				Expect(err).To(MatchError("error getting initial config before deploy: [Existing deployment uses zone europe-west1a and cannot change to zone europe-west1c]"))
 			})
 		})
 
@@ -965,15 +970,15 @@ EWtqtr5TdtFYrxertqRY2vI=
 				configClient.ConfigExistsReturns(true, nil)
 			})
 			It("Does not override the existing DB size", func() {
-				provider, err := iaas.New(iaas.AWS, "eu-west-1")
+				provider, err := iaas.New(iaas.GCP, "europe-west1")
 				Expect(err).ToNot(HaveOccurred())
-				awsInputVarsFactory, err := concourse.NewTFInputVarsFactory(provider)
+				gcpInputVarsFactory, err := concourse.NewTFInputVarsFactory(provider)
 				Expect(err).ToNot(HaveOccurred())
 
 				var passedDBSize string
 				tfInputVarsFactory.NewInputVarsStub = func(config config.ConfigView) terraform.InputVars {
 					passedDBSize = config.GetRDSInstanceClass()
-					return awsInputVarsFactory.NewInputVars(config)
+					return gcpInputVarsFactory.NewInputVars(config)
 				}
 
 				client := buildClient()
