@@ -133,7 +133,7 @@ func (client *Client) Deploy() error {
 }
 
 func (client *Client) deployBoshAndPipeline(c config.ConfigView, tfOutputs terraform.Outputs) (BoshParams, error) {
-	// When we are deploying for the first time rather than updating
+	// When we are deploying for the first time or manually updating
 	// ensure that the pipeline is set _after_ the concourse is deployed
 
 	bp, err := client.deployBosh(c, tfOutputs, false)
@@ -178,6 +178,8 @@ func (client *Client) updateBoshAndPipeline(c config.ConfigView, tfOutputs terra
 	// If concourse is already running this is an update rather than a fresh deploy
 	// When updating we need to deploy the BOSH as the final step in order to
 	// Detach from the update, so the update job can exit
+
+	// Note this path is only reached when the self update flag is set
 
 	bp := BoshParams{
 		CredhubPassword:          c.GetCredhubPassword(),
