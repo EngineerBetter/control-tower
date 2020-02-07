@@ -4,6 +4,7 @@ import (
 	"net"
 
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
+	"github.com/EngineerBetter/control-tower/util"
 	"github.com/apparentlymart/go-cidr/cidr"
 )
 
@@ -15,10 +16,15 @@ func (client *GCPClient) Deploy(state, creds []byte, detach bool) (newState, new
 		return state, creds, err
 	}
 
-	if err = client.updateCloudConfig(client.boshCLI); err != nil {
+	directorCACert, err := util.GetDirectorCACertFromCreds(creds)
+	if err != nil {
 		return state, creds, err
 	}
-	if err = client.uploadConcourseStemcell(client.boshCLI); err != nil {
+
+	if err = client.updateCloudConfig(client.boshCLI, directorCACert); err != nil {
+		return state, creds, err
+	}
+	if err = client.uploadConcourseStemcell(client.boshCLI, directorCACert); err != nil {
 		return state, creds, err
 	}
 	if err = client.createDefaultDatabases(); err != nil {
@@ -128,7 +134,7 @@ func (client *GCPClient) Locks() ([]byte, error) {
 
 }
 
-func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
+func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI, directorCACert string) error {
 
 	privateSubnetwork, err := client.outputs.Get("PrivateSubnetworkName")
 	if err != nil {
@@ -201,14 +207,15 @@ func (client *GCPClient) updateCloudConfig(bosh boshcli.ICLI) error {
 		PrivateSubnetwork:   privateSubnetwork,
 		Zone:                zone,
 		Network:             network,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
+	}, directorPublicIP, client.config.GetDirectorPassword(), directorCACert)
 }
-func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI) error {
+
+func (client *GCPClient) uploadConcourseStemcell(bosh boshcli.ICLI, directorCACert string) error {
 	directorPublicIP, err := client.outputs.Get("DirectorPublicIP")
 	if err != nil {
 		return err
 	}
 	return bosh.UploadConcourseStemcell(boshcli.GCPEnvironment{
 		ExternalIP: directorPublicIP,
-	}, directorPublicIP, client.config.GetDirectorPassword(), client.config.GetDirectorCACert())
+	}, directorPublicIP, client.config.GetDirectorPassword(), directorCACert)
 }
