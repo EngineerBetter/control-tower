@@ -21,6 +21,9 @@ resources:
     user: engineerbetter
     repository: control-tower
     pre_release: true
+- name: every-day
+  type: time
+  source: {interval: 24h}
 
 jobs:
 - name: self-update
@@ -55,6 +58,54 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=$PWD/googlecreds.json
           set -eux
           chmod +x control-tower-linux-amd64
+          ./control-tower-linux-amd64 deploy $DEPLOYMENT
+- name: renew-https-cert
+  serial_groups: [cup]
+  serial: true
+  plan:
+  - get: control-tower-release
+    version: {tag: "COMPILE_TIME_VARIABLE_fly_control_tower_version" }
+  - get: every-day
+    trigger: true
+  - task: update
+    params:
+      AWS_REGION: "europe-west1"
+      DEPLOYMENT: "my-deployment"
+      GCPCreds: 'creds-content'
+      IAAS: "GCP"
+      NAMESPACE: "prod"
+      SELF_UPDATE: true
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: engineerbetter/pcf-ops
+      inputs:
+      - name: control-tower-release
+      run:
+        path: bash
+        args:
+        - -c
+        - |
+          echo "${GCPCreds}" > googlecreds.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$PWD/googlecreds.json
+          set -euxo pipefail
+          cd control-tower-release
+          chmod +x control-tower-linux-amd64
+
+          now_seconds=$(date +%s)
+          not_after=$(echo | openssl s_client -connect ci.engineerbetter.com:443 2>/dev/null | openssl x509 -noout -enddate)
+          expires_on=${not_after#'notAfter='}
+          expires_on_seconds=$(date --date="$expires_on" +%s)
+          let "seconds_until_expiry = $expires_on_seconds - $now_seconds"
+          let "days_until_expiry = $seconds_until_expiry / 60 / 60 / 24"
+          if [ $days_until_expiry -gt 2 ]; then
+            echo Not renewing HTTPS cert, as they do not expire in the next two days.
+            exit 0
+          fi
+
+          echo Certificates expire in $days_until_expiry days, redeploying to renew them
           ./control-tower-linux-amd64 deploy $DEPLOYMENT
 `
 
