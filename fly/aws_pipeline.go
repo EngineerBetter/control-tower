@@ -98,40 +98,4 @@ jobs:
           cd control-tower-release
           chmod +x control-tower-linux-amd64
           ./control-tower-linux-amd64 deploy $DEPLOYMENT
-- name: renew-https-cert
-  serial_groups: [cup]
-  serial: true
-  plan:
-  - get: control-tower-release
-    version: {tag: {{ .ControlTowerVersion }} }
-  - get: every-day
-    trigger: true
-  - task: update
-    params:
-      AWS_ACCESS_KEY_ID: "{{ .AWSAccessKeyID }}"
-      AWS_REGION: "{{ .Region }}"
-      AWS_SECRET_ACCESS_KEY: "{{ .AWSSecretAccessKey }}"
-      DEPLOYMENT: "{{ .Deployment }}"
-      IAAS: "{{ .IaaS }}"
-      NAMESPACE: "{{ .Namespace }}"
-      SELF_UPDATE: true
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: engineerbetter/pcf-ops
-      inputs:
-      - name: control-tower-release
-      run:
-        path: bash
-        args:
-        - -c
-        - |
-          set -euxo pipefail
-          cd control-tower-release
-          chmod +x control-tower-linux-amd64
-` + renewCertsDateCheck + `
-          echo Certificates expire in $days_until_expiry days, redeploying to renew them
-          ./control-tower-linux-amd64 deploy $DEPLOYMENT
 `
