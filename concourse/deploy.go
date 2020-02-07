@@ -93,9 +93,10 @@ func (client *Client) Deploy() error {
 	}
 
 	conf.AutoCert = cr.Certs.Autocert
-	conf.ConcourseCert = cr.Certs.ConcourseCert
-	conf.ConcourseKey = cr.Certs.ConcourseKey
-	conf.ConcourseCACert = cr.Certs.ConcourseCACert
+	if client.deployArgs.TLSCert != "" {
+		conf.ConcourseCert = cr.Certs.ConcourseCert
+		conf.ConcourseKey = cr.Certs.ConcourseKey
+	}
 	conf.Domain = cr.Domain
 	conf.DirectorPublicIP = cr.DirectorPublicIP
 
@@ -118,6 +119,12 @@ func (client *Client) Deploy() error {
 	conf.DirectorPassword = bp.DirectorPassword
 	conf.DirectorCACert = bp.DirectorCACert
 
+	if !conf.AutoCert && client.deployArgs.TLSCert == "" {
+		conf.ConcourseCert = bp.ConcourseCert
+		conf.ConcourseKey = bp.ConcourseKey
+		conf.ConcourseCACert = bp.ConcourseCACert
+	}
+
 	err1 := client.configClient.Update(conf)
 	if err == nil {
 		err = err1
@@ -128,20 +135,6 @@ func (client *Client) Deploy() error {
 func (client *Client) deployBoshAndPipeline(c config.ConfigView, tfOutputs terraform.Outputs) (BoshParams, error) {
 	// When we are deploying for the first time rather than updating
 	// ensure that the pipeline is set _after_ the concourse is deployed
-
-	bp := BoshParams{
-		CredhubPassword:          c.GetCredhubPassword(),
-		CredhubAdminClientSecret: c.GetCredhubAdminClientSecret(),
-		CredhubCACert:            c.GetCredhubCACert(),
-		CredhubURL:               c.GetCredhubURL(),
-		CredhubUsername:          c.GetCredhubUsername(),
-		ConcourseUsername:        c.GetConcourseUsername(),
-		ConcoursePassword:        c.GetConcoursePassword(),
-		GrafanaPassword:          c.GetGrafanaPassword(),
-		DirectorUsername:         c.GetDirectorUsername(),
-		DirectorPassword:         c.GetDirectorPassword(),
-		DirectorCACert:           c.GetDirectorCACert(),
-	}
 
 	bp, err := client.deployBosh(c, tfOutputs, false)
 	if err != nil {
@@ -427,8 +420,6 @@ func (client *Client) deployBosh(config config.ConfigView, tfOutputs terraform.O
 	if err != nil {
 		return bp, err
 	}
-
-	fmt.Printf("%+v\n", cc)
 
 	bp.CredhubPassword = cc.CredhubPassword
 	bp.CredhubAdminClientSecret = cc.CredhubAdminClientSecret

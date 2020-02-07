@@ -822,5 +822,5 @@ worker_key:
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzWAX+obtb78pdtB+cRtt3b9hPC7wZwGL7/brZzhFF+8uWUt1mRJIP5jwyWMtzu9bQOY6bC9XmCDunGB3xMkoPObA3s15dcmeMP4tFebTzYCgiRnoWO2hEQfgvzzxSE+d1YLLLFMzNBUffTegeK4NQR2bakB0TIKm9MALXuZ5vG3TBYDXc8hv0HRezUp9FE0YGteKknA3bohriQbxY4UIoNDutrAmPh0lkMXxtyU/aYRci6mrPfeT1LyxyUNisjNhtzWJr324Kz0EpJZ3UKFwLuwmzkVRvMvJcY6SNvSTq7wTA4hgjHhEaoWRd1uKkcJwEOD89nOhssOLKLB5wgNUz
   public_key_fingerprint: f3:b7:66:f9:af:c3:89:53:ba:fa:d2:20:2a:24:65:c5
 external_tls:
-  certificate: "some cert"
-  private_key: "some key"
+  certificate: "existing Cert"
+  private_key: "existing Key"
