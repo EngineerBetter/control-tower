@@ -4,3 +4,6 @@
 
 - type: remove
   path: /instance_groups/name=web/jobs/name=web/properties/tls/cert
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=grafana/properties/grafana/ssl
