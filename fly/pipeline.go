@@ -19,12 +19,14 @@ const selfUpdateResources = `
 resources:
 - name: control-tower-release
   type: github-release
+  icon: github
   source:
     user: engineerbetter
     repository: control-tower
     pre_release: true
 - name: every-day
   type: time
+  icon: clock
   source: {interval: 24h}
 `
 

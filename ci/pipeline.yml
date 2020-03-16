@@ -61,6 +61,7 @@ resource_types:
 resources:
 - name: this-pipeline
   type: pipeline
+  icon: airplane-landing
   source:
     target: https://ci.engineerbetter.com
     insecure: "true"
@@ -71,6 +72,7 @@ resources:
 
 - name: ci-bucket
   type: terraform
+  icon: terraform
   source:
     backend_type: s3
     backend_config:
@@ -88,6 +90,7 @@ resources:
 
 - name: control-tower
   type: git
+  icon: github
   source:
     uri: git@github.com:EngineerBetter/control-tower.git
     branch: ((branch))
@@ -98,6 +101,7 @@ resources:
 
 - name: control-tower-ops
   type: git
+  icon: github
   source:
     uri: git@github.com:EngineerBetter/control-tower-ops.git
     branch: master
@@ -108,6 +112,7 @@ resources:
 
 - name: pcf-ops
   type: docker-image
+  icon: docker
   source:
     repository: engineerbetter/pcf-ops
     username: ((dockerhub_user))
@@ -115,6 +120,7 @@ resources:
 
 - name: version
   type: semver
+  icon: numeric
   source:
     initial_version: 0.0.0
     driver: s3
@@ -126,6 +132,7 @@ resources:
 
 - name: binary-linux
   type: s3
+  icon: file-move
   source:
     bucket: control-tower-ci-artifacts
     versioned_file: ((binary-name))-linux-amd64
@@ -135,6 +142,7 @@ resources:
 
 - name: binary-darwin
   type: s3
+  icon: file-move
   source:
     bucket: control-tower-ci-artifacts
     versioned_file: ((binary-name))-darwin-amd64
@@ -144,6 +152,7 @@ resources:
 
 - name: release
   type: github-release
+  icon: ferry
   source:
     user: engineerbetter
     repository: control-tower
@@ -151,6 +160,7 @@ resources:
 
 - name: release-drafts
   type: github-release
+  icon: ferry
   source:
     user: engineerbetter
     repository: control-tower
@@ -159,15 +169,18 @@ resources:
 
 - name: slack-alert
   type: slack-notification
+  icon: slack
   source:
     url: ((slack_webhook))
 
 - name: once-daily
   type: time
+  icon: clock
   source: {interval: 24h}
 
 - name: build-metadata
   type: build-metadata
+  icon: file
 
 jobs:
 - name: set-pipeline
