@@ -18,6 +18,8 @@ source control-tower/ci/tasks/lib/letsencrypt.sh
 source control-tower/ci/tasks/lib/assert-iaas.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/update-fly.sh
 
 # shellcheck disable=SC1091
 [ "$IAAS" = "AWS" ] && { source control-tower/ci/tasks/lib/destroy.sh; }
@@ -32,7 +34,7 @@ if [ "$IAAS" = "AWS" ]
 then
     # shellcheck disable=SC2034
     region=us-east-1
-    args+=(--domain cup.engineerbetter.com)
+    domain=cup.engineerbetter.com
 
     args+=(--vpc-network-range 192.168.0.0/24)
     args+=(--rds-subnet-range1 192.168.0.64/28)
@@ -41,9 +43,10 @@ elif [ "$IAAS" = "GCP" ]
 then
     # shellcheck disable=SC2034
     region=europe-west2
-    args+=(--domain cup.gcp.engineerbetter.com)
+    domain=cup.gcp.engineerbetter.com
 fi
 
+args+=(--domain "${domain}")
 args+=(--public-subnet-range 192.168.0.0/27)
 args+=(--private-subnet-range 192.168.0.32/27)
 
@@ -53,6 +56,8 @@ addGitHubFlagsToArgs
 addTagsFlagsToArgs
 args+=(--region "$region")
 ./cup deploy "${args[@]}" --iaas "$IAAS" "$deployment"
+# Download the right version of fly from Concourse UI
+updateFly "${domain}"
 assertTagsSet
 assertGitHubAuthConfigured
 
