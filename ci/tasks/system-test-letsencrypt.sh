@@ -6,6 +6,10 @@ source control-tower/ci/tasks/lib/test-setup.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/letsencrypt.sh
 
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/update-fly.sh
+
+
 handleVerboseMode
 
 cp "$BINARY_PATH" ./cup
@@ -39,5 +43,8 @@ manifest="$(dirname "$0")/hello.yml"
 job="hello"
 # shellcheck disable=SC2034
 domain="$custom_domain"
+
+# Download the right version of fly from Concourse UI
+updateFly "${domain}"
 
 assertPipelineIsSettableAndRunnable

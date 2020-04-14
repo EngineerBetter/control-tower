@@ -8,6 +8,9 @@ source control-tower/ci/tasks/lib/test-setup.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/update-fly.sh
+
 handleVerboseMode
 
 setDeploymentName upt
@@ -80,6 +83,9 @@ cert="generated-ca-cert.pem"
 manifest="$(dirname "$0")/hello.yml"
 # shellcheck disable=SC2034
 job="hello"
+
+# Download the right version of fly from Concourse UI
+updateFly "${domain}"
 
 assertPipelineIsSettableAndRunnable
 assertNetworkCidrsCorrect
