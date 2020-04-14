@@ -8,7 +8,7 @@ function updateFly() {
   fi
 flyPath=$(which fly)
 rm -rf "${flyPath}"
-curl -o fly -L "https://${domain}/api/v1/cli?arch=amd64&platform=linux"
+curl -o fly -k -L "https://${domain}/api/v1/cli?arch=amd64&platform=linux"
 mv fly "${flyPath}"
 chmod +x "${flyPath}"
 }
