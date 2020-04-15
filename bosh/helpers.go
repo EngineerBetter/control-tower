@@ -19,6 +19,8 @@ func vars(vars map[string]interface{}) []string {
 			x = append(x, "--var", fmt.Sprintf("%s=%q", k, v))
 		case int:
 			x = append(x, "--var", fmt.Sprintf("%s=%d", k, v))
+		case bool:
+			x = append(x, "--var", fmt.Sprintf("%s=%t", k, v))
 		default:
 			panic("unsupported type")
 		}
