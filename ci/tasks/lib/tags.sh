@@ -18,7 +18,9 @@ function assertTagsSet() {
   then
     tagged_instances=$(aws ec2 --region us-east-1 \
         describe-instances \
-        --filters="Name=tag:unique-tag Values=special-value Name=tag:yet-another-tag Values=some-value Name=tag:control-tower-project Values=$deployment" \
+        --filters="Name=tag:unique-tag,Values=special-value" \
+        --filters="Name=tag:yet-another-tag,Values=some-value" \
+        --filters="Name=tag:control-tower-project,Values=$deployment" \
         | jq -r '.Reservations | length')
   fi
 
