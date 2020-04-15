@@ -14,6 +14,8 @@ source control-tower/ci/tasks/lib/check-db.sh
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/manifest_property.sh
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/update-fly.sh
 
 trapDefaultCleanup
 
@@ -90,6 +92,9 @@ job="hello"
 # shellcheck disable=SC2034
 domain=$custom_domain
 
+# Download the right version of fly from Concourse UI
+updateFly "${domain}"
+
 assertPipelineIsSettableAndRunnable
 
 echo "DEPLOY 2 LARGE WORKERS, FIREWALLED TO MY IP"
@@ -99,7 +104,7 @@ echo "DEPLOY 2 LARGE WORKERS, FIREWALLED TO MY IP"
   --allow-ips "$(dig +short myip.opendns.com @resolver1.opendns.com)" \
   --workers 2 \
   --worker-size large \
-  --enable_global_resources=false
+  --enable-global-resources=false
 
 sleep 60
 

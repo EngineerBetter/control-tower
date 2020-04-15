@@ -65,7 +65,9 @@ updateFly "${domain}"
 assertTagsSet
 assertGitHubAuthConfigured
 
-# Check Concourse global resources is disabled
+# Check Concourse global resources is disabled (as it should be by default)
+info_output="$(./cup info --env "$deployment")"
+eval "$info_output"
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
 checkManifestProperty "${global_resources_path}" false
 
