@@ -29,6 +29,26 @@ groups:
   jobs:
   - cleanup-aws
   - cleanup-gcp
+- name: AWS
+  jobs:
+  - smoke-test
+  - system-test
+  - system-test-update
+  - system-test-rds-ca
+  - system-test-m5
+  - system-test-letsencrypt
+  - system-test-options-and-destroy
+  - system-test-zone-delegation
+  - cleanup-aws
+- name: GCP
+  jobs:
+  - system-test-zone-delegation-gcp
+  - system-test-options-and-destroy-gcp
+  - system-test-letsencrypt-gcp
+  - smoke-test-gcp
+  - system-test-gcp
+  - system-test-update-gcp
+  - cleanup-gcp
 
 resource_types:
 - name: pipeline
