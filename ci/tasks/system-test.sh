@@ -12,6 +12,8 @@ source control-tower/ci/tasks/lib/check-config-bucket-versioned.sh
 source control-tower/ci/tasks/lib/check-db.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/manifest_property.sh
 
 trapDefaultCleanup
 
@@ -45,7 +47,8 @@ echo "DEPLOY WITH A USER PROVIDED CERT, CUSTOM DOMAIN, DEFAULT WORKERS, DEFAULT 
   --domain "$custom_domain" \
   --spot=false \
   --tls-cert "$(cat out/"$custom_domain".crt)" \
-  --tls-key "$(cat out/"$custom_domain".key)"
+  --tls-key "$(cat out/"$custom_domain".key)" \
+  --enable-global-resources=true
 
 sleep 60
 
@@ -74,6 +77,10 @@ assertDbCorrect
 assertNetworkCidrsCorrect
 assertConfigBucketVersioned
 
+# Check Concourse global resources is enabled
+global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
+checkManifestProperty "${global_resources_path}" true
+
 # shellcheck disable=SC2034
 cert="generated-ca-cert.pem"
 # shellcheck disable=SC2034
@@ -91,12 +98,16 @@ echo "DEPLOY 2 LARGE WORKERS, FIREWALLED TO MY IP"
 ./cup deploy "$deployment" \
   --allow-ips "$(dig +short myip.opendns.com @resolver1.opendns.com)" \
   --workers 2 \
-  --worker-size large
+  --worker-size large \
+  --enable_global_resources=false
 
 sleep 60
 
 # Check RDS instance class is still db.t2.small
 assertDbCorrect
+
+# Check Concourse global resources is disabled
+checkManifestProperty "${global_resources_path}" false
 
 config=$(./cup info --json "$deployment")
 # shellcheck disable=SC2034

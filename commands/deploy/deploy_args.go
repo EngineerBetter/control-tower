@@ -31,6 +31,8 @@ type Args struct {
 	DBSize           string
 	// DBSizeIsSet is true if the user has manually specified the db-size (ie, it's not the default)
 	DBSizeIsSet                 bool
+	EnableGlobalResources       bool
+	EnableGlobalResourcesIsSet  bool
 	Namespace                   string
 	NamespaceIsSet              bool
 	AllowIPs                    string
@@ -69,6 +71,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 			switch f {
 			case "region":
 				a.RegionIsSet = true
+			case "enable-global-resources":
+				a.EnableGlobalResourcesIsSet = true
 			case "domain":
 				a.DomainIsSet = true
 			case "tls-cert":

@@ -94,6 +94,12 @@ var deployFlags = []cli.Flag{
 		Hidden:      true,
 		Destination: &initialDeployArgs.SelfUpdate,
 	},
+	cli.BoolFlag{
+		Name:        "enable-global-resources",
+		Usage:       "(optional) Enables Concourse global resources feature",
+		EnvVar:      "ENABLE_GLOBAL_RESOURCES",
+		Destination: &initialDeployArgs.EnableGlobalResources,
+	},
 	cli.StringFlag{
 		Name:        "db-size",
 		Usage:       "(optional) Size of Concourse RDS instance. Can be small, medium, large, xlarge, 2xlarge, or 4xlarge",

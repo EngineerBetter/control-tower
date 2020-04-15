@@ -41,6 +41,7 @@ type Config struct {
 	DirectorRegistryPassword string `json:"director_registry_password"`
 	DirectorUsername         string `json:"director_username"`
 	Domain                   string `json:"domain"`
+	EnableGlobalResources    bool   `json:"enable_global_resources"`
 	EncryptionKey            string `json:"encryption_key"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
@@ -101,6 +102,7 @@ type ConfigView interface {
 	GetDirectorRegistryPassword() string
 	GetDirectorUsername() string
 	GetDomain() string
+	GetEnableGlobalResources() bool
 	GetEncryptionKey() string
 	GetGithubClientID() string
 	GetGithubClientSecret() string
@@ -241,6 +243,10 @@ func (c Config) GetDirectorUsername() string {
 
 func (c Config) GetDomain() string {
 	return c.Domain
+}
+
+func (c Config) GetEnableGlobalResources() bool {
+	return c.EnableGlobalResources
 }
 
 func (c Config) GetEncryptionKey() string {

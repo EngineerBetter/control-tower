@@ -162,6 +162,10 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.WorkerType = deployArgs.WorkerType
 	}
 
+	if deployArgs.EnableGlobalResourcesIsSet {
+		conf.EnableGlobalResources = deployArgs.EnableGlobalResources
+	}
+
 	var isDomainUpdated bool
 	if deployArgs.DomainIsSet {
 		if conf.Domain != deployArgs.Domain {

@@ -60,6 +60,7 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		"external_tls.private_key": client.config.GetConcourseKey(),
 		"atc_encryption_key":       client.config.GetEncryptionKey(),
 		"web_static_ip":            atcPrivateIP.String(),
+		"enable_global_resources":  client.config.GetEnableGlobalResources(),
 	}
 
 	flagFiles := []string{

@@ -20,6 +20,8 @@ source control-tower/ci/tasks/lib/assert-iaas.sh
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/update-fly.sh
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/manifest_property.sh
 
 # shellcheck disable=SC1091
 [ "$IAAS" = "AWS" ] && { source control-tower/ci/tasks/lib/destroy.sh; }
@@ -56,10 +58,16 @@ addGitHubFlagsToArgs
 addTagsFlagsToArgs
 args+=(--region "$region")
 ./cup deploy "${args[@]}" --iaas "$IAAS" "$deployment"
+
 # Download the right version of fly from Concourse UI
 updateFly "${domain}"
+
 assertTagsSet
 assertGitHubAuthConfigured
+
+# Check Concourse global resources is disabled
+global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
+checkManifestProperty "${global_resources_path}" false
 
 if [ "$IAAS" = "AWS" ]
 then
