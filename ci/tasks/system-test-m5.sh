@@ -3,9 +3,6 @@
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/test-setup.sh
 
-# shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/update-fly.sh
-
 handleVerboseMode
 setDeploymentName region
 

@@ -19,8 +19,6 @@ source control-tower/ci/tasks/lib/assert-iaas.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 # shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/update-fly.sh
-# shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/manifest_property.sh
 
 # shellcheck disable=SC1091
@@ -66,7 +64,7 @@ assertTagsSet
 assertGitHubAuthConfigured
 
 # Check Concourse global resources is disabled (as it should be by default)
-info_output="$(./cup info --env "$deployment")"
+info_output="$(./cup info --region "$region" --env "$deployment")"
 eval "$info_output"
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
 checkManifestProperty "${global_resources_path}" false

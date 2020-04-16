@@ -14,8 +14,6 @@ source control-tower/ci/tasks/lib/check-db.sh
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/manifest_property.sh
-# shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/update-fly.sh
 
 trapDefaultCleanup
 

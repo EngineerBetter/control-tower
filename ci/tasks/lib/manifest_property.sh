@@ -3,6 +3,7 @@
 # Takes two arguments- path and value
 # Checks if path=value in the Bosh manifest for 'concourse' deployment
 function checkManifestProperty() {
+  echo "About to test a property in the Bosh manifest"
   # Checks if exactly two arguments were passed to the function
   # shellcheck disable=SC2086
   : ${2?"Usage: manifestProperty PATH VALUE"}
@@ -13,4 +14,5 @@ function checkManifestProperty() {
     echo "Error: Wants '${path}: ${expected_value}', got '${path}: ${actual_value}'"
     exit 1
   fi
+  echo "Manifest property test passed"
 }
