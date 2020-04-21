@@ -14,6 +14,8 @@ source control-tower/ci/tasks/lib/check-db.sh
 source control-tower/ci/tasks/lib/check-cidr-ranges.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/manifest_property.sh
+# shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/wait-for-lock.sh
 
 trapDefaultCleanup
 
@@ -97,6 +99,7 @@ assertPipelineIsSettableAndRunnable
 
 echo "DEPLOY 2 LARGE WORKERS, FIREWALLED TO MY IP"
 
+waitForBoshLock
 
 ./cup deploy "$deployment" \
   --allow-ips "$(dig +short myip.opendns.com @resolver1.opendns.com)" \
