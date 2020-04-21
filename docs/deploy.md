@@ -88,6 +88,12 @@ control-tower deploy \
 |2xlarge|db.m4.2xlarge|db-custom-8-32768|
 |4xlarge|db.m4.4xlarge|db-custom-16-65536|
 
+## Global Resources
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--enable-global-resources`|Enable [Global Resources](https://concourse-ci.org/global-resources.html) in the Concourse cluster. Can be true/false. Default is false.|`ENABLE_GLOBAL_RESOURCES`|
+
 ## Whitelisting IPs
 
 |**Flag**|**Description**|**Environment Variable**|

@@ -96,7 +96,7 @@ var deployFlags = []cli.Flag{
 	},
 	cli.BoolFlag{
 		Name:        "enable-global-resources",
-		Usage:       "(optional) Enables Concourse global resources feature",
+		Usage:       "(optional) Enables Concourse global resources. Can be true/false (default: false)",
 		EnvVar:      "ENABLE_GLOBAL_RESOURCES",
 		Destination: &initialDeployArgs.EnableGlobalResources,
 	},
