@@ -14,7 +14,9 @@ All flags are optional. Configuration settings provided via flags will persist i
 control-tower deploy --domain chimichanga.engineerbetter.com chimichanga
 ```
 
->In the example above `control-tower` will search for a hosted zone that matches `chimichanga.engineerbetter.com` or `engineerbetter.com` and add a record to the longest match (`chimichanga.engineerbetter.com` in this example).
+In the example above `control-tower` will search for a hosted zone that matches `chimichanga.engineerbetter.com` or `engineerbetter.com` and add a record to the longest match (`chimichanga.engineerbetter.com` in this example).
+
+>The domain you provide must fall within a hosted zone in the Cloud DNS of the GCP project or route53 of the AWS account you are deploying to. For example, in our system tests we test this by delegating gcp.engineerbetter.com to our GCP project (our root domain is managed on another DNS server) then specifying something like control-tower.gcp.engineerbetter.com as the domain.
 
 ## Custom TLS Certificates
 
