@@ -72,6 +72,7 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		"network_name":             networkName,
 		"web_static_ip":            atcPrivateIP.String(),
 		"enable_global_resources":  client.config.GetEnableGlobalResources(),
+		"x_frame_options":          client.config.GetXFrameOptions(),
 	}
 
 	flagFiles := []string{

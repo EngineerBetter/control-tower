@@ -71,6 +71,7 @@ type Config struct {
 	Version            string   `json:"version"`
 	VMProvisioningType string   `json:"vm_provisioning_type"`
 	WorkerType         string   `json:"worker_type"`
+	XFrameOptions      string   `json:"x_frame_options"`
 }
 
 type ConfigView interface {
@@ -129,6 +130,7 @@ type ConfigView interface {
 	GetTFStatePath() string
 	GetVersion() string
 	GetWorkerType() string
+	GetXFrameOptions() string
 	IsGithubAuthSet() bool
 	IsSpot() bool
 }
@@ -351,6 +353,10 @@ func (c Config) GetVersion() string {
 
 func (c Config) GetWorkerType() string {
 	return c.WorkerType
+}
+
+func (c Config) GetXFrameOptions() string {
+	return c.XFrameOptions
 }
 
 func (c Config) IsGithubAuthSet() bool {

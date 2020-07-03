@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 
 	"gopkg.in/urfave/cli.v1"
 )
@@ -45,23 +46,25 @@ type Args struct {
 	GithubAuthIsSet bool
 	Tags            cli.StringSlice
 	// TagsIsSet is true if the user has specified tags using --tags
-	TagsIsSet        bool
-	Spot             bool
-	SpotIsSet        bool
-	Zone             string
-	ZoneIsSet        bool
-	WorkerType       string
-	WorkerTypeIsSet  bool
-	NetworkCIDR      string
-	NetworkCIDRIsSet bool
-	PublicCIDR       string
-	PublicCIDRIsSet  bool
-	PrivateCIDR      string
-	PrivateCIDRIsSet bool
-	RDS1CIDR         string
-	RDS1CIDRIsSet    bool
-	RDS2CIDR         string
-	RDS2CIDRIsSet    bool
+	TagsIsSet          bool
+	Spot               bool
+	SpotIsSet          bool
+	Zone               string
+	ZoneIsSet          bool
+	WorkerType         string
+	WorkerTypeIsSet    bool
+	NetworkCIDR        string
+	NetworkCIDRIsSet   bool
+	PublicCIDR         string
+	PublicCIDRIsSet    bool
+	PrivateCIDR        string
+	PrivateCIDRIsSet   bool
+	RDS1CIDR           string
+	RDS1CIDRIsSet      bool
+	RDS2CIDR           string
+	RDS2CIDRIsSet      bool
+	XFrameOptions      string
+	XFrameOptionsIsSet bool
 }
 
 // MarkSetFlags is marking the IsSet DeployArgs
@@ -117,6 +120,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.RDS1CIDRIsSet = true
 			case "rds-subnet-range2":
 				a.RDS2CIDRIsSet = true
+			case "x-frame-options":
+				a.XFrameOptionsIsSet = true
 			default:
 				return fmt.Errorf("flag %q is not supported by deployment flags", f)
 			}
@@ -167,6 +172,10 @@ func (a Args) Validate() error {
 	}
 
 	if err := a.validateTags(); err != nil {
+		return err
+	}
+
+	if err := a.validateXFrameOptions(); err != nil {
 		return err
 	}
 
@@ -250,6 +259,22 @@ func (a Args) validateTags() error {
 		}
 	}
 	return nil
+}
+
+func (a Args) validateXFrameOptions() error {
+	lowerXFrameOptions := strings.ToLower(a.XFrameOptions)
+
+	switch lowerXFrameOptions {
+	case "deny":
+		return nil
+	case "sameorigin":
+		return nil
+	default:
+		if strings.Contains(lowerXFrameOptions, "allow-from") {
+			return nil
+		}
+		return fmt.Errorf("unknown x-frame-options `%s`. Valid options are deny, sameorigin, allow-from uri", a.XFrameOptions)
+	}
 }
 
 // FlagSetChecker allows us to find out if flags were set, adn what the names of all flags are

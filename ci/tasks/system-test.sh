@@ -50,7 +50,8 @@ echo "DEPLOY WITH A USER PROVIDED CERT, CUSTOM DOMAIN, DEFAULT WORKERS, DEFAULT 
   --spot=false \
   --tls-cert "$(cat out/"$custom_domain".crt)" \
   --tls-key "$(cat out/"$custom_domain".key)" \
-  --enable-global-resources=true
+  --enable-global-resources=true \
+  --x-frame-options=sameorigin
 
 sleep 60
 
@@ -83,6 +84,10 @@ assertConfigBucketVersioned
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
 checkManifestProperty "${global_resources_path}" true
 
+# Check X-Frame-Options is correctly set
+x_frame_options_path="/instance_groups/name=web/jobs/name=web/properties/x_frame_options"
+checkManifestProperty "${x_frame_options_path}" "sameorigin"
+
 # shellcheck disable=SC2034
 cert="generated-ca-cert.pem"
 # shellcheck disable=SC2034
@@ -105,7 +110,8 @@ waitForBoshLock
   --allow-ips "$(dig +short myip.opendns.com @resolver1.opendns.com)" \
   --workers 2 \
   --worker-size large \
-  --enable-global-resources=false
+  --enable-global-resources=false \
+  --x-frame-options=\'allow-from https://www.engineerbetter.com\'
 
 sleep 60
 
@@ -114,6 +120,9 @@ assertDbCorrect
 
 # Check Concourse global resources is disabled
 checkManifestProperty "${global_resources_path}" false
+
+# Check X-Frame-Options is correctly set
+checkManifestProperty "${x_frame_options_path}" "allow-from https://www.engineerbetter.com"
 
 config=$(./cup info --json "$deployment")
 # shellcheck disable=SC2034

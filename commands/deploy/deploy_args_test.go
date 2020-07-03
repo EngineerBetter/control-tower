@@ -25,6 +25,7 @@ func TestDeployArgs_Validate(t *testing.T) {
 		WebSize:                "small",
 		WorkerCount:            1,
 		WorkerSize:             "xlarge",
+		XFrameOptions:          "deny",
 	}
 	tests := []struct {
 		name         string
