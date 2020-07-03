@@ -51,11 +51,6 @@ groups:
   - cleanup-gcp
 
 resource_types:
-- name: pipeline
-  type: docker-image
-  source:
-    repository: peterellisjones/concourse-pipeline-resource
-
 - name: slack-notification
   type: docker-image
   source:
@@ -79,17 +74,6 @@ resource_types:
     tag: latest
 
 resources:
-- name: this-pipeline
-  type: pipeline
-  icon: airplane-landing
-  source:
-    target: https://ci.engineerbetter.com
-    insecure: "true"
-    teams:
-    - name: main
-      username: admin
-      password: ((atc_main_password))
-
 - name: ci-bucket
   type: terraform
   icon: terraform
@@ -208,18 +192,13 @@ jobs:
   plan:
   - get: control-tower
     trigger: true
-  - put: this-pipeline
-    params:
-      pipelines:
-      - name: ((pipeline-name))
-        team: main
-        config_file: control-tower/ci/pipeline.yml
-        vars:
-          binary-name: ((binary-name))
-          branch: ((branch))
-          bucket-name: ((bucket-name))
-          pipeline-name: ((pipeline-name))
-
+  - set_pipeline: ((pipeline-name))
+    file: control-tower/ci/pipeline.yml
+    vars:
+      binary-name: ((binary-name))
+      branch: ((branch))
+      bucket-name: ((bucket-name))
+      pipeline-name: ((pipeline-name))
 - name: setup-ci-bucket
   serial: true
   plan:
