@@ -30,7 +30,8 @@ function assertGitHubAuthConfigured() {
 
   pkill -9 fly
 
-  url=$(grep '/login?fly_port=' fly_out | sed 's/ //g')
+  # Obtains url with spaces and carriage returns removed from fly_out file
+  url=$(grep '/login?fly_port=' fly_out | sed 's/[ \r]//g')
 
   curl -sL --cacert "$cert" "$url" | grep -q '/sky/issuer/auth/github'
 
