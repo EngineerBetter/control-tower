@@ -150,9 +150,12 @@ func (a *AWSProvider) CheckForWhitelistedIP(ip, securityGroup string) (bool, err
 			}
 			// support "All traffic rules"
 			if *entry.IpProtocol == "-1" {
-				return parsedCIDR.Contains(parsedIP), nil
+				if parsedCIDR.Contains(parsedIP) {
+					return true, nil
+				}
+			} else {
+				checkPorts(parsedCIDR, parsedIP, &port22, &port6868, &port25555, *entry.FromPort, *entry.ToPort)
 			}
-			checkPorts(parsedCIDR, parsedIP, &port22, &port6868, &port25555, *entry.FromPort, *entry.ToPort)
 		}
 	}
 
