@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2006
 
 function configureWhitelist() {
   host_ip="$(dig +short myip.opendns.com @resolver1.opendns.com)/32"
 
   if [ "$IAAS" = "AWS" ]; then
-    group_id=$(aws ec2 --region ${region} describe-security-groups --filters "Name=group-name,Values=control-tower-${deployment}-director" | jq -r '.SecurityGroups[0].GroupId')
+    group_id=$(aws ec2 --region "${region}" describe-security-groups --filters "Name=group-name,Values=control-tower-${deployment}-director" | jq -r '.SecurityGroups[0].GroupId')
 
     permissions=$(ruby -e "$(cat << EOL
 require 'json'
-permissions = `aws ec2 describe-security-groups --group-id ${group_id} --query "SecurityGroups[0].IpPermissions"`
+permissions = `aws ec2 describe-security-groups --group-id "${group_id}" --query "SecurityGroups[0].IpPermissions"`
 permissions_edited = JSON.parse(permissions.to_json).tap do |rules|
   rules.each do |rule|
     rule['IpRanges'].delete_if { |h| h['CidrIp'] != "${host_ip}" }
