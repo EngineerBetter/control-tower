@@ -9,7 +9,7 @@ function configureWhitelist() {
 
     permissions=$(ruby -e "$(cat << EOL
 require 'json'
-permissions = `aws ec2 describe-security-groups --group-id "${group_id}" --query "SecurityGroups[0].IpPermissions"`
+permissions = `aws ec2 --region "${region}" describe-security-groups --group-id "${group_id}" --query "SecurityGroups[0].IpPermissions"`
 permissions_edited = JSON.parse(permissions.to_json).tap do |rules|
   rules.each do |rule|
     rule['IpRanges'].delete_if { |h| h['CidrIp'] != "${host_ip}" }
@@ -22,13 +22,13 @@ EOL
     )
 
     echo "Removing individual ingress rules for host's IP"
-    aws ec2 revoke-security-group-ingress --cli-input-json "{\"GroupId\": \"$group_id\", \"IpPermissions\": $permissions}"
+    aws ec2 --region "${region}" revoke-security-group-ingress --cli-input-json "{\"GroupId\": \"$group_id\", \"IpPermissions\": $permissions}"
 
     echo "Adding non-host ingress rule allowing all traffic"
-    aws ec2 authorize-security-group-ingress --group-id "${group_id}" --ip-permissions IpProtocol=-1,IpRanges="[{CidrIp=192.168.1.1/32}]"
+    aws ec2 --region "${region}" authorize-security-group-ingress --group-id "${group_id}" --ip-permissions IpProtocol=-1,IpRanges="[{CidrIp=192.168.1.1/32}]"
 
     echo "Adding host ingress rule allowing all traffic"
-    aws ec2 authorize-security-group-ingress --group-id "${group_id}" --ip-permissions IpProtocol=-1,IpRanges="[{CidrIp=${host_ip}}]"
+    aws ec2 --region "${region}" authorize-security-group-ingress --group-id "${group_id}" --ip-permissions IpProtocol=-1,IpRanges="[{CidrIp=${host_ip}}]"
 
   elif [ "$IAAS" = "GCP" ]; then
     echo "Nothing to do on GCP"
