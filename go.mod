@@ -27,6 +27,7 @@ require (
 	github.com/square/certstrap v1.1.1
 	github.com/stretchr/testify v1.4.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
+	github.com/urfave/cli/v2 v2.2.0
 	github.com/xenolf/lego v2.2.0+incompatible
 	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
@@ -34,7 +35,6 @@ require (
 	golang.org/x/tools v0.0.0-20191206201009-952e2c076240 // indirect
 	google.golang.org/api v0.9.0
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
-	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.2.2
 )
 

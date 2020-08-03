@@ -72,6 +72,8 @@ github.com/cloudfoundry/bosh-utils/logger
 github.com/cloudfoundry/bosh-utils/system
 # github.com/cppforlife/go-patch v0.2.0
 github.com/cppforlife/go-patch/patch
+# github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
+github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/davecgh/go-spew v1.1.0
 github.com/davecgh/go-spew/spew
 # github.com/fatih/color v1.7.0
@@ -158,6 +160,10 @@ github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/russross/blackfriday/v2 v2.0.1
+github.com/russross/blackfriday/v2
+# github.com/shurcooL/sanitized_anchor_name v1.0.0
+github.com/shurcooL/sanitized_anchor_name
 # github.com/square/certstrap v1.1.1
 github.com/square/certstrap/pkix
 # github.com/stretchr/testify v1.4.0
@@ -166,6 +172,8 @@ github.com/stretchr/testify/require
 # github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 github.com/tjarratt/gcounterfeiter
 github.com/tjarratt/gcounterfeiter/invocations
+# github.com/urfave/cli/v2 v2.2.0
+github.com/urfave/cli/v2
 # github.com/xenolf/lego v2.2.0+incompatible
 github.com/xenolf/lego/acme
 github.com/xenolf/lego/acme/api
@@ -360,8 +368,6 @@ gopkg.in/square/go-jose.v2/cipher
 gopkg.in/square/go-jose.v2/json
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 gopkg.in/tomb.v1
-# gopkg.in/urfave/cli.v1 v1.20.0
-gopkg.in/urfave/cli.v1
 # gopkg.in/yaml.v2 v2.2.2
 gopkg.in/yaml.v2
 # honnef.co/go/tools v0.0.1-2019.2.3

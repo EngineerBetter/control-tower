@@ -3,7 +3,7 @@ package info
 import (
 	"fmt"
 
-	cli "gopkg.in/urfave/cli.v1"
+	cli "github.com/urfave/cli/v2"
 )
 
 // Args are arguments passed to the info command

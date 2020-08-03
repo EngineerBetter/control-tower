@@ -25,6 +25,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	. "github.com/tjarratt/gcounterfeiter"
+	"github.com/urfave/cli/v2"
 	"github.com/xenolf/lego/lego"
 )
 
@@ -487,7 +488,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					args.GithubAuthIsSet = true
 					args.Spot = false
 					args.SpotIsSet = true
-					args.Tags = []string{"env=prod", "team=foo"}
+					args.Tags = *cli.NewStringSlice("env=prod", "team=foo")
 					args.TagsIsSet = true
 					args.TLSCert = "i-am-a-tls-cert"
 					args.TLSCertIsSet = true
@@ -519,7 +520,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterLoad.RDS2CIDR = "10.0.5.0/24"
 					configAfterLoad.RDSInstanceClass = "db.t2.4xlarge"
 					configAfterLoad.SourceAccessIP = "192.0.2.0"
-					configAfterLoad.Tags = args.Tags
+					configAfterLoad.Tags = args.Tags.Value()
 					configAfterLoad.WorkerType = args.WorkerType
 					configAfterLoad.VMProvisioningType = config.ON_DEMAND
 
@@ -552,7 +553,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterCreateEnv.ConcourseKey = args.TLSKey
 					configAfterCreateEnv.DirectorCACert = "----EXAMPLE CERT----"
 					configAfterCreateEnv.DirectorPublicIP = "99.99.99.99"
-					configAfterCreateEnv.Tags = append([]string{"control-tower-version=some version"}, args.Tags...)
+					configAfterCreateEnv.Tags = append([]string{"control-tower-version=some version"}, args.Tags.Value()...)
 					configAfterCreateEnv.Version = "some version"
 
 					configAfterConcourseDeploy = configAfterCreateEnv

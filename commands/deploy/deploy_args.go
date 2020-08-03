@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 // Args are arguments passed to the deploy command
@@ -240,7 +240,7 @@ func (a Args) validateNetworkRanges() error {
 }
 
 func (a Args) validateTags() error {
-	for _, tag := range a.Tags {
+	for _, tag := range a.Tags.Value() {
 		m, err := regexp.MatchString(`\w+=\w+`, tag)
 		if err != nil {
 			return err

@@ -21,7 +21,7 @@ import (
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util"
 
-	cli "gopkg.in/urfave/cli.v1"
+	cli "github.com/urfave/cli/v2"
 )
 
 const maxAllowedNameLength = 11
@@ -29,160 +29,162 @@ const maxAllowedNameLength = 11
 var initialDeployArgs deploy.Args
 
 var deployFlags = []cli.Flag{
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "region",
 		Usage:       "(optional) AWS region",
-		EnvVar:      "AWS_REGION",
+		EnvVars:     []string{"AWS_REGION"},
 		Destination: &initialDeployArgs.Region,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "domain",
 		Usage:       "(optional) Domain to use as endpoint for Concourse web interface (eg: ci.myproject.com)",
-		EnvVar:      "DOMAIN",
+		EnvVars:     []string{"DOMAIN"},
 		Destination: &initialDeployArgs.Domain,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "tls-cert",
 		Usage:       "(optional) TLS cert to use with Concourse endpoint",
-		EnvVar:      "TLS_CERT",
+		EnvVars:     []string{"TLS_CERT"},
 		Destination: &initialDeployArgs.TLSCert,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "tls-key",
 		Usage:       "(optional) TLS private key to use with Concourse endpoint",
-		EnvVar:      "TLS_KEY",
+		EnvVars:     []string{"TLS_KEY"},
 		Destination: &initialDeployArgs.TLSKey,
 	},
-	cli.IntFlag{
+	&cli.IntFlag{
 		Name:        "workers",
 		Usage:       "(optional) Number of Concourse worker instances to deploy",
-		EnvVar:      "WORKERS",
+		EnvVars:     []string{"WORKERS"},
 		Value:       1,
 		Destination: &initialDeployArgs.WorkerCount,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "worker-size",
 		Usage:       "(optional) Size of Concourse workers. Can be medium, large, xlarge, 2xlarge, 4xlarge, 12xlarge or 24xlarge",
-		EnvVar:      "WORKER_SIZE",
+		EnvVars:     []string{"WORKER_SIZE"},
 		Value:       "xlarge",
 		Destination: &initialDeployArgs.WorkerSize,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "worker-type",
 		Usage:       "(optional) Specify a worker type for aws (m5 or m4)",
-		EnvVar:      "WORKER_TYPE",
+		EnvVars:     []string{"WORKER_TYPE"},
 		Value:       "m4",
 		Destination: &initialDeployArgs.WorkerType,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "web-size",
 		Usage:       "(optional) Size of Concourse web node. Can be small, medium, large, xlarge, 2xlarge",
-		EnvVar:      "WEB_SIZE",
+		EnvVars:     []string{"WEB_SIZE"},
 		Value:       "small",
 		Destination: &initialDeployArgs.WebSize,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "iaas",
 		Usage:       "(required) IAAS, can be AWS or GCP",
-		EnvVar:      "IAAS",
+		EnvVars:     []string{"IAAS"},
 		Destination: &initialDeployArgs.IAAS,
 	},
-	cli.BoolFlag{
+	&cli.BoolFlag{
 		Name:        "self-update",
 		Usage:       "(optional) Causes Control-Tower to exit as soon as the BOSH deployment starts. May only be used when upgrading an existing deployment",
-		EnvVar:      "SELF_UPDATE",
+		EnvVars:     []string{"SELF_UPDATE"},
 		Hidden:      true,
 		Destination: &initialDeployArgs.SelfUpdate,
 	},
-	cli.BoolFlag{
+	&cli.BoolFlag{
 		Name:        "enable-global-resources",
 		Usage:       "(optional) Enables Concourse global resources. Can be true/false (default: false)",
-		EnvVar:      "ENABLE_GLOBAL_RESOURCES",
+		EnvVars:     []string{"ENABLE_GLOBAL_RESOURCES"},
 		Destination: &initialDeployArgs.EnableGlobalResources,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "db-size",
 		Usage:       "(optional) Size of Concourse RDS instance. Can be small, medium, large, xlarge, 2xlarge, or 4xlarge",
-		EnvVar:      "DB_SIZE",
+		EnvVars:     []string{"DB_SIZE"},
 		Value:       "small",
 		Destination: &initialDeployArgs.DBSize,
 	},
-	cli.BoolTFlag{
+	&cli.BoolFlag{
 		Name:        "spot",
 		Usage:       "(optional) Use spot instances for workers. Can be true/false (default: true)",
-		EnvVar:      "SPOT",
+		Value:       true,
+		EnvVars:     []string{"SPOT"},
 		Destination: &initialDeployArgs.Spot,
 	},
-	cli.BoolTFlag{
+	&cli.BoolFlag{
 		Name:        "preemptible",
 		Usage:       "(optional) Use preemptible instances for workers. Can be true/false (default: true)",
-		EnvVar:      "PREEMPTIBLE",
+		Value:       true,
+		EnvVars:     []string{"PREEMPTIBLE"},
 		Destination: &initialDeployArgs.Spot,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "allow-ips",
 		Usage:       "(optional) Comma separated list of IP addresses or CIDR ranges to allow access to",
-		EnvVar:      "ALLOW_IPS",
+		EnvVars:     []string{"ALLOW_IPS"},
 		Value:       "0.0.0.0/0",
 		Destination: &initialDeployArgs.AllowIPs,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "github-auth-client-id",
 		Usage:       "(optional) Client ID for a github OAuth application - Used for Github Auth",
-		EnvVar:      "GITHUB_AUTH_CLIENT_ID",
+		EnvVars:     []string{"GITHUB_AUTH_CLIENT_ID"},
 		Destination: &initialDeployArgs.GithubAuthClientID,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "github-auth-client-secret",
 		Usage:       "(optional) Client Secret for a github OAuth application - Used for Github Auth",
-		EnvVar:      "GITHUB_AUTH_CLIENT_SECRET",
+		EnvVars:     []string{"GITHUB_AUTH_CLIENT_SECRET"},
 		Destination: &initialDeployArgs.GithubAuthClientSecret,
 	},
-	cli.StringSliceFlag{
+	&cli.StringSliceFlag{
 		Name:  "add-tag",
 		Usage: "(optional) Key=Value pair to tag EC2 instances with - Multiple tags can be applied with multiple uses of this flag",
 		Value: &initialDeployArgs.Tags,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "namespace",
 		Usage:       "(optional) Specify a namespace for deployments in order to group them in a meaningful way",
-		EnvVar:      "NAMESPACE",
+		EnvVars:     []string{"NAMESPACE"},
 		Destination: &initialDeployArgs.Namespace,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "zone",
 		Usage:       "(optional) Specify an availability zone",
-		EnvVar:      "ZONE",
+		EnvVars:     []string{"ZONE"},
 		Destination: &initialDeployArgs.Zone,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "vpc-network-range",
 		Usage:       "(optional) VPC network CIDR to deploy into, only required if IAAS is AWS",
-		EnvVar:      "VPC_NETWORK_RANGE",
+		EnvVars:     []string{"VPC_NETWORK_RANGE"},
 		Destination: &initialDeployArgs.NetworkCIDR,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "public-subnet-range",
 		Usage:       "(optional) public network CIDR (if IAAS is AWS must be within --vpc-network-range)",
-		EnvVar:      "PUBLIC_SUBNET_RANGE",
+		EnvVars:     []string{"PUBLIC_SUBNET_RANGE"},
 		Destination: &initialDeployArgs.PublicCIDR,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "private-subnet-range",
 		Usage:       "(optional) private network CIDR (if IAAS is AWS must be within --vpc-network-range)",
-		EnvVar:      "PRIVATE_SUBNET_RANGE",
+		EnvVars:     []string{"PRIVATE_SUBNET_RANGE"},
 		Destination: &initialDeployArgs.PrivateCIDR,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "rds-subnet-range1",
 		Usage:       "(optional) first rds network CIDR (if IAAS is AWS must be within --vpc-network-range)",
-		EnvVar:      "RDS_SUBNET_RANGE1",
+		EnvVars:     []string{"RDS_SUBNET_RANGE1"},
 		Destination: &initialDeployArgs.RDS1CIDR,
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:        "rds-subnet-range2",
 		Usage:       "(optional) second rds network CIDR (if IAAS is AWS must be within --vpc-network-range)",
-		EnvVar:      "RDS_SUBNET_RANGE2",
+		EnvVars:     []string{"RDS_SUBNET_RANGE2"},
 		Destination: &initialDeployArgs.RDS2CIDR,
 	},
 }
