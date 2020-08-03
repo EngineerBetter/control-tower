@@ -16,40 +16,40 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
-	"github.com/urfave/cli/v2"
+	"gopkg.in/urfave/cli.v1"
 )
 
 var initialMaintainArgs maintain.Args
 var provider iaas.Provider
 
 var maintainFlags = []cli.Flag{
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "region",
 		Usage:       "(optional) AWS region",
-		EnvVars:     []string{"AWS_REGION"},
+		EnvVar:      "AWS_REGION",
 		Destination: &initialMaintainArgs.Region,
 	},
-	&cli.BoolFlag{
+	cli.BoolFlag{
 		Name:        "renew-nats-cert",
 		Usage:       "(optional) Rotate nats certificate",
 		Destination: &initialMaintainArgs.RenewNatsCert,
 	},
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "iaas",
 		Usage:       "(required) IAAS, can be AWS or GCP",
-		EnvVars:     []string{"IAAS"},
+		EnvVar:      "IAAS",
 		Destination: &initialMaintainArgs.IAAS,
 	},
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "namespace",
 		Usage:       "(optional) Specify a namespace for deployments in order to group them in a meaningful way",
-		EnvVars:     []string{"NAMESPACE"},
+		EnvVar:      "NAMESPACE",
 		Destination: &initialMaintainArgs.Namespace,
 	},
-	&cli.IntFlag{
+	cli.IntFlag{
 		Name:        "stage",
 		Usage:       "(optional) Set the desired stage for nats rotation tasks",
-		EnvVars:     []string{"STAGE"},
+		EnvVar:      "STAGE",
 		Destination: &initialMaintainArgs.Stage,
 	},
 }

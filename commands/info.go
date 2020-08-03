@@ -16,44 +16,44 @@ import (
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
-	"github.com/urfave/cli/v2"
+	"gopkg.in/urfave/cli.v1"
 )
 
 var initialInfoArgs info.Args
 
 var infoFlags = []cli.Flag{
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "region",
 		Usage:       "(optional) AWS region",
-		EnvVars:     []string{"AWS_REGION"},
+		EnvVar:      "AWS_REGION",
 		Destination: &initialInfoArgs.Region,
 	},
-	&cli.BoolFlag{
+	cli.BoolFlag{
 		Name:        "json",
 		Usage:       "(optional) Output as json",
-		EnvVars:     []string{"JSON"},
+		EnvVar:      "JSON",
 		Destination: &initialInfoArgs.JSON,
 	},
-	&cli.BoolFlag{
+	cli.BoolFlag{
 		Name:        "env",
 		Usage:       "(optional) Output environment variables",
 		Destination: &initialInfoArgs.Env,
 	},
-	&cli.BoolFlag{
+	cli.BoolFlag{
 		Name:        "cert-expiry",
 		Usage:       "(optional) Output only the expiration date of the director nats certificate",
 		Destination: &initialInfoArgs.CertExpiry,
 	},
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "iaas",
 		Usage:       "(required) IAAS, can be AWS or GCP",
-		EnvVars:     []string{"IAAS"},
+		EnvVar:      "IAAS",
 		Destination: &initialInfoArgs.IAAS,
 	},
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "namespace",
 		Usage:       "(optional) Specify a namespace for deployments in order to group them in a meaningful way",
-		EnvVars:     []string{"NAMESPACE"},
+		EnvVar:      "NAMESPACE",
 		Destination: &initialInfoArgs.Namespace,
 	},
 }

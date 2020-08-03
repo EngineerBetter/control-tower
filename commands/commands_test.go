@@ -68,7 +68,7 @@ var _ = Describe("commands", func() {
 
 		Context("When there is a key but no cert", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--domain", "abc.engineerbetter.com", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--domain", "abc.engineerbetter.com", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -78,7 +78,7 @@ var _ = Describe("commands", func() {
 
 		Context("When there is a cert but no key", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--domain", "abc.engineerbetter.com", "--tls-cert", "-- BEGIN CERTIFICATE --", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--domain", "abc.engineerbetter.com", "--tls-cert", "-- BEGIN CERTIFICATE --", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -88,7 +88,7 @@ var _ = Describe("commands", func() {
 
 		Context("When there is a cert and key but no domain", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--tls-cert", "-- BEGIN RSA PRIVATE KEY --", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--tls-key", "-- BEGIN RSA PRIVATE KEY --", "--tls-cert", "-- BEGIN RSA PRIVATE KEY --", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -98,7 +98,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid worker count is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--workers", "0", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--workers", "0", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -108,7 +108,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid worker size is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--worker-size", "small", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--worker-size", "small", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -118,7 +118,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid web size is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--web-size", "tiny", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--web-size", "tiny", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))
@@ -128,7 +128,7 @@ var _ = Describe("commands", func() {
 
 		Context("When an invalid db size is provided", func() {
 			It("Should show a meaningful error", func() {
-				command := exec.Command(cliPath, "deploy", "--db-size", "huge", "--iaas", "AWS", "abc")
+				command := exec.Command(cliPath, "deploy", "abc", "--db-size", "huge", "--iaas", "AWS")
 				session, err := Start(command, GinkgoWriter, GinkgoWriter)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(session).Should(Exit(1))

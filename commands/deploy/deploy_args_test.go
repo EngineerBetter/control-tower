@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	. "github.com/EngineerBetter/control-tower/commands/deploy"
-	"github.com/urfave/cli/v2"
 )
 
 func TestDeployArgs_Validate(t *testing.T) {
@@ -159,7 +158,7 @@ func TestDeployArgs_Validate(t *testing.T) {
 			name: "Tags should be in the format 'key=value'",
 			modification: func() Args {
 				args := defaultFields
-				args.Tags = *cli.NewStringSlice("Key=Value", "Cheese=Ham")
+				args.Tags = []string{"Key=Value", "Cheese=Ham"}
 				return args
 			},
 			wantErr: false,
@@ -168,7 +167,7 @@ func TestDeployArgs_Validate(t *testing.T) {
 			name: "Invalid tags should throw a helpful error",
 			modification: func() Args {
 				args := defaultFields
-				args.Tags = *cli.NewStringSlice("not a real tag")
+				args.Tags = []string{"not a real tag"}
 				return args
 			},
 			wantErr:     true,

@@ -16,29 +16,29 @@ import (
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
 
-	"github.com/urfave/cli/v2"
+	"gopkg.in/urfave/cli.v1"
 )
 
 //var destroyArgs config.DestroyArgs
 var initialDestroyArgs destroy.Args
 
 var destroyFlags = []cli.Flag{
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "region",
 		Usage:       "(optional) AWS region",
-		EnvVars:     []string{"AWS_REGION"},
+		EnvVar:      "AWS_REGION",
 		Destination: &initialDestroyArgs.Region,
 	},
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "iaas",
 		Usage:       "(required) IAAS, can be AWS or GCP",
-		EnvVars:     []string{"IAAS"},
+		EnvVar:      "IAAS",
 		Destination: &initialDestroyArgs.IAAS,
 	},
-	&cli.StringFlag{
+	cli.StringFlag{
 		Name:        "namespace",
 		Usage:       "(optional) Specify a namespace for deployments in order to group them in a meaningful way",
-		EnvVars:     []string{"NAMESPACE"},
+		EnvVar:      "NAMESPACE",
 		Destination: &initialDestroyArgs.Namespace,
 	},
 }
