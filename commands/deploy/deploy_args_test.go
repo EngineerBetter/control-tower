@@ -16,6 +16,11 @@ func TestDeployArgs_Validate(t *testing.T) {
 		DBSize:                 "small",
 		DBSizeIsSet:            false,
 		Domain:                 "",
+		CFAuthClientID:         "",
+		CFAuthClientSecret:     "",
+		CFAuthAPIUrl:           "",
+		CFAuthSkipSSL:          false,
+		CFAuthCACert:           "",
 		GithubAuthClientID:     "",
 		GithubAuthClientSecret: "",
 		IAAS:                   "AWS",
@@ -134,6 +139,56 @@ func TestDeployArgs_Validate(t *testing.T) {
 			},
 			wantErr:     true,
 			expectedErr: fmt.Sprintf("unknown DB size: `bananas`. Valid sizes are:"),
+		},
+		{
+			name: "CF Client ID requires CF Client Secret and API URL",
+			modification: func() Args {
+				args := defaultFields
+				args.CFAuthClientID = "an id"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "--cf-auth-client-id requires --cf-auth-client-secret and --cf-auth-api-url to also be provided",
+		},
+		{
+			name: "CF Client Secret requires CF Client ID and API URL",
+			modification: func() Args {
+				args := defaultFields
+				args.CFAuthClientSecret = "a secret"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "--cf-auth-client-secret requires --cf-auth-client-id and --cf-auth-api-url to also be provided",
+		},
+		{
+			name: "CF API URL requires CF Client ID and CF Client Secret",
+			modification: func() Args {
+				args := defaultFields
+				args.CFAuthAPIUrl = "a url"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "--cf-auth-api-url requires --cf-auth-client-id and --cf-auth-client-secret to also be provided",
+		},
+		{
+			name: "CF Skip SSL requires CF Client ID, CF Client Secret, and CF API URL",
+			modification: func() Args {
+				args := defaultFields
+				args.CFAuthSkipSSL = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "--cf-auth-skip-ssl-validation requires --cf-auth-api-url, --cf-auth-client-id, and --cf-auth-client-secret to also be provided",
+		},
+		{
+			name: "CF CA Cert requires CF Client ID, CF Client Secret, and CF API URL",
+			modification: func() Args {
+				args := defaultFields
+				args.CFAuthCACert = "a cert"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "--cf-auth-ca-cert requires --cf-auth-api-url, --cf-auth-client-id, and --cf-auth-client-secret to also be provided",
 		},
 		{
 			name: "Github ID requires Github Secret",

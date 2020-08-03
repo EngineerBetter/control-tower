@@ -37,6 +37,16 @@ type Args struct {
 	NamespaceIsSet              bool
 	AllowIPs                    string
 	AllowIPsIsSet               bool
+	CFAuthClientID              string
+	CFAuthClientIDIsSet         bool
+	CFAuthClientSecret          string
+	CFAuthClientSecretIsSet     bool
+	CFAuthAPIUrl                string
+	CFAuthAPIUrlIsSet           bool
+	CFAuthSkipSSL               bool
+	CFAuthSkipSSLIsSet          bool
+	CFAuthCACert                string
+	CFAuthCACertIsSet           bool
 	GithubAuthClientID          string
 	GithubAuthClientIDIsSet     bool
 	GithubAuthClientSecret      string
@@ -95,6 +105,16 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.SpotIsSet = true
 			case "allow-ips":
 				a.AllowIPsIsSet = true
+			case "cf-auth-client-id":
+				a.CFAuthClientIDIsSet = true
+			case "cf-auth-client-secret":
+				a.CFAuthClientSecretIsSet = true
+			case "cf-auth-api-url":
+				a.CFAuthAPIUrlIsSet = true
+			case "cf-auth-skip-ssl-validation":
+				a.CFAuthSkipSSLIsSet = true
+			case "cf-auth-ca-cert":
+				a.CFAuthCACertIsSet = true
 			case "github-auth-client-id":
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
@@ -158,6 +178,10 @@ func (a Args) Validate() error {
 		return err
 	}
 
+	if err := a.validateCFFields(); err != nil {
+		return err
+	}
+
 	if err := a.validateGithubFields(); err != nil {
 		return err
 	}
@@ -216,6 +240,27 @@ func (a Args) validateDBFields() error {
 		}
 	}
 	return fmt.Errorf("unknown DB size: `%s`. Valid sizes are: %v", a.DBSize, AllowedDBSizes)
+}
+
+func (a Args) validateCFFields() error {
+	if a.CFAuthClientID != "" && (a.CFAuthClientSecret == "" || a.CFAuthAPIUrl == "") {
+		return errors.New("--cf-auth-client-id requires --cf-auth-client-secret and --cf-auth-api-url to also be provided")
+	}
+	if a.CFAuthClientSecret != "" && (a.CFAuthClientID == "" || a.CFAuthAPIUrl == "") {
+		return errors.New("--cf-auth-client-secret requires --cf-auth-client-id and --cf-auth-api-url to also be provided")
+	}
+	if a.CFAuthAPIUrl != "" && (a.CFAuthClientID == "" || a.CFAuthClientSecret == "") {
+		return errors.New("--cf-auth-api-url requires --cf-auth-client-id and --cf-auth-client-secret to also be provided")
+	}
+	if a.CFAuthAPIUrl == "" {
+		if a.CFAuthSkipSSL {
+			return errors.New("--cf-auth-skip-ssl-validation requires --cf-auth-api-url, --cf-auth-client-id, and --cf-auth-client-secret to also be provided")
+		}
+		if a.CFAuthCACert != "" {
+			return errors.New("--cf-auth-ca-cert requires --cf-auth-api-url, --cf-auth-client-id, and --cf-auth-client-secret to also be provided")
+		}
+	}
+	return nil
 }
 
 func (a Args) validateGithubFields() error {

@@ -1,0 +1,8 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/cf_auth?
+  value:
+    client_id: ((cf_auth_client_id))
+    client_secret: ((cf_auth_client_secret))
+    skip_ssl_validation: ((cf_auth_skip_ssl_validation))
+    api_url: ((cf_auth_api_url))
+    ca_cert: ((cf_auth_ca_cert))
