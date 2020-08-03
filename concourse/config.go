@@ -148,6 +148,13 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	if deployArgs.DBSizeIsSet {
 		conf.RDSInstanceClass = provider.DBType(deployArgs.DBSize)
 	}
+	if deployArgs.CFAuthIsSet {
+		conf.CFClientID = deployArgs.CFAuthClientID
+		conf.CFClientSecret = deployArgs.CFAuthClientSecret
+		conf.CFAPIUrl = deployArgs.CFAuthAPIUrl
+		conf.CFSkipSSL = deployArgs.CFAuthSkipSSL
+		conf.CFCACert = deployArgs.CFAuthCACert
+	}
 	if deployArgs.GithubAuthIsSet {
 		conf.GithubClientID = deployArgs.GithubAuthClientID
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret

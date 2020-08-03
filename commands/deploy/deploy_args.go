@@ -30,23 +30,25 @@ type Args struct {
 	SelfUpdateIsSet  bool
 	DBSize           string
 	// DBSizeIsSet is true if the user has manually specified the db-size (ie, it's not the default)
-	DBSizeIsSet                 bool
-	EnableGlobalResources       bool
-	EnableGlobalResourcesIsSet  bool
-	Namespace                   string
-	NamespaceIsSet              bool
-	AllowIPs                    string
-	AllowIPsIsSet               bool
-	CFAuthClientID              string
-	CFAuthClientIDIsSet         bool
-	CFAuthClientSecret          string
-	CFAuthClientSecretIsSet     bool
-	CFAuthAPIUrl                string
-	CFAuthAPIUrlIsSet           bool
-	CFAuthSkipSSL               bool
-	CFAuthSkipSSLIsSet          bool
-	CFAuthCACert                string
-	CFAuthCACertIsSet           bool
+	DBSizeIsSet                bool
+	EnableGlobalResources      bool
+	EnableGlobalResourcesIsSet bool
+	Namespace                  string
+	NamespaceIsSet             bool
+	AllowIPs                   string
+	AllowIPsIsSet              bool
+	CFAuthClientID             string
+	CFAuthClientIDIsSet        bool
+	CFAuthClientSecret         string
+	CFAuthClientSecretIsSet    bool
+	CFAuthAPIUrl               string
+	CFAuthAPIUrlIsSet          bool
+	CFAuthSkipSSL              bool
+	CFAuthSkipSSLIsSet         bool
+	CFAuthCACert               string
+	CFAuthCACertIsSet          bool
+	// CFAuthIsSet is true if the user has specified the --cf-auth-client-id, --cf-auth-client-secret, and --cf-auth-api-url flags
+	CFAuthIsSet                 bool
 	GithubAuthClientID          string
 	GithubAuthClientIDIsSet     bool
 	GithubAuthClientSecret      string
@@ -143,6 +145,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 		}
 	}
 	a.GithubAuthIsSet = c.IsSet("github-auth-client-id") && c.IsSet("github-auth-client-secret")
+	a.CFAuthIsSet = c.IsSet("cf-auth-client-id") && c.IsSet("cf-auth-client-secret") && c.IsSet("cf-auth-api-url")
 
 	return nil
 }

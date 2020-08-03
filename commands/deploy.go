@@ -148,7 +148,7 @@ var deployFlags = []cli.Flag{
 	},
 	&cli.BoolFlag{
 		Name:        "cf-auth-skip-ssl-validation",
-		Usage:       "(optional) Skip SSL validation - Used for CF Auth (can be true/false - default false)",
+		Usage:       "(optional) Skip SSL validation - Used for CF Auth (default false)",
 		EnvVars:     []string{"CF_AUTH_SKIP_SSL_VALIDATION"},
 		Value:       false,
 		Destination: &initialDeployArgs.CFAuthSkipSSL,

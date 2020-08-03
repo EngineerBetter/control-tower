@@ -265,6 +265,7 @@ func TestDeployArgs_MarkSetFlags(t *testing.T) {
 		specifiedFlags          []string
 		wantErr                 bool
 		expectedGithubAuthIsSet bool
+		expectedCFAuthIsSet     bool
 	}{
 		{
 			name:                    "GithubAuthIsSet is true when both ClientID and ClientSecret are set",
@@ -284,6 +285,30 @@ func TestDeployArgs_MarkSetFlags(t *testing.T) {
 			wantErr:                 false,
 			expectedGithubAuthIsSet: false,
 		},
+		{
+			name:                "CFAuthIsSet is true when ClientID, ClientSecret, and API URL are set",
+			specifiedFlags:      []string{"cf-auth-client-id", "cf-auth-client-secret", "cf-auth-api-url"},
+			wantErr:             false,
+			expectedCFAuthIsSet: true,
+		},
+		{
+			name:                "CFAuthIsSet is false when ClientID is set but ClientSecret and API URL are not",
+			specifiedFlags:      []string{"cf-auth-client-id"},
+			wantErr:             false,
+			expectedCFAuthIsSet: false,
+		},
+		{
+			name:                "CFAuthIsSet is false when ClientSecret is set but ClientID and API URL are not",
+			specifiedFlags:      []string{"cf-auth-client-id"},
+			wantErr:             false,
+			expectedCFAuthIsSet: false,
+		},
+		{
+			name:                "CFAuthIsSet is false when API URL is set but ClientID and Client Secret are not",
+			specifiedFlags:      []string{"cf-auth-client-id"},
+			wantErr:             false,
+			expectedCFAuthIsSet: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -295,6 +320,10 @@ func TestDeployArgs_MarkSetFlags(t *testing.T) {
 
 			if a.GithubAuthIsSet != tt.expectedGithubAuthIsSet {
 				t.Errorf("DeployArgs.MarkSetFlags() set GitHubAuthIsSet to %v, was expecting %v", a.GithubAuthIsSet, tt.expectedGithubAuthIsSet)
+			}
+
+			if a.CFAuthIsSet != tt.expectedCFAuthIsSet {
+				t.Errorf("DeployArgs.MarkSetFlags() set CFAuthIsSet to %v, was expecting %v", a.CFAuthIsSet, tt.expectedCFAuthIsSet)
 			}
 		})
 	}

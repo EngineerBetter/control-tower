@@ -43,6 +43,11 @@ type Config struct {
 	Domain                   string `json:"domain"`
 	EnableGlobalResources    bool   `json:"enable_global_resources"`
 	EncryptionKey            string `json:"encryption_key"`
+	CFClientID               string `json:"cf_client_id"`
+	CFClientSecret           string `json:"cf_client_secret"`
+	CFAPIUrl                 string `json:"cf_api_url"`
+	CFSkipSSL                bool   `json:"cf_skip_ssl"`
+	CFCACert                 string `json:"cf_ca_cert"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
 	GrafanaPassword          string `json:"grafana_password"`
