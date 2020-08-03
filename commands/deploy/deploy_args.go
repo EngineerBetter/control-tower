@@ -86,6 +86,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 			case "web-size":
 				a.WebSizeIsSet = true
 			case "iaas":
+				fmt.Printf("%+v\n", a)
 				a.IAASIsSet = true
 			case "self-update":
 				a.SelfUpdateIsSet = true
