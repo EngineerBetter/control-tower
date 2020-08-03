@@ -17,7 +17,8 @@ var nonInteractive bool
 // GlobalFlags are the global CLIflags
 var GlobalFlags = []cli.Flag{
 	&cli.BoolFlag{
-		Name:        "non-interactive, n",
+		Name:        "non-interactive",
+		Aliases:     []string{"n"},
 		EnvVars:     []string{"NON_INTERACTIVE"},
 		Usage:       "Non interactive",
 		Destination: &nonInteractive,
