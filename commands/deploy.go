@@ -221,7 +221,6 @@ func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider
 }
 
 func validateDeployArgs(c *cli.Context, deployArgs deploy.Args) (deploy.Args, error) {
-	fmt.Printf("%+v\n", c.FlagNames())
 	err := deployArgs.MarkSetFlags(c)
 	if err != nil {
 		return deployArgs, fmt.Errorf("failed to mark set Deploy flags: [%v]", err)
