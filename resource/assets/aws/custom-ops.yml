@@ -50,7 +50,7 @@
 
 - type: replace
   path: /resource_pools/name=vms/cloud_properties/instance_type
-  value: t2.small
+  value: t3.small
 
 - type: remove
   path: /instance_groups/name=bosh/jobs/name=postgres-10
