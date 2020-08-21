@@ -2,7 +2,6 @@ package fly
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -62,7 +61,7 @@ func New(provider iaas.Provider, creds Credentials, stdout, stderr io.Writer, ve
 	}
 	defer fileHandler.Close()
 
-	url, err := getFlyURL(versionFile)
+	url, err := getFlyURL(creds.API)
 	if err != nil {
 		return nil, err
 	}
@@ -267,18 +266,9 @@ func (client *Client) run(args ...string) error {
 	return cmd.Run()
 }
 
-func getFlyURL(versionFile []byte) (string, error) {
-	var x map[string]map[string]string
-	err := json.Unmarshal(versionFile, &x)
-	if err != nil {
-		return "", err
-	}
-	switch runtime.GOOS {
-	case "darwin":
-		return x["fly"]["mac"], nil
-	case "linux":
-		return x["fly"]["linux"], nil
-	default:
+func getFlyURL(api string) (string, error) {
+	if (runtime.GOOS != "darwin" && runtime.GOOS != "linux") {
 		return "", fmt.Errorf("unknown os: `%s`", runtime.GOOS)
 	}
+	return fmt.Sprintf("%s/api/v1/cli?arch=amd64&platform=%s", api, runtime.GOOS), nil
 }
