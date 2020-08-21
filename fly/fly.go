@@ -2,6 +2,7 @@ package fly
 
 import (
 	"bytes"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -66,7 +67,11 @@ func New(provider iaas.Provider, creds Credentials, stdout, stderr io.Writer, ve
 		return nil, err
 	}
 
-	resp, err := http.Get(url)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	httpInsecure := &http.Client{Transport: tr}
+	resp, err := httpInsecure.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -267,7 +272,7 @@ func (client *Client) run(args ...string) error {
 }
 
 func getFlyURL(api string) (string, error) {
-	if (runtime.GOOS != "darwin" && runtime.GOOS != "linux") {
+	if runtime.GOOS != "darwin" && runtime.GOOS != "linux" {
 		return "", fmt.Errorf("unknown os: `%s`", runtime.GOOS)
 	}
 	return fmt.Sprintf("%s/api/v1/cli?arch=amd64&platform=%s", api, runtime.GOOS), nil
