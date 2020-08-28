@@ -725,6 +725,9 @@ jobs:
       globs:
       - build-linux/control-tower-linux-amd64
       - build-darwin/control-tower-darwin-amd64
+  - task: generate-versions-file
+    image: pcf-ops
+    file: control-tower/ci/tasks/generate-versions-file.yml
   - put: version
     resource: version
     params:
