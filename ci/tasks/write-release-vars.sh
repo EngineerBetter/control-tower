@@ -29,31 +29,31 @@ Deploys:
 
 **AWS**
 
-- Concourse VM stemcell bosh-aws-xen-hvm-ubuntu-xenial-go_agent $deployment_stemcell_version
-- Director stemcell     bosh-aws-xen-hvm-ubuntu-xenial-go_agent $director_stemcell_version
-- Concourse [$deployment_concourse_release_version]($deployment_concourse_release_url)
+- Concourse VM stemcell bosh-aws-xen-hvm-ubuntu-xenial-go_agent $stemcell_version
+- Director stemcell bosh-aws-xen-hvm-ubuntu-xenial-go_agent $director_stemcell_version
+- Concourse [$concourse_release_version]($concourse_release_url)
 - BOSH [$director_bosh_release_version]($director_bosh_release_url)
 - BOSH AWS CPI [$director_bosh_cpi_release_version]($director_bosh_cpi_release_url)
 - BPM [$director_bpm_release_version]($director_bpm_release_url)
-- Credhub [$deployment_credhub_release_version]($deployment_credhub_release_url)
-- Grafana [$deployment_grafana_release_version]($deployment_grafana_release_url)
-- InfluxDB [$deployment_influxdb_release_version]($deployment_influxdb_release_url)
-- UAA [$deployment_uaa_release_version]($deployment_uaa_release_url)
+- Credhub [$credhub_release_version]($credhub_release_url)
+- Grafana [$grafana_release_version]($grafana_release_url)
+- InfluxDB [$influxdb_release_version]($influxdb_release_url)
+- UAA [$uaa_release_version]($uaa_release_url)
 - BOSH CLI $bin_bosh_cli_version
 - Terraform $bin_terraform_version
 
 **GCP**
 
-- Concourse VM stemcell bosh-google-kvm-ubuntu-xenial-go_agent $deployment_stemcell_version_gcp
-- Director stemcell     bosh-google-kvm-ubuntu-xenial-go_agent $director_stemcell_version_gcp
-- Concourse [$deployment_concourse_release_version_gcp]($deployment_concourse_release_url_gcp)
+- Concourse VM stemcell bosh-google-kvm-ubuntu-xenial-go_agent $stemcell_version_gcp
+- Director stemcell bosh-google-kvm-ubuntu-xenial-go_agent $director_stemcell_version_gcp
+- Concourse [$concourse_release_version_gcp]($concourse_release_url_gcp)
 - BOSH [$director_bosh_release_version_gcp]($director_bosh_release_url_gcp)
 - BOSH GCP CPI [$director_bosh_cpi_release_version_gcp]($director_bosh_cpi_release_url_gcp)
 - BPM [$director_bpm_release_version_gcp]($director_bpm_release_url_gcp)
-- Credhub [$deployment_credhub_release_version_gcp]($deployment_credhub_release_url_gcp)
-- Grafana [$deployment_grafana_release_version_gcp]($deployment_grafana_release_url_gcp)
-- InfluxDB [$deployment_influxdb_release_version_gcp]($deployment_influxdb_release_url_gcp)
-- UAA [$deployment_uaa_release_version_gcp]($deployment_uaa_release_url_gcp)
+- Credhub [$credhub_release_version_gcp]($credhub_release_url_gcp)
+- Grafana [$grafana_release_version_gcp]($grafana_release_url_gcp)
+- InfluxDB [$influxdb_release_version_gcp]($influxdb_release_url_gcp)
+- UAA [$uaa_release_version_gcp]($uaa_release_url_gcp)
 - BOSH CLI $bin_bosh_cli_version_gcp
 - Terraform $bin_terraform_version_gcp
 

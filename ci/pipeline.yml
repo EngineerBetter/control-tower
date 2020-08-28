@@ -1,4 +1,10 @@
 ---
+meta:
+  generate-versions-file: &generate-versions-file
+    task: generate-versions-file
+    image: pcf-ops
+    file: control-tower/ci/tasks/generate-versions-file.yml
+
 groups:
 - name: Main
   jobs:
@@ -150,6 +156,16 @@ resources:
   source:
     bucket: control-tower-ci-artifacts
     versioned_file: ((binary-name))-darwin-amd64
+    access_key_id: ((concourse_ci_s3_access_key))
+    secret_access_key: ((concourse_ci_s3_secret_key))
+    region_name: eu-west-1
+
+- name: release-versions
+  type: s3
+  icon: file-move
+  source:
+    bucket: control-tower-ci-artifacts
+    versioned_file: release-versions.json
     access_key_id: ((concourse_ci_s3_access_key))
     secret_access_key: ((concourse_ci_s3_secret_key))
     region_name: eu-west-1
@@ -643,36 +659,14 @@ jobs:
     - get: control-tower-ops
       trigger: true
       passed: *system-tests
+    - get: release-versions
+  - *generate-versions-file
   - task: write-release-notification
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: engineerbetter/pcf-ops
-      inputs:
-      - name: control-tower
-      - name: control-tower-ops
-      outputs:
-      - name: slack-message
-      run:
-        path: bash
-        args:
-        - -c
-        - |
-          CUP_REF="$(cat control-tower/.git/ref)"
-          OPS_REF="$(cat control-tower-ops/.git/ref)"
-          CUP_MESSAGE="$(cat control-tower/.git/commit_message)"
-          OPS_MESSAGE="$(cat control-tower-ops/.git/commit_message)"
-          cat << EOF > slack-message/text
-          Control-Tower is ready for a new release, all system tests passed.
-
-          Latest commit in *control-tower* repository: \`$CUP_REF\`
-          \`\`\`$CUP_MESSAGE\`\`\`
-
-          Latest commit in *control-tower-ops* repository: \`$OPS_REF\`
-          \`\`\`$OPS_MESSAGE\`\`\`
-          EOF
+    image: pcf-ops
+    file: control-tower/ci/tasks/write-release-notification.yml
+    input_mapping:
+      old_versions: release-versions
+      new_versions: versions-file
   - put: slack-alert
     params:
       channel: "#integrations"
@@ -725,13 +719,16 @@ jobs:
       globs:
       - build-linux/control-tower-linux-amd64
       - build-darwin/control-tower-darwin-amd64
-  - task: generate-versions-file
-    image: pcf-ops
-    file: control-tower/ci/tasks/generate-versions-file.yml
-  - put: version
-    resource: version
-    params:
-      file: version/version
+  - in_parallel:
+    - do:
+      - *generate-versions-file
+      - put: release-versions
+        params:
+          file: versions-file/release-versions.json
+    - put: version
+      resource: version
+      params:
+        file: version/version
 
 - name: patch
   serial: true
@@ -767,10 +764,16 @@ jobs:
       globs:
       - build-linux/control-tower-linux-amd64
       - build-darwin/control-tower-darwin-amd64
-  - put: version
-    resource: version
-    params:
-      file: version/version
+  - in_parallel:
+    - do:
+      - *generate-versions-file
+      - put: release-versions
+        params:
+          file: versions-file/release-versions.json
+    - put: version
+      resource: version
+      params:
+        file: version/version
 
 - name: minor
   serial: true
@@ -806,10 +809,16 @@ jobs:
       globs:
       - build-linux/control-tower-linux-amd64
       - build-darwin/control-tower-darwin-amd64
-  - put: version
-    resource: version
-    params:
-      file: version/version
+  - in_parallel:
+    - do:
+      - *generate-versions-file
+      - put: release-versions
+        params:
+          file: versions-file/release-versions.json
+    - put: version
+      resource: version
+      params:
+        file: version/version
 
 - name: major
   serial: true
@@ -845,10 +854,16 @@ jobs:
       globs:
       - build-linux/control-tower-linux-amd64
       - build-darwin/control-tower-darwin-amd64
-  - put: version
-    resource: version
-    params:
-      file: version/version
+  - in_parallel:
+    - do:
+      - *generate-versions-file
+      - put: release-versions
+        params:
+          file: versions-file/release-versions.json
+    - put: version
+      resource: version
+      params:
+        file: version/version
 
 - name: cleanup-aws
   serial: true
