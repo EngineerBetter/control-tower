@@ -1,3 +1,6 @@
+#!/bin/bash
+# shellcheck disable=SC2034
+
 function getVersions() {
   bin_bosh_cli_version=$(                jq -r '."bosh-cli".linux' createenv-dependencies-and-cli-versions-aws.json)
   bin_terraform_version=$(               jq -r '.terraform.linux' createenv-dependencies-and-cli-versions-aws.json)
