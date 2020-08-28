@@ -665,8 +665,8 @@ jobs:
     image: pcf-ops
     file: control-tower/ci/tasks/write-release-notification.yml
     input_mapping:
-      old_versions: release-versions
-      new_versions: versions-file
+      old-versions: release-versions
+      new-versions: versions-file
   - put: slack-alert
     params:
       channel: "#integrations"
