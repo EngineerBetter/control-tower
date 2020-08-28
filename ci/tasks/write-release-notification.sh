@@ -13,9 +13,9 @@ Control-Tower is ready for a new release, all system tests passed.
 EOF
 
 for component in $new_release; do
-  name=$(echo $component | jq --raw-output '.name')
-  new_version=$(echo $component | jq --raw-output '.version')
-  old_version=$(echo $old_release | jq --raw-output --arg name $name '.[] | select(.name==$name).version')
+  name=$(echo "$component" | jq --raw-output '.name')
+  new_version=$(echo "$component" | jq --raw-output '.version')
+  old_version=$(echo "$old_release" | jq --raw-output --arg name $name '.[] | select(.name==$name).version')
   
   if [ "$(printf '%s\n' "$new_version" "$old_version" | sort -V | head -n1)" != "$new_version" ]; then 
     echo "$name: $old_version > $new_version" >> slack-message/text
