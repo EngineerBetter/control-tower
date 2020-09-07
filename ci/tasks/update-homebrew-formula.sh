@@ -48,4 +48,4 @@ EOF
   git commit -m "Release control-tower version ${version}"
 popd
 
-cp -R homebrew-tap homebrew-tap-updated
+git clone ./homebrew-tap ./homebrew-tap-updated
