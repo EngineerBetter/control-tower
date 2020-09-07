@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/set-flags.sh
 
 version=$(cat release/version)
