@@ -109,6 +109,14 @@ resources:
     - README.md
     - docs/
 
+- name: homebrew-tap
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:EngineerBetter/homebrew-tap.git
+    branch: master
+    private_key: ((github_private_key_homebrew))
+
 - name: control-tower-ops
   type: git
   icon: github
@@ -864,6 +872,22 @@ jobs:
       resource: version
       params:
         file: version/version
+
+- name: update-homebrew-formula
+  serial: true
+  plan:
+  - in_parallel:
+    - get: release
+      trigger: true
+    - get: homebrew-tap
+    - get: control-tower
+  - task: update-homebrew-formula
+    image: pcf-ops
+    file: control-tower/ci/tasks/update-homebrew-formula.yml
+  - put: homebrew-tap
+    params:
+      repository: homebrew-tap-updated
+
 
 - name: cleanup-aws
   serial: true

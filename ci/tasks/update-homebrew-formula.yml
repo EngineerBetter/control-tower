@@ -1,0 +1,13 @@
+---
+platform: linux
+
+inputs:
+- name: homebrew-tap
+- name: release
+- name: control-tower
+
+outputs:
+- name: homebrew-tap-updated
+
+run:
+    path: control-tower/ci/tasks/update-homebrew-formula.sh
