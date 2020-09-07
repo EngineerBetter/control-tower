@@ -882,6 +882,7 @@ jobs:
       trigger: true
     - get: homebrew-tap
     - get: control-tower
+    - get: pcf-ops
   - task: update-homebrew-formula
     image: pcf-ops
     file: control-tower/ci/tasks/update-homebrew-formula.yml
