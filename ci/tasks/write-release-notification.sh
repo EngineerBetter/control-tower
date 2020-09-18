@@ -6,9 +6,10 @@ cup_ref="$(cat control-tower/.git/ref)"
 ops_ref="$(cat control-tower-ops/.git/ref)"
 cup_message="$(cat control-tower/.git/commit_message)"
 ops_message="$(cat control-tower-ops/.git/commit_message)"
+slack_message=slack-message/text
 
-touch slack-message/text
-cat << EOF > slack-message/text
+touch "${slack_message}"
+cat << EOF > "${slack_message}"
 Control-Tower is ready for a new release, all system tests passed.
 EOF
 
@@ -18,11 +19,15 @@ for component in $new_release; do
   old_version=$(echo "$old_release" | jq --raw-output --arg name "$name" '.[] | select(.name==$name).version')
   
   if [ "$(printf '%s\n' "$new_version" "$old_version" | sort -V | head -n1)" != "$new_version" ]; then 
-    echo "$name: $old_version > $new_version" >> slack-message/text
+    echo "$name: $old_version > $new_version" >> "${slack_message}"
   fi
 done
 
-cat << EOF >> slack-message/text
+if [[ -z "${slack_message}" ]]; then
+  echo "No change in component versions" >> "${slack_message}"
+fi
+
+cat << EOF >> "${slack_message}"
 Latest commit in *control-tower* repository: \`$cup_ref\`
 \`\`\`$cup_message\`\`\`
 
