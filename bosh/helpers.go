@@ -2,9 +2,10 @@ package bosh
 
 import (
 	"fmt"
-	"github.com/apparentlymart/go-cidr/cidr"
 	"net"
 	"strings"
+
+	"github.com/apparentlymart/go-cidr/cidr"
 )
 
 func vars(vars map[string]interface{}) []string {
@@ -49,7 +50,6 @@ func formatIPRange(forCIDR, sep string, positions []int) (string, error) {
 	for _, pos := range positions {
 		ip, _ := cidr.Host(parsedCIDR, pos)
 		ips = append(ips, ip.String())
-
 	}
 	s := fmt.Sprintf(`[%s]`, strings.Join(ips, sep))
 	return s, nil

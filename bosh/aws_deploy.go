@@ -211,7 +211,7 @@ func (client *AWSClient) updateCloudConfig(bosh boshcli.ICLI) error {
 	if err != nil {
 		return err
 	}
-	publicCIDRReserved, err := formatIPRange(publicCIDR, "-", []int{1, 5})
+	publicCIDRReserved, err := formatIPRange(publicCIDR, "-", []int{1, 7})
 	if err != nil {
 		return err
 	}
