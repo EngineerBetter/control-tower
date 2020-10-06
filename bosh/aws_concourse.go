@@ -81,6 +81,15 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		vmap["atc_password"] = client.config.GetConcoursePassword()
 	}
 
+	if client.config.IsCFAuthSet() {
+		vmap["cf_auth_client_id"] = client.config.GetCFClientID()
+		vmap["cf_auth_client_secret"] = client.config.GetCFClientSecret()
+		vmap["cf_auth_api_url"] = client.config.GetCFAPIUrl()
+		vmap["cf_auth_skip_ssl_validation"] = client.config.GetCFSkipSSL()
+		vmap["cf_auth_ca_cert"] = client.config.GetCFCACert()
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseCFAuthFilename))
+	}
+
 	if client.config.IsGithubAuthSet() {
 		vmap["github_client_id"] = client.config.GetGithubClientID()
 		vmap["github_client_secret"] = client.config.GetGithubClientSecret()

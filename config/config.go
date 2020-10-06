@@ -43,11 +43,11 @@ type Config struct {
 	Domain                   string `json:"domain"`
 	EnableGlobalResources    bool   `json:"enable_global_resources"`
 	EncryptionKey            string `json:"encryption_key"`
-	CFClientID               string `json:"cf_client_id"`
-	CFClientSecret           string `json:"cf_client_secret"`
-	CFAPIUrl                 string `json:"cf_api_url"`
-	CFSkipSSL                bool   `json:"cf_skip_ssl"`
-	CFCACert                 string `json:"cf_ca_cert"`
+	CFClientID               string `json:"cf_auth_client_id"`
+	CFClientSecret           string `json:"cf_auth_client_secret"`
+	CFAPIUrl                 string `json:"cf_auth_api_url"`
+	CFSkipSSL                bool   `json:"cf_auth_skip_ssl"`
+	CFCACert                 string `json:"cf_auth_ca_cert"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
 	GrafanaPassword          string `json:"grafana_password"`
@@ -81,6 +81,11 @@ type Config struct {
 type ConfigView interface {
 	GetAllowIPs() string
 	GetAvailabilityZone() string
+	GetCFClientID() string
+	GetCFClientSecret() string
+	GetCFAPIUrl() string
+	GetCFCACert() string
+	GetCFSkipSSL() bool
 	GetConcourseCACert() string
 	GetConcourseCert() string
 	GetConcourseKey() string
@@ -135,6 +140,7 @@ type ConfigView interface {
 	GetVersion() string
 	GetWorkerType() string
 	IsGithubAuthSet() bool
+	IsCFAuthSet() bool
 	IsSpot() bool
 }
 
@@ -144,6 +150,26 @@ func (c Config) GetAllowIPs() string {
 
 func (c Config) GetAvailabilityZone() string {
 	return c.AvailabilityZone
+}
+
+func (c Config) GetCFClientID() string {
+	return c.CFClientID
+}
+
+func (c Config) GetCFClientSecret() string {
+	return c.CFClientSecret
+}
+
+func (c Config) GetCFAPIUrl() string {
+	return c.CFAPIUrl
+}
+
+func (c Config) GetCFSkipSSL() bool {
+	return c.CFSkipSSL
+}
+
+func (c Config) GetCFCACert() string {
+	return c.CFCACert
 }
 
 func (c Config) GetConcourseCACert() string {
@@ -360,6 +386,10 @@ func (c Config) GetWorkerType() string {
 
 func (c Config) IsGithubAuthSet() bool {
 	return c.GithubClientID != "" && c.GithubClientSecret != ""
+}
+
+func (c Config) IsCFAuthSet() bool {
+	return c.CFClientID != "" && c.CFClientSecret != ""
 }
 
 func (c Config) IsSpot() bool {

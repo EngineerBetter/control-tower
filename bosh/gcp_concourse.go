@@ -100,6 +100,15 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubAuthFilename))
 	}
 
+	if client.config.IsCFAuthSet() {
+		vmap["cf_auth_client_id"] = client.config.GetCFClientID()
+		vmap["cf_auth_client_secret"] = client.config.GetCFClientSecret()
+		vmap["cf_auth_api_url"] = client.config.GetCFAPIUrl()
+		vmap["cf_auth_skip_ssl_validation"] = client.config.GetCFSkipSSL()
+		vmap["cf_auth_ca_cert"] = client.config.GetCFCACert()
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseCFAuthFilename))
+	}
+
 	t, err1 := client.buildTagsYaml(vmap["project"], "concourse")
 	if err1 != nil {
 		return nil, err
