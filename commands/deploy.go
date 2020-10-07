@@ -129,32 +129,32 @@ var deployFlags = []cli.Flag{
 	&cli.StringFlag{
 		Name:        "cf-auth-client-id",
 		Usage:       "(optional) UAA client ID to use for OAuth - Used for CF Auth",
-		EnvVars:     []string{"CF_AUTH_CLIENT_ID"},
+		EnvVar:      "CF_AUTH_CLIENT_ID",
 		Destination: &initialDeployArgs.CFAuthClientID,
 	},
 	&cli.StringFlag{
 		Name:        "cf-auth-client-secret",
 		Usage:       "(optional) UAA client secret to use for OAuth - Used for CF Auth",
-		EnvVars:     []string{"CF_AUTH_CLIENT_SECRET"},
+		EnvVar:      "CF_AUTH_CLIENT_SECRET",
 		Destination: &initialDeployArgs.CFAuthClientSecret,
 	},
 	&cli.StringFlag{
 		Name:        "cf-auth-api-url",
 		Usage:       "(optional) Cloud Foundry api endpoint url - Used for CF Auth",
-		EnvVars:     []string{"CF_AUTH_API_URL"},
+		EnvVar:      "CF_AUTH_API_URL",
 		Destination: &initialDeployArgs.CFAuthAPIUrl,
 	},
 	&cli.BoolFlag{
 		Name:        "cf-auth-skip-ssl-validation",
 		Usage:       "(optional) Skip SSL validation - Used for CF Auth (default false)",
-		EnvVars:     []string{"CF_AUTH_SKIP_SSL_VALIDATION"},
-		Value:       false,
+		EnvVar:      "CF_AUTH_SKIP_SSL_VALIDATION",
+		Hidden:      false,
 		Destination: &initialDeployArgs.CFAuthSkipSSL,
 	},
 	&cli.StringFlag{
 		Name:        "cf-auth-ca-cert",
 		Usage:       "(optional) Cloud Foundry CA Certificate - Used for CF Auth",
-		EnvVars:     []string{"CF_AUTH_CA_CERT"},
+		EnvVar:      "CF_AUTH_CA_CERT",
 		Destination: &initialDeployArgs.CFAuthCACert,
 	},
 	&cli.StringFlag{
