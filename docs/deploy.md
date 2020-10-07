@@ -49,7 +49,7 @@ control-tower deploy \
 
 |--worker-size|AWS m4 Instance type|AWS m5 Instance type*|GCP Instance type|
 |:-|:-|:-|:-|
-|medium|t2.medium|t2.medium|n1-standard-1|
+|medium|t3.medium|t3.medium|n1-standard-1|
 |large |m4.large|m5.large|n1-standard-2|
 |xlarge|m4.xlarge|m5.xlarge|n1-standard-4|
 |2xlarge|m4.2xlarge|m5.2xlarge|n1-standard-8|
@@ -67,11 +67,11 @@ control-tower deploy \
 
 |--web-size|AWS Instance type|GCP Instance type|
 |:-|:-|:-|
-|small|t2.small|n1-standard-1|
-|medium|t2.medium|n1-standard-2|
-|large|t2.large|n1-standard-4|
-|xlarge|t2.xlarge|n1-standard-8|
-|2xlarge|t2.2xlarge|n1-standard-16|
+|small|t3.small|n1-standard-1|
+|medium|t3.medium|n1-standard-2|
+|large|t3.large|n1-standard-4|
+|xlarge|t3.xlarge|n1-standard-8|
+|2xlarge|t3.2xlarge|n1-standard-16|
 
 ## Database Configuration
 

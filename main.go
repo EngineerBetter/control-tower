@@ -7,7 +7,7 @@ import (
 	"github.com/EngineerBetter/control-tower/commands"
 	"github.com/fatih/color"
 
-	"github.com/urfave/cli/v2"
+	"gopkg.in/urfave/cli.v1"
 )
 
 // ControlTowerVersion is a compile-time variable set with -ldflags

@@ -34,7 +34,7 @@ if [ "$IAAS" = "AWS" ]
 then
     # shellcheck disable=SC2034
     region=us-east-1
-    domain=cup.engineerbetter.com
+    domain=ct.engineerbetter.com
 
     args+=(--vpc-network-range 192.168.0.0/24)
     args+=(--rds-subnet-range1 192.168.0.64/28)
@@ -43,7 +43,7 @@ elif [ "$IAAS" = "GCP" ]
 then
     # shellcheck disable=SC2034
     region=europe-west2
-    domain=cup.gcp.engineerbetter.com
+    domain=ct.gcp.engineerbetter.com
 fi
 
 args+=(--domain "${domain}")

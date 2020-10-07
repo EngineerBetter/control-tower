@@ -6,8 +6,8 @@ By default, `control-tower` deploys to the AWS eu-west-1 (Ireland) region or the
 
 | Component     | Size             | Count | Price (USD) |
 |---------------|------------------|-------|------------:|
-| BOSH director | t2.small         |     1 |       18.30 |
-| Web Server    | t2.small         |     1 |       18.30 |
+| BOSH director | t3.small         |     1 |       16.70 |
+| Web Server    | t3.small         |     1 |       16.70 |
 | Worker        | m4.xlarge (spot) |     1 |      ~50.00 |
 | RDS instance  | db.t2.small      |     1 |       28.47 |
 | NAT Gateway*  |         -        |     1 |       35.15 |

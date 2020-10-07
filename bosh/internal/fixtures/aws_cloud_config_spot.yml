@@ -7,7 +7,7 @@ azs:
 vm_types:
 - name: concourse-web-small
   cloud_properties:
-    instance_type: t2.small
+    instance_type: t3.small
     ephemeral_disk:
       size: 20_000
       type: gp2
@@ -17,7 +17,7 @@ vm_types:
 
 - name: concourse-web-medium
   cloud_properties:
-    instance_type: t2.medium
+    instance_type: t3.medium
     ephemeral_disk:
       size: 20_000
       type: gp2
@@ -27,7 +27,7 @@ vm_types:
 
 - name: concourse-web-large
   cloud_properties:
-    instance_type: t2.large
+    instance_type: t3.large
     ephemeral_disk:
       size: 20_000
       type: gp2
@@ -37,7 +37,7 @@ vm_types:
 
 - name: concourse-web-xlarge
   cloud_properties:
-    instance_type: t2.xlarge
+    instance_type: t3.xlarge
     ephemeral_disk:
       size: 20_000
       type: gp2
@@ -47,7 +47,7 @@ vm_types:
 
 - name: concourse-web-2xlarge
   cloud_properties:
-    instance_type: t2.2xlarge
+    instance_type: t3.2xlarge
     ephemeral_disk:
       size: 20_000
       type: gp2
@@ -57,7 +57,7 @@ vm_types:
 
 - name: concourse-medium
   cloud_properties:
-    instance_type: t2.medium 
+    instance_type: t3.medium 
     spot_bid_price: 0.0567 # on-demand price: 0.0464
     spot_ondemand_fallback: true # 
     ephemeral_disk:

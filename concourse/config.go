@@ -160,7 +160,7 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret
 	}
 	if deployArgs.TagsIsSet {
-		conf.Tags = deployArgs.Tags.Value()
+		conf.Tags = deployArgs.Tags
 	}
 	if deployArgs.SpotIsSet {
 		conf.VMProvisioningType = config.ConvertSpotBoolToVMProvisioningType(deployArgs.Spot)

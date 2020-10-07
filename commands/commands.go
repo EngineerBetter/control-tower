@@ -1,24 +1,24 @@
 package commands
 
 import (
-	cli "github.com/urfave/cli/v2"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 // Commands is a list of all supported CLI commands
-var Commands = []*cli.Command{
-	&deployCmd,
-	&destroyCmd,
-	&infoCmd,
-	&maintainCmd,
+var Commands = []cli.Command{
+	deployCmd,
+	destroyCmd,
+	infoCmd,
+	maintainCmd,
 }
 
 var nonInteractive bool
 
 // GlobalFlags are the global CLIflags
 var GlobalFlags = []cli.Flag{
-	&cli.BoolFlag{
+	cli.BoolFlag{
 		Name:        "non-interactive, n",
-		EnvVars:     []string{"NON_INTERACTIVE"},
+		EnvVar:      "NON_INTERACTIVE",
 		Usage:       "Non interactive",
 		Destination: &nonInteractive,
 	},

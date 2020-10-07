@@ -3,7 +3,7 @@ package destroy
 import (
 	"fmt"
 
-	cli "github.com/urfave/cli/v2"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 // Args are arguments passed to the destroy command

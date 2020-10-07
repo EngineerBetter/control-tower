@@ -8,7 +8,13 @@ A tool for easily deploying self-healing, self-updating [Concourse](https://conc
 
 ## TL;DR
 
-Install [pre-requisites](docs/prerequisites.md), install the [latest Control-Tower release](https://github.com/EngineerBetter/control-tower/releases/latest), and then...
+Ensure you install the [pre-requisites](docs/prerequisites.md). After that you can download the [latest Control-Tower release from Github](https://github.com/EngineerBetter/control-tower/releases/latest). Users of [Homebrew](https://brew.sh/) on macOS or Linux can also run:
+
+```sh
+$ brew install engineerbetter/tap/control-tower
+```
+
+Then...
 
 ### AWS
 
