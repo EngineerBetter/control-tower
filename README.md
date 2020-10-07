@@ -52,6 +52,7 @@ You can keep up to date on Control Tower announcements by reading the [EngineerB
 | Custom TLS certificates | **+** | **+** |
 | Database vertical scaling | **+** | **+** |
 | GitHub authentication | **+** | **+** |
+| Cloud Foundry authentication | **+** | **+** |
 | Grafana (on port 3000) | **+** | **+** |
 | Interruptable worker support | **+** | **+** |
 | Letsencrypt integration | **+** | **+** |

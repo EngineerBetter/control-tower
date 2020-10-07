@@ -111,6 +111,15 @@ control-tower deploy \
 |`--github-auth-client-id value`|Client ID for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_ID`|
 |`--github-auth-client-secret value`|Client Secret for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_SECRET`|
 
+## Cloud Foundry Auth
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--cf-auth-client-id value`|Client ID for Cloud Foundry authentication - Used for Cloud Foundry Auth|`CF_AUTH_CLIENT_ID`|
+|`--cf-auth-client-secret value`|Client Secret for a Cloud Foundry authentication - Used for Cloud Foundry  Auth|`CF_AUTH_CLIENT_SECRET`|
+|`--cf-auth-api-url`|Cloud Foundry api url for Cloud Foundry authentication - Used for Cloud Foundry  Auth|`CF_AUTH_API_URL`|
+
+
 ## Custom Tagging
 
 |**Flag**|**Description**|**Environment Variable**|
