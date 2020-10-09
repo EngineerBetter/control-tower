@@ -14,6 +14,7 @@ func ConvertSpotBoolToVMProvisioningType(spot bool) string {
 // Config represents a control-tower configuration file
 type Config struct {
 	AllowIPs                 string `json:"allow_ips"`
+	AllowIPsUnformatted      string `json:"allow_ips_unformatted"`
 	AvailabilityZone         string `json:"availability_zone"`
 	ConcourseCACert          string `json:"concourse_ca_cert"`
 	ConcourseCert            string `json:"concourse_cert"`
@@ -75,6 +76,7 @@ type Config struct {
 
 type ConfigView interface {
 	GetAllowIPs() string
+	GetAllowIPsUnformatted() string
 	GetAvailabilityZone() string
 	GetConcourseCACert() string
 	GetConcourseCert() string
@@ -135,6 +137,10 @@ type ConfigView interface {
 
 func (c Config) GetAllowIPs() string {
 	return c.AllowIPs
+}
+
+func (c Config) GetAllowIPsUnformatted() string {
+	return c.AllowIPsUnformatted
 }
 
 func (c Config) GetAvailabilityZone() string {

@@ -41,6 +41,7 @@ jobs:
       GCPCreds: 'creds-content'
       IAAS: "GCP"
       NAMESPACE: "prod"
+      ALLOW_IPS: "10.0.0.0"
       SELF_UPDATE: true
     config:
       platform: linux
@@ -76,6 +77,7 @@ jobs:
       GCPCreds: 'creds-content'
       IAAS: "GCP"
       NAMESPACE: "prod"
+      ALLOW_IPS: "10.0.0.0"
       SELF_UPDATE: true
     config:
       platform: linux
@@ -123,7 +125,7 @@ jobs:
 			pipeline, err := NewGCPPipeline(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
 
-			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "europe-west1", "ci.engineerbetter.com", "GCP")
+			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "europe-west1", "ci.engineerbetter.com", "10.0.0.0", "GCP")
 			Expect(err).ToNot(HaveOccurred())
 
 			yamlBytes, err := util.RenderTemplate("self-update pipeline", pipeline.GetConfigTemplate(), params)

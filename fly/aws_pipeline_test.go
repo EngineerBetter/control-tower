@@ -39,6 +39,7 @@ jobs:
       DEPLOYMENT: "my-deployment"
       IAAS: "AWS"
       NAMESPACE: "prod"
+      ALLOW_IPS: "10.0.0.0"
       SELF_UPDATE: true
     config:
       platform: linux
@@ -74,6 +75,7 @@ jobs:
       DEPLOYMENT: "my-deployment"
       IAAS: "AWS"
       NAMESPACE: "prod"
+      ALLOW_IPS: "10.0.0.0"
       SELF_UPDATE: true
     config:
       platform: linux
@@ -108,13 +110,13 @@ jobs:
 `
 
 		It("Generates something sensible", func() {
-			fakeCredsGetter := func()(string, string, error) {
+			fakeCredsGetter := func() (string, string, error) {
 				return "access-key", "secret-key", nil
 			}
 
 			pipeline := NewAWSPipeline(fakeCredsGetter)
 
-			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "eu-west-1", "ci.engineerbetter.com", "AWS")
+			params, err := pipeline.BuildPipelineParams("my-deployment", "prod", "eu-west-1", "ci.engineerbetter.com", "10.0.0.0", "AWS")
 			Expect(err).ToNot(HaveOccurred())
 
 			yamlBytes, err := util.RenderTemplate("self-update pipeline", pipeline.GetConfigTemplate(), params)
@@ -125,4 +127,3 @@ jobs:
 		})
 	})
 })
-

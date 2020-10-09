@@ -240,6 +240,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		//Mutations we expect to have been done after load
 		configAfterLoad = configInBucket
 		configAfterLoad.AllowIPs = "\"0.0.0.0/0\""
+		configAfterLoad.AllowIPsUnformatted = "0.0.0.0/0"
 		configAfterLoad.SourceAccessIP = "192.0.2.0"
 		configAfterLoad.NetworkCIDR = "10.0.0.0/16"
 		configAfterLoad.PublicCIDR = "10.0.0.0/24"

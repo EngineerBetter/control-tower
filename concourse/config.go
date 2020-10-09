@@ -132,6 +132,7 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	}
 
 	conf.AllowIPs = allowedIPs
+	conf.AllowIPsUnformatted = deployArgs.AllowIPs
 
 	if deployArgs.ZoneIsSet {
 		conf.AvailabilityZone = deployArgs.Zone

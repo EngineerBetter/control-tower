@@ -23,11 +23,12 @@ func NewGCPPipeline(credsPath string) (Pipeline, error) {
 }
 
 //BuildPipelineParams builds params for AWS control-tower self update pipeline
-func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain, iaas string) (Pipeline, error) {
+func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain, allowIps, iaas string) (Pipeline, error) {
 	return GCPPipeline{
 		PipelineTemplateParams: PipelineTemplateParams{
 			ControlTowerVersion: ControlTowerVersion,
 			Deployment:          strings.TrimPrefix(deployment, "control-tower-"),
+			AllowIPs:            allowIps,
 			Domain:              domain,
 			Namespace:           namespace,
 			Region:              region,
@@ -67,6 +68,7 @@ jobs:
       GCPCreds: '{{ .GCPCreds }}'
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
+      ALLOW_IPS: "{{ .AllowIPs }}"
       SELF_UPDATE: true
     config:
       platform: linux
@@ -102,6 +104,7 @@ jobs:
       GCPCreds: '{{ .GCPCreds }}'
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
+      ALLOW_IPS: "{{ .AllowIPs }}"
       SELF_UPDATE: true
     config:
       platform: linux

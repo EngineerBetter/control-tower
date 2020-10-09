@@ -100,9 +100,11 @@ control-tower deploy \
 
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
-|`--allow-ips value`|Comma separated list of IP addresses or CIDR ranges to allow access to<br>(default: "0.0.0.0/0")|`ALLOW_IPS`|
+|`--allow-ips value`|Comma separated list of IP addresses or CIDR ranges to allow access to. Not applied to future manual deploys unless this flag is provided again<br>(default: "0.0.0.0/0")|`ALLOW_IPS`|
 
 > `allow-ips` governs what can access Concourse but not what can access the control plane (i.e. the BOSH director). The control plane will be restricted to the IP `control-tower deploy` was run from.
+
+> This flag overwrites the allowed IPs on every deploy. This means deploying with `allow-ips` then deploying again without it will reset the allow list to `0.0.0.0/0`. The self-update pipeline will maintain the `allow-ips` of the most recent deploy.
 
 ## GitHub Auth
 

@@ -36,7 +36,7 @@ var getCredsFromSession = func() (string, string, error) {
 }
 
 //BuildPipelineParams builds params for AWS control-tower self update pipeline
-func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain, iaas string) (Pipeline, error) {
+func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain, allowIps, iaas string) (Pipeline, error) {
 	accessKeyID, secretAccessKey, err := a.credsGetter()
 	if err != nil {
 		return nil, err
@@ -47,6 +47,7 @@ func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain, 
 			ControlTowerVersion: ControlTowerVersion,
 			Deployment:          strings.TrimPrefix(deployment, "control-tower-"),
 			Domain:              domain,
+			AllowIPs:            allowIps,
 			Namespace:           namespace,
 			Region:              region,
 			IaaS:                iaas,
@@ -79,6 +80,7 @@ jobs:
       DEPLOYMENT: "{{ .Deployment }}"
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
+      ALLOW_IPS: "{{ .AllowIPs }}"
       SELF_UPDATE: true
     config:
       platform: linux
@@ -114,6 +116,7 @@ jobs:
       DEPLOYMENT: "{{ .Deployment }}"
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
+      ALLOW_IPS: "{{ .AllowIPs }}"
       SELF_UPDATE: true
     config:
       platform: linux

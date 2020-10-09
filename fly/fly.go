@@ -210,7 +210,7 @@ func (client *Client) writePipelineConfig(pipelinePath string, config config.Con
 	}
 	defer fileHandler.Close()
 
-	params, err := client.pipeline.BuildPipelineParams(config.GetDeployment(), config.GetNamespace(), config.GetRegion(), config.GetDomain(), config.GetIAAS())
+	params, err := client.pipeline.BuildPipelineParams(config.GetDeployment(), config.GetNamespace(), config.GetRegion(), config.GetDomain(), config.GetAllowIPsUnformatted(), config.GetIAAS())
 	if err != nil {
 		return err
 	}
