@@ -585,21 +585,22 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_db_instance" "default" {
-  allocated_storage      = 10
-  apply_immediately      = true
-  port                   = 5432
-  engine                 = "postgres"
-  instance_class         = "${var.rds_instance_class}"
-  engine_version         = "9.6.11"
-  name                   = "${var.rds_default_database_name}"
-  username               = "${var.rds_instance_username}"
-  password               = "${var.rds_instance_password}"
-  publicly_accessible    = false
-  multi_az               = false
-  vpc_security_group_ids = ["${aws_security_group.rds.id}"]
-  db_subnet_group_name   = "${aws_db_subnet_group.default.name}"
-  skip_final_snapshot    = true
-  storage_type           = "gp2"
+  allocated_storage           = 10
+  apply_immediately           = true
+  port                        = 5432
+  engine                      = "postgres"
+  instance_class              = "${var.rds_instance_class}"
+  engine_version              = "9.6.18"
+  auto_minor_version_upgrade  = false
+  name                        = "${var.rds_default_database_name}"
+  username                    = "${var.rds_instance_username}"
+  password                    = "${var.rds_instance_password}"
+  publicly_accessible         = false
+  multi_az                    = false
+  vpc_security_group_ids      = ["${aws_security_group.rds.id}"]
+  db_subnet_group_name        = "${aws_db_subnet_group.default.name}"
+  skip_final_snapshot         = true
+  storage_type                = "gp2"
   lifecycle {
     ignore_changes = ["allocated_storage"]
   }
