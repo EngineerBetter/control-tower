@@ -873,19 +873,20 @@ jobs:
       trigger: true
     - get: binary-linux
     - get: pcf-ops
-  - task: cleanup
-    file: control-tower/ci/tasks/cleanup-tests.yml
-    params:
-      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
-      IAAS: GCP
+  - do:
+    - task: cleanup
+      file: control-tower/ci/tasks/cleanup-tests.yml
+      params:
+        GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
+        IAAS: GCP
+    - task: cleanup-orphaned-disks
+      file: control-tower/ci/tasks/cleanup-orphaned-disks
+      image: pcf-ops
+      params:
+        GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
     on_failure:
       put: slack-alert
       params:
         channel: "#integrations"
         text: |
           Control-Tower GCP cleanup failure!
-  - task: cleanup-orphaned-disks
-    file: control-tower/ci/tasks/cleanup-orphaned-disks
-    image: pcf-ops
-    params:
-      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
