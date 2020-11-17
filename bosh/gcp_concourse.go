@@ -83,8 +83,6 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		"--ops-file",
 		client.workingdir.PathInWorkingDir(concourseSHAsFilename),
 		"--ops-file",
-		client.workingdir.PathInWorkingDir(concourseCompatibilityFilename),
-		"--ops-file",
 		uaaCertPath,
 		"--vars-file",
 		client.workingdir.PathInWorkingDir(concourseGrafanaFilename),

@@ -71,8 +71,6 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		client.workingdir.PathInWorkingDir(concourseVersionsFilename),
 		"--ops-file",
 		client.workingdir.PathInWorkingDir(concourseSHAsFilename),
-		"--ops-file",
-		client.workingdir.PathInWorkingDir(concourseCompatibilityFilename),
 		"--vars-file",
 		client.workingdir.PathInWorkingDir(concourseGrafanaFilename),
 	}
