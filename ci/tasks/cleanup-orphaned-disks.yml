@@ -16,4 +16,4 @@ run:
   - |
     echo "${GOOGLE_APPLICATION_CREDENTIALS_CONTENTS}" > google_credentials.json
     export GOOGLE_APPLICATION_CREDENTIALS=google_credentials.json
-    control-tower/ci/tasks/cleanup-orphaned-disks.sh
+    control-tower/ci/tasks/cleanup-orphaned-disks.rb
