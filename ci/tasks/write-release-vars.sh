@@ -21,9 +21,26 @@ name="control-tower $version"
 
 echo "$name" > release-vars/name
 
+new_release=$(jq --compact-output '.[]' new-versions/release-versions.json)
+old_release=$(cat old-versions/release-versions.json)
+
 cat << EOF > release-vars/body
 
 Auto-generated release
+
+EOF
+
+for component in $new_release; do
+  name=$(echo "$component" | jq --raw-output '.name')
+  new_version=$(echo "$component" | jq --raw-output '.version')
+  old_version=$(echo "$old_release" | jq --raw-output --arg name "$name" '.[] | select(.name==$name).version')
+
+  if [ "$(printf '%s\n' "$new_version" "$old_version" | sort -V | head -n1)" != "$new_version" ]; then
+    echo "$name: $old_version > $new_version" >> release-vars/body
+  fi
+done
+
+cat << EOF >> release-vars/body
 
 Deploys:
 

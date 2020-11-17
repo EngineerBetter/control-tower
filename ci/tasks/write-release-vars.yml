@@ -6,6 +6,8 @@ inputs:
 - name: control-tower
 - name: control-tower-ops
 - name: ops-version
+- name: new-versions
+- name: old-versions
 
 outputs:
 - name: release-vars
