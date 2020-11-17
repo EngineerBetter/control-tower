@@ -207,7 +207,7 @@ resources:
     - README.md
 
 - name: pcf-ops
-  type: docker-image
+  type: registry-image
   icon: docker
   source:
     repository: engineerbetter/pcf-ops
@@ -872,6 +872,7 @@ jobs:
     - get: once-daily
       trigger: true
     - get: binary-linux
+    - get: pcf-ops
   - task: cleanup
     file: control-tower/ci/tasks/cleanup-tests.yml
     params:
@@ -883,3 +884,8 @@ jobs:
         channel: "#integrations"
         text: |
           Control-Tower GCP cleanup failure!
+  - task: cleanup-orphaned-disks
+    file: control-tower/ci/tasks/cleanup-orphaned-disks
+    image: pcf-ops
+    params:
+      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))

@@ -1,0 +1,19 @@
+---
+platform: linux
+
+inputs:
+- name: control-tower
+
+params:
+  GOOGLE_APPLICATION_CREDENTIALS_CONTENTS:
+
+run:
+  path: bash
+  args:
+  - -euo
+  - pipefail
+  - -c
+  - |
+    echo "${GOOGLE_APPLICATION_CREDENTIALS_CONTENTS}" > google_credentials.json
+    export GOOGLE_APPLICATION_CREDENTIALS=google_credentials.json
+    control-tower/ci/tasks/cleanup-orphaned-disks.sh
