@@ -83,7 +83,7 @@ meta:
           file: version/version
 
 groups:
-- name: Main
+- name: main
   jobs:
   - set-pipeline
   - setup-ci-bucket
@@ -109,11 +109,11 @@ groups:
   - minor
   - patch
   - update-homebrew-formula
-- name: Cleanup
+- name: cleanup
   jobs:
   - cleanup-aws
   - cleanup-gcp
-- name: AWS
+- name: aws
   jobs:
   - smoke-test
   - system-test
@@ -124,7 +124,7 @@ groups:
   - system-test-options-and-destroy
   - system-test-zone-delegation
   - cleanup-aws
-- name: GCP
+- name: gcp
   jobs:
   - system-test-zone-delegation-gcp
   - system-test-options-and-destroy-gcp
