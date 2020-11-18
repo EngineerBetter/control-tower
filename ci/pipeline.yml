@@ -329,7 +329,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *lint* failure!
+          Control-Tower *((branch))* branch *lint* failure!
   - task: unit-test
     image: pcf-ops
     file: control-tower/ci/tasks/unit-test.yml
@@ -338,7 +338,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *unit-test* failure!
+          Control-Tower *((branch))* branch *unit-test* failure!
 
 - name: build
   plan:
@@ -409,7 +409,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *smoke-test* failure!
+          Control-Tower *((branch))* branch *smoke-test* failure!
 
 - name: smoke-test-gcp
   serial_groups:
@@ -428,7 +428,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *smoke-test-gcp* failure!
+          Control-Tower *((branch))* branch *smoke-test-gcp* failure!
 
 - name: system-test
   serial_groups:
@@ -464,7 +464,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test* failure!
+          Control-Tower *((branch))* branch *system-test* failure!
 
 - name: system-test-gcp
   serial_groups:
@@ -499,7 +499,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-gcp* failure!
+          Control-Tower *((branch))* branch *system-test-gcp* failure!
 
 - name: system-test-rds-ca
   serial_groups:
@@ -519,7 +519,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-rds-ca* failure!
+          Control-Tower *((branch))* branch *system-test-rds-ca* failure!
 
 - name: system-test-update
   serial_groups:
@@ -540,7 +540,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-update* failure!
+          Control-Tower *((branch))* branch *system-test-update* failure!
 
 - name: system-test-update-gcp
   serial_groups:
@@ -560,7 +560,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-update-gcp* failure!
+          Control-Tower *((branch))* branch *system-test-update-gcp* failure!
 
 - name: system-test-m5
   serial_groups:
@@ -579,7 +579,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-m5* failure!
+          Control-Tower *((branch))* branch *system-test-m5* failure!
 
 - name: system-test-letsencrypt
   serial_groups:
@@ -599,7 +599,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-letsencrypt* failure!
+          Control-Tower *((branch))* branch *system-test-letsencrypt* failure!
 
 - name: system-test-letsencrypt-gcp
   serial_groups:
@@ -618,7 +618,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
+          Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
 
 - name: system-test-options-and-destroy
   serial_groups:
@@ -642,7 +642,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-options-and-destroy* failure!
+          Control-Tower *((branch))* branch *system-test-options-and-destroy* failure!
 - name: system-test-options-and-destroy-gcp
   serial_groups:
   - system-test-options-and-destroy-gcp
@@ -664,7 +664,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
+          Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
 
 - name: system-test-zone-delegation
   serial_groups:
@@ -688,7 +688,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-zone-delegation* failure!
+          Control-Tower *((branch))* branch *system-test-zone-delegation* failure!
 - name: system-test-zone-delegation-gcp
   serial_groups:
   - system-test-zone-delegation-gcp
@@ -710,7 +710,7 @@ jobs:
       params:
         channel: "#integrations"
         text: |
-          <!channel> Control-Tower *((branch))* branch *system-test-zone-delegation-gcp* failure!
+          Control-Tower *((branch))* branch *system-test-zone-delegation-gcp* failure!
 
 - name: release-notification
   serial: true
