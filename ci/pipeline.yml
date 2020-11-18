@@ -398,8 +398,6 @@ jobs:
       passed: [build]
     - get: pcf-ops
       passed: [build]
-      params:
-        globs: [control-tower-linux-amd64]
   - task: smoke-test
     file: control-tower/ci/tasks/smoke-test.yml
     params:
