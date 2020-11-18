@@ -452,8 +452,6 @@ jobs:
       passed: [smoke-test]
     - get: pcf-ops
       passed: [smoke-test]
-      params:
-        globs: [control-tower-linux-amd64]
   - task: system-test
     file: control-tower/ci/tasks/system-test.yml
     params:
@@ -490,8 +488,6 @@ jobs:
       passed: [smoke-test-gcp]
     - get: pcf-ops
       passed: [smoke-test-gcp]
-      params:
-        globs: [control-tower-linux-amd64]
   - task: system-test
     file: control-tower/ci/tasks/system-test.yml
     params:
