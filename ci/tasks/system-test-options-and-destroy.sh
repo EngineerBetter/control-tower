@@ -69,6 +69,9 @@ eval "$info_output"
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
 checkManifestProperty "${global_resources_path}" false
 
+x_frame_options_path="/instance_groups/name=web/jobs/name=web/properties/x_frame_options"
+checkManifestProperty "${x_frame_options_path}" "deny"
+
 if [ "$IAAS" = "AWS" ]
 then
     assertNetworkCidrsCorrect 192.168.0.0/27 192.168.0.32/27 192.168.0.0/24 192.168.0.64/28 192.168.0.80/28

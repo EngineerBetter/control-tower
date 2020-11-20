@@ -167,6 +167,10 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.EnableGlobalResources = deployArgs.EnableGlobalResources
 	}
 
+	if deployArgs.XFrameOptionsIsSet {
+		conf.XFrameOptions = deployArgs.XFrameOptions
+	}
+
 	var isDomainUpdated bool
 	if deployArgs.DomainIsSet {
 		if conf.Domain != deployArgs.Domain {

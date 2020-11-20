@@ -185,6 +185,13 @@ var deployFlags = []cli.Flag{
 		EnvVar:      "RDS_SUBNET_RANGE2",
 		Destination: &initialDeployArgs.RDS2CIDR,
 	},
+	cli.StringFlag{
+		Name:        "x-frame-options",
+		Usage:       "(optional) set the X-Frame-Options HTTP header that the web worker responds with. deny/sameorigin are supported options, ALLOW-FROM uri is supported on some older browsers (default: deny)",
+		EnvVar:      "X_FRAME_OPTIONS",
+		Value:       "deny",
+		Destination: &initialDeployArgs.XFrameOptions,
+	},
 }
 
 func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider) error {
