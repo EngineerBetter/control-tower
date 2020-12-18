@@ -757,6 +757,7 @@ jobs:
   plan:
   - in_parallel:
     - get: control-tower-ops
+      passed: [release-notification]
       trigger: true
     - get: version
       passed: [release-notification]
