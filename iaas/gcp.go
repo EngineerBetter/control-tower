@@ -130,7 +130,9 @@ func (g *GCPProvider) CreateBucket(name string) error {
 
 	attrs := &storage.BucketAttrs{
 		VersioningEnabled: true,
+		Location:          g.region,
 	}
+
 	if err := g.storage.Bucket(name).Create(g.ctx, project, attrs); err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ handleVerboseMode
 setDeploymentName sys
 
 # shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/check-config-bucket-versioned.sh
+source control-tower/ci/tasks/lib/check-config-bucket.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/check-db.sh
 # shellcheck disable=SC1091
@@ -80,6 +80,7 @@ fi
 assertDbCorrect
 assertNetworkCidrsCorrect
 assertConfigBucketVersioned
+assertBucketRegion
 
 # Check Concourse global resources is enabled
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
