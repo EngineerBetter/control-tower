@@ -52,6 +52,7 @@ args+=(--private-subnet-range 192.168.0.32/27)
 
 trapCustomCleanup
 
+addBitBucketFlagsToArgs
 addGitHubFlagsToArgs
 addTagsFlagsToArgs
 args+=(--region "$region")
@@ -61,6 +62,7 @@ args+=(--region "$region")
 updateFly "${domain}"
 
 assertTagsSet
+assertBitBucketAuthConfigured
 assertGitHubAuthConfigured
 
 # Check Concourse global resources is disabled (as it should be by default)

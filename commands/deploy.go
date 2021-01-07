@@ -127,6 +127,18 @@ var deployFlags = []cli.Flag{
 		Destination: &initialDeployArgs.AllowIPs,
 	},
 	cli.StringFlag{
+		Name:        "bitbucket-auth-client-id",
+		Usage:       "(optional) Client ID for a bitbucket OAuth application - Used for Bitbucket Auth",
+		EnvVar:      "BITBUCKET_AUTH_CLIENT_ID",
+		Destination: &initialDeployArgs.BitbucketAuthClientID,
+	},
+	cli.StringFlag{
+		Name:        "bitbucket-auth-client-secret",
+		Usage:       "(optional) Client Secret for a bitbucket OAuth application - Used for Bitbucket Auth",
+		EnvVar:      "BITBUCKET_AUTH_CLIENT_SECRET",
+		Destination: &initialDeployArgs.BitbucketAuthClientSecret,
+	},
+	cli.StringFlag{
 		Name:        "github-auth-client-id",
 		Usage:       "(optional) Client ID for a github OAuth application - Used for Github Auth",
 		EnvVar:      "GITHUB_AUTH_CLIENT_ID",

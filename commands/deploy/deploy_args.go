@@ -37,6 +37,12 @@ type Args struct {
 	NamespaceIsSet              bool
 	AllowIPs                    string
 	AllowIPsIsSet               bool
+	BitbucketAuthClientID          string
+	BitbucketAuthClientIDIsSet     bool
+	BitbucketAuthClientSecret      string
+	BitbucketAuthClientSecretIsSet bool
+	// BitbucketAuthIsSet is true if the user has specified both the --bitbucket-auth-client-secret and --bitbucket-auth-client-id flags
+	BitbucketAuthIsSet bool
 	GithubAuthClientID          string
 	GithubAuthClientIDIsSet     bool
 	GithubAuthClientSecret      string

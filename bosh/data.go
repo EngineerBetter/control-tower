@@ -6,12 +6,14 @@ const concourseDeploymentName = "concourse"
 const concourseVersionsFilename = "versions.json"
 const concourseSHAsFilename = "shas.json"
 const concourseGrafanaFilename = "grafana_dashboard.yml"
+const concourseBitBucketAuthFilename = "bitbucket-auth.yml"
 const concourseGitHubAuthFilename = "github-auth.yml"
 const extraTagsFilename = "extra_tags.yml"
 const uaaCertFilename = "uaa-cert.yml"
 
 //go:generate go-bindata -pkg $GOPACKAGE -ignore \.git assets/... ../../control-tower-ops/... ../resource/assets/...
 var concourseGrafana = MustAsset("assets/grafana_dashboard.yml")
+var concourseBitBucketAuth = MustAsset("assets/ops/bitbucket-auth.yml")
 var concourseGitHubAuth = MustAsset("assets/ops/github-auth.yml")
 var extraTags = MustAsset("assets/ops/extra_tags.yml")
 var concourseManifestContents = MustAsset("../../control-tower-ops/manifest.yml")

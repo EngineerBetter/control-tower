@@ -635,6 +635,8 @@ jobs:
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
+      BITBUCKET_AUTH_CLIENT_ID: ((bitbucket_auth_client_id))
+      BITBUCKET_AUTH_CLIENT_SECRET: ((bitbucket_auth_client_secret))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret))
     on_failure:
@@ -657,6 +659,8 @@ jobs:
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
+      BITBUCKET_AUTH_CLIENT_ID: ((bitbucket_auth_client_id_gcp))
+      BITBUCKET_AUTH_CLIENT_SECRET: ((bitbucket_auth_client_secret_gcp))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret_gcp))
     on_failure:
@@ -681,6 +685,8 @@ jobs:
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
+      BITBUCKET_AUTH_CLIENT_ID: ((bitbucket_auth_client_id))
+      BITBUCKET_AUTH_CLIENT_SECRET: ((bitbucket_auth_client_secret))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret))
     on_failure:
@@ -703,6 +709,8 @@ jobs:
       BINARY_PATH: binary-linux/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
+      BITBUCKET_AUTH_CLIENT_ID: ((bitbucket_auth_client_id_gcp))
+      BITBUCKET_AUTH_CLIENT_SECRET: ((bitbucket_auth_client_secret_gcp))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret_gcp))
     on_failure:

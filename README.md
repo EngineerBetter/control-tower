@@ -51,6 +51,7 @@ You can keep up to date on Control Tower announcements by reading the [EngineerB
 | Custom tagging | **BOSH only** | **BOSH only** |
 | Custom TLS certificates | **+** | **+** |
 | Database vertical scaling | **+** | **+** |
+| BitBucket authentication | **+** | **+** |
 | GitHub authentication | **+** | **+** |
 | Grafana (on port 3000) | **+** | **+** |
 | Interruptable worker support | **+** | **+** |

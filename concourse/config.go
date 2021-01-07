@@ -149,6 +149,10 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	if deployArgs.DBSizeIsSet {
 		conf.RDSInstanceClass = provider.DBType(deployArgs.DBSize)
 	}
+	if deployArgs.BitbucketAuthIsSet {
+		conf.BitbucketClientID = deployArgs.BitbucketAuthClientID
+		conf.BitbucketClientSecret = deployArgs.BitbucketAuthClientSecret
+	}
 	if deployArgs.GithubAuthIsSet {
 		conf.GithubClientID = deployArgs.GithubAuthClientID
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret

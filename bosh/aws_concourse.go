@@ -79,6 +79,12 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		vmap["atc_password"] = client.config.GetConcoursePassword()
 	}
 
+	if client.config.IsBitbucketAuthSet() {
+		vmap["bitbucket_client_id"] = client.config.GetBitbucketClientID()
+		vmap["bitbucket_client_secret"] = client.config.GetBitbucketClientSecret()
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseBitBucketAuthFilename))
+	}
+
 	if client.config.IsGithubAuthSet() {
 		vmap["github_client_id"] = client.config.GetGithubClientID()
 		vmap["github_client_secret"] = client.config.GetGithubClientSecret()

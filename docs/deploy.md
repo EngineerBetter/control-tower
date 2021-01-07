@@ -106,6 +106,13 @@ control-tower deploy \
 
 > This flag overwrites the allowed IPs on every deploy. This means deploying with `allow-ips` then deploying again without it will reset the allow list to `0.0.0.0/0`. The self-update pipeline will maintain the `allow-ips` of the most recent deploy.
 
+## BitBucket Auth
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--bitbucket-auth-client-id value`|Client ID for a bitbucket OAuth application - Used for Bitbucket Auth|`BITBUCKET_AUTH_CLIENT_ID`|
+|`--bitbucket-auth-client-secret value`|Client Secret for a bitbucket OAuth application - Used for Bitbucket Auth|`BITBUCKET_AUTH_CLIENT_SECRET`|
+
 ## GitHub Auth
 
 |**Flag**|**Description**|**Environment Variable**|

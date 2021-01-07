@@ -1,0 +1,5 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/bitbucket_cloud_auth?
+  value:
+    client_id: ((bitbucket_client_id))
+    client_secret: ((bitbucket_client_secret))
