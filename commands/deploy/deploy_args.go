@@ -101,6 +101,10 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.SpotIsSet = true
 			case "allow-ips":
 				a.AllowIPsIsSet = true
+			case "bitbucket-auth-client-id":
+				a.BitbucketAuthClientIDIsSet = true
+			case "bitbucket-auth-client-secret":
+				a.BitbucketAuthClientSecretIsSet = true
 			case "github-auth-client-id":
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
