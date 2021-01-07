@@ -132,6 +132,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 			}
 		}
 	}
+	a.BitbucketAuthIsSet = c.IsSet("bitbucket-auth-client-id") && c.IsSet("bitbucket-auth-client-secret")
 	a.GithubAuthIsSet = c.IsSet("github-auth-client-id") && c.IsSet("github-auth-client-secret")
 
 	return nil
