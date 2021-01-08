@@ -11,6 +11,8 @@ args=()
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/github-auth.sh
 # shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/bitbucket-auth.sh
+# shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/tags.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/letsencrypt.sh
