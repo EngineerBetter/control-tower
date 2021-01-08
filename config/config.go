@@ -16,6 +16,8 @@ type Config struct {
 	AllowIPs                 string `json:"allow_ips"`
 	AllowIPsUnformatted      string `json:"allow_ips_unformatted"`
 	AvailabilityZone         string `json:"availability_zone"`
+	BitbucketClientID        string `json:"bitbucket_client_id"`
+	BitbucketClientSecret    string `json:"bitbucket_client_secret"`
 	ConcourseCACert          string `json:"concourse_ca_cert"`
 	ConcourseCert            string `json:"concourse_cert"`
 	ConcourseKey             string `json:"concourse_key"`
@@ -78,6 +80,8 @@ type ConfigView interface {
 	GetAllowIPs() string
 	GetAllowIPsUnformatted() string
 	GetAvailabilityZone() string
+	GetBitbucketClientID() string
+	GetBitbucketClientSecret() string
 	GetConcourseCACert() string
 	GetConcourseCert() string
 	GetConcourseKey() string
@@ -131,6 +135,7 @@ type ConfigView interface {
 	GetTFStatePath() string
 	GetVersion() string
 	GetWorkerType() string
+	IsBitbucketAuthSet() bool
 	IsGithubAuthSet() bool
 	IsSpot() bool
 }
@@ -145,6 +150,14 @@ func (c Config) GetAllowIPsUnformatted() string {
 
 func (c Config) GetAvailabilityZone() string {
 	return c.AvailabilityZone
+}
+
+func (c Config) GetBitbucketClientID() string {
+	return c.BitbucketClientID
+}
+
+func (c Config) GetBitbucketClientSecret() string {
+	return c.BitbucketClientSecret
 }
 
 func (c Config) GetConcourseCACert() string {
@@ -357,6 +370,10 @@ func (c Config) GetVersion() string {
 
 func (c Config) GetWorkerType() string {
 	return c.WorkerType
+}
+
+func (c Config) IsBitbucketAuthSet() bool {
+	return c.BitbucketClientID != "" && c.BitbucketClientSecret != ""
 }
 
 func (c Config) IsGithubAuthSet() bool {

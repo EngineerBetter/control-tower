@@ -10,21 +10,23 @@ import (
 
 func TestDeployArgs_Validate(t *testing.T) {
 	defaultFields := Args{
-		AllowIPs:               "0.0.0.0",
-		Region:                 "eu-west-1",
-		DBSize:                 "small",
-		DBSizeIsSet:            false,
-		Domain:                 "",
-		GithubAuthClientID:     "",
-		GithubAuthClientSecret: "",
-		IAAS:                   "AWS",
-		IAASIsSet:              true,
-		SelfUpdate:             false,
-		TLSCert:                "",
-		TLSKey:                 "",
-		WebSize:                "small",
-		WorkerCount:            1,
-		WorkerSize:             "xlarge",
+		AllowIPs:                  "0.0.0.0",
+		Region:                    "eu-west-1",
+		DBSize:                    "small",
+		DBSizeIsSet:               false,
+		Domain:                    "",
+		BitbucketAuthClientID:     "",
+		BitbucketAuthClientSecret: "",
+		GithubAuthClientID:        "",
+		GithubAuthClientSecret:    "",
+		IAAS:                      "AWS",
+		IAASIsSet:                 true,
+		SelfUpdate:                false,
+		TLSCert:                   "",
+		TLSKey:                    "",
+		WebSize:                   "small",
+		WorkerCount:               1,
+		WorkerSize:                "xlarge",
 	}
 	tests := []struct {
 		name         string

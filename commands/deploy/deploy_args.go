@@ -37,6 +37,12 @@ type Args struct {
 	NamespaceIsSet              bool
 	AllowIPs                    string
 	AllowIPsIsSet               bool
+	BitbucketAuthClientID          string
+	BitbucketAuthClientIDIsSet     bool
+	BitbucketAuthClientSecret      string
+	BitbucketAuthClientSecretIsSet bool
+	// BitbucketAuthIsSet is true if the user has specified both the --bitbucket-auth-client-secret and --bitbucket-auth-client-id flags
+	BitbucketAuthIsSet bool
 	GithubAuthClientID          string
 	GithubAuthClientIDIsSet     bool
 	GithubAuthClientSecret      string
@@ -95,6 +101,10 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.SpotIsSet = true
 			case "allow-ips":
 				a.AllowIPsIsSet = true
+			case "bitbucket-auth-client-id":
+				a.BitbucketAuthClientIDIsSet = true
+			case "bitbucket-auth-client-secret":
+				a.BitbucketAuthClientSecretIsSet = true
 			case "github-auth-client-id":
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
@@ -122,6 +132,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 			}
 		}
 	}
+	a.BitbucketAuthIsSet = c.IsSet("bitbucket-auth-client-id") && c.IsSet("bitbucket-auth-client-secret")
 	a.GithubAuthIsSet = c.IsSet("github-auth-client-id") && c.IsSet("github-auth-client-secret")
 
 	return nil
