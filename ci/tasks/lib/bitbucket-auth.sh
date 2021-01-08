@@ -20,11 +20,11 @@ function assertBitBucketAuthConfigured() {
 
   echo "Check that bitbucket auth is enabled"
   fly --target system-test set-team \
-    --team-name=git-team \
-    --bitbucket-user=EngineerBetterCI \
+    --team-name=bitbucket-team \
+    --bitbucket-cloud-user=EngineerBetterCI \
     --non-interactive
 
-  ( ( fly --target system-test login --team-name=git-team 2>&1 ) >fly_out ) &
+  ( ( fly --target system-test login --team-name=bitbucket-team 2>&1 ) >fly_out ) &
 
   sleep 5
 
