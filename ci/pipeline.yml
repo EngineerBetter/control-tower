@@ -351,7 +351,6 @@ jobs:
     - get: control-tower-ops
       trigger: true
       passed: [unit-tests]
-    - get: version
   - in_parallel:
     - do:
       - task: build-linux
@@ -382,8 +381,6 @@ jobs:
   serial: true
   plan:
   - in_parallel: &smoke-test-gets
-    - get: version
-      passed: [build]
     - get: binary-linux
       trigger: true
       passed: [build]
@@ -436,8 +433,6 @@ jobs:
   serial: true
   plan:
   - in_parallel: &system-test-gets
-    - get: version
-      passed: [smoke-test]
     - get: binary-linux
       trigger: true
       passed: [smoke-test]
@@ -472,8 +467,6 @@ jobs:
   serial: true
   plan:
   - in_parallel: &system-test-gets-gcp
-    - get: version
-      passed: [smoke-test-gcp]
     - get: binary-linux
       trigger: true
       passed: [smoke-test-gcp]
@@ -720,8 +713,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: version
-      trigger: true
+    - get: pcf-ops
       passed: &system-tests
       - system-test
       - system-test-update
@@ -735,8 +727,6 @@ jobs:
       - system-test-letsencrypt-gcp
       - system-test-update-gcp
       - system-test-zone-delegation-gcp
-    - get: pcf-ops
-      passed: *system-tests
     - get: control-tower
       trigger: true
       passed: *system-tests
@@ -764,7 +754,6 @@ jobs:
       passed: [release-notification]
       trigger: true
     - get: version
-      passed: [release-notification]
       params:
         bump: patch
   - *create-release-files
@@ -775,7 +764,6 @@ jobs:
   plan:
   - in_parallel:
     - get: version
-      passed: [release-notification]
       params:
         bump: patch
     - get: control-tower-ops
@@ -788,7 +776,6 @@ jobs:
   plan:
   - in_parallel:
     - get: version
-      passed: [release-notification]
       params:
         bump: minor
     - get: control-tower-ops
@@ -801,7 +788,6 @@ jobs:
   plan:
   - in_parallel:
     - get: version
-      passed: [release-notification]
       params:
         bump: major
     - get: control-tower-ops
