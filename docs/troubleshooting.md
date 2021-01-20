@@ -12,7 +12,7 @@ You can check the expiry of the NATS certs on your Control Tower deployment with
 control-tower info --iaas <AWS|GCP> --region <region> --cert-expiry <deployment-name>
 ```
 
-and if it is getting close to expiry you can rotate it with [the maintain command](docs/maintain.md#rotating-director-nats-certificate).
+and if it is getting close to expiry you can rotate it with [the maintain command](maintain.md#rotating-director-nats-certificate).
 
 If the certificate has already expired you will see an error when deploying which resembles:
 
