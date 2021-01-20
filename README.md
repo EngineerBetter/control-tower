@@ -89,3 +89,4 @@ You can keep up to date on Control Tower announcements by reading the [EngineerB
 |How much will this cost?|[Cost Estimation](docs/cost.md)|
 |What is it doing? - deep dive|[Walkthrough](docs/walkthrough.md)|
 |Want to Contribute?|[Development](docs/development.md)|
+|Having problems?|[Troubleshooting](docs/troubleshooting.md)|
