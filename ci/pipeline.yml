@@ -12,7 +12,6 @@ meta:
         passed: [release-notification]
       - get: control-tower
         passed: [release-notification]
-        passed: [release-notification]
       - get: build-metadata
       - get: release-versions
     - *generate-versions-file
