@@ -116,6 +116,8 @@ github.com/jmespath/go-jmespath
 github.com/jstemmer/go-junit-report
 github.com/jstemmer/go-junit-report/formatter
 github.com/jstemmer/go-junit-report/parser
+# github.com/kevinburke/go-bindata v3.22.0+incompatible
+## explicit
 # github.com/lib/pq v1.0.0
 ## explicit
 github.com/lib/pq
