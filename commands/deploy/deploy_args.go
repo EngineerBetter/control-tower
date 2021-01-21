@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 
 	"gopkg.in/urfave/cli.v1"
 )
@@ -30,19 +31,19 @@ type Args struct {
 	SelfUpdateIsSet  bool
 	DBSize           string
 	// DBSizeIsSet is true if the user has manually specified the db-size (ie, it's not the default)
-	DBSizeIsSet                 bool
-	EnableGlobalResources       bool
-	EnableGlobalResourcesIsSet  bool
-	Namespace                   string
-	NamespaceIsSet              bool
-	AllowIPs                    string
-	AllowIPsIsSet               bool
+	DBSizeIsSet                    bool
+	EnableGlobalResources          bool
+	EnableGlobalResourcesIsSet     bool
+	Namespace                      string
+	NamespaceIsSet                 bool
+	AllowIPs                       string
+	AllowIPsIsSet                  bool
 	BitbucketAuthClientID          string
 	BitbucketAuthClientIDIsSet     bool
 	BitbucketAuthClientSecret      string
 	BitbucketAuthClientSecretIsSet bool
 	// BitbucketAuthIsSet is true if the user has specified both the --bitbucket-auth-client-secret and --bitbucket-auth-client-id flags
-	BitbucketAuthIsSet bool
+	BitbucketAuthIsSet          bool
 	GithubAuthClientID          string
 	GithubAuthClientIDIsSet     bool
 	GithubAuthClientSecret      string
@@ -199,8 +200,18 @@ func (a Args) validateCertFields() error {
 }
 
 func (a Args) validateWorkerFields() error {
+
 	if a.WorkerCount < 1 {
 		return errors.New("minimum number of workers is 1")
+	}
+
+	if a.WorkerTypeIsSet && strings.ToLower(a.IAAS) != "aws" {
+		return errors.New("worker-type is only defined on AWS")
+	}
+
+	re := regexp.MustCompile("^m5$|^m5a$|^m4$")
+	if a.WorkerTypeIsSet && !re.MatchString(a.WorkerType) {
+		return fmt.Errorf("worker-type %s is invalid: must be one of m4, m5, or m5a", a.WorkerType)
 	}
 
 	for _, size := range WorkerSizes {

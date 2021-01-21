@@ -40,24 +40,24 @@ control-tower deploy \
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
 |`--workers value`|Number of Concourse worker instances to deploy (default: 1)|`WORKERS`|
-|`--worker-type`|Specify a worker type for aws (m5 or m4) (default: "m4")|`WORKER_TYPE`|
+|`--worker-type`|Specify a worker type for aws (m5, m5a, or m4) (default: "m4")|`WORKER_TYPE`|
 |`--worker-size value`|Size of Concourse workers. See table below for sizes<br>(default: "xlarge")|`WORKER_SIZE`|
 
 **`worker-type` is an AWS-specific option**
 
-> AWS does not offer m5 instances in all regions, and even for regions that do offer m5 instances, not all zones within that region may offer them. To complicate matters further, each AWS account is assigned AWS zones at random - for instance, `eu-west-1a` for one account may be the same as `eu-west-1b` in another account. If m5s are available in your chosen region but _not_ the zone Control Tower has chosen, create a new deployment, this time specifying another `--zone`.
+> AWS does not offer m5 or m5a instances in all regions, and even for regions that do offer m5 instances, not all zones within that region may offer them. To complicate matters further, each AWS account is assigned AWS zones at random - for instance, `eu-west-1a` for one account may be the same as `eu-west-1b` in another account. If m5s are available in your chosen region but _not_ the zone Control Tower has chosen, create a new deployment, this time specifying another `--zone`.
 
-|--worker-size|AWS m4 Instance type|AWS m5 Instance type*|GCP Instance type|
-|:-|:-|:-|:-|
-|medium|t3.medium|t3.medium|n1-standard-1|
-|large |m4.large|m5.large|n1-standard-2|
-|xlarge|m4.xlarge|m5.xlarge|n1-standard-4|
-|2xlarge|m4.2xlarge|m5.2xlarge|n1-standard-8|
-|4xlarge|m4.4xlarge|m5.4xlarge|n1-standard-16|
-|10xlarge|m4.10xlarge||n1-standard-32|
-|12xlarge||m5.12xlarge||
-|16xlarge|m4.16xlarge||n1-standard-64|
-|24xlarge||m5.24xlarge||
+|--worker-size|AWS m4 Instance type|AWS m5 Instance type|AWS m5a Instance type|GCP Instance type|
+|:-|:-|:-|:-|:-|
+|medium|t3.medium|t3.medium||n1-standard-1|
+|large |m4.large|m5.large|m5a.large|n1-standard-2|
+|xlarge|m4.xlarge|m5.xlarge|m5a.xlarge|n1-standard-4|
+|2xlarge|m4.2xlarge|m5.2xlarge|m5a.2xlarge|n1-standard-8|
+|4xlarge|m4.4xlarge|m5.4xlarge|m5a.4xlarge|n1-standard-16|
+|10xlarge|m4.10xlarge|||n1-standard-32|
+|12xlarge||m5.12xlarge|m5a.12xlarge||
+|16xlarge|m4.16xlarge|||n1-standard-64|
+|24xlarge||m5.24xlarge|m5a.24xlarge||
 
 ## Web Configuration
 

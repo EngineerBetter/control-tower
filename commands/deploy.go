@@ -69,7 +69,7 @@ var deployFlags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:        "worker-type",
-		Usage:       "(optional) Specify a worker type for aws (m5 or m4)",
+		Usage:       "(optional) Specify a worker type for aws (m5, m5a, or m4)",
 		EnvVar:      "WORKER_TYPE",
 		Value:       "m4",
 		Destination: &initialDeployArgs.WorkerType,

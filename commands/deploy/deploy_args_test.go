@@ -27,6 +27,8 @@ func TestDeployArgs_Validate(t *testing.T) {
 		WebSize:                   "small",
 		WorkerCount:               1,
 		WorkerSize:                "xlarge",
+		WorkerType:                "",
+		WorkerTypeIsSet:           false,
 	}
 	tests := []struct {
 		name         string
@@ -184,7 +186,41 @@ func TestDeployArgs_Validate(t *testing.T) {
 			},
 			wantErr:     true,
 			expectedErr: "both --public-subnet-range and --private-subnet-range are required when either is provided",
-		}}
+		},
+		{
+			name: "Valid worker-type should succeed",
+			modification: func() Args {
+				args := defaultFields
+				args.WorkerTypeIsSet = true
+				args.WorkerType = "m5a"
+				return args
+			},
+			wantErr: false,
+		},
+		{
+			name: "Invalid worker-type should throw a helpful error",
+			modification: func() Args {
+				args := defaultFields
+				args.WorkerTypeIsSet = true
+				args.WorkerType = "m5b"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "worker-type m5b is invalid: must be one of m4, m5, or m5a",
+		},
+		{
+			name: "Setting worker-type and and iaas other than AWS should throw a helpful error",
+			modification: func() Args {
+				args := defaultFields
+				args.WorkerTypeIsSet = true
+				args.WorkerType = "m5"
+				args.IAAS = "GCP"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "worker-type is only defined on AWS",
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			args := tt.modification()

@@ -55,10 +55,15 @@ vm_types:
     security_groups:
     - {{ .VMsSecurityGroupID }}
 
+# on-demand prices for eu-west-2 region
+# this is roughly a middle ground of pricing
+# across regions and is also where EB is
+# we set spot bid to on-demand * 1.2
+
 - name: concourse-medium
   cloud_properties:
     instance_type: t3.medium {{ if .Spot }}
-    spot_bid_price: 0.0567 # on-demand price: 0.0464
+    spot_bid_price: 0.0567 # on-demand price: 0.0472
     spot_ondemand_fallback: true # {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -70,10 +75,13 @@ vm_types:
 - name: concourse-large
   cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.large {{ if .Spot }}
-    spot_bid_price: 0.13 # on-demand price: 0.107
+    spot_bid_price: 0.133 # on-demand price: 0.111
+    spot_ondemand_fallback: true # {{ end }} {{else if eq .WorkerType "m5a" }}
+    instance_type: m5a.large {{ if .Spot }}
+    spot_bid_price: 0.120 # on-demand price: 0.100
     spot_ondemand_fallback: true # {{ end }} {{ else }}
     instance_type: m4.large {{ if .Spot }}
-    spot_bid_price: 0.13 # on-demand price: 0.111
+    spot_bid_price: 0.139 # on-demand price: 0.116
     spot_ondemand_fallback: true # {{ end }} {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -85,10 +93,13 @@ vm_types:
 - name: concourse-xlarge
   cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.xlarge {{ if .Spot }}
-    spot_bid_price: 0.26 # on-demand price: 0.214
+    spot_bid_price: 0.266 # on-demand price: 0.222
+    spot_ondemand_fallback: true # {{ end }} {{else if eq .WorkerType "m5a" }}
+    instance_type: m5a.xlarge {{ if .Spot }}
+    spot_bid_price: 0.240 # on-demand price: 0.200
     spot_ondemand_fallback: true # {{ end }} {{ else }}
     instance_type: m4.xlarge {{ if .Spot }}
-    spot_bid_price: 0.27 # on-demand price: 0.222
+    spot_bid_price: 0.278 # on-demand price: 0.232
     spot_ondemand_fallback: true # {{ end }} {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -100,10 +111,13 @@ vm_types:
 - name: concourse-2xlarge
   cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.2xlarge {{ if .Spot }}
-    spot_bid_price: 0.51 # on-demand price: 0.428
+    spot_bid_price: 0.533 # on-demand price: 0.444
+    spot_ondemand_fallback: true # {{ end }} {{else if eq .WorkerType "m5a" }}
+    instance_type: m5a.2xlarge {{ if .Spot }}
+    spot_bid_price: 0.480 # on-demand price: 0.400
     spot_ondemand_fallback: true # {{ end }} {{ else }}
     instance_type: m4.2xlarge {{ if .Spot }}
-    spot_bid_price: 0.53 # on-demand price: 0.444
+    spot_bid_price: 0.557 # on-demand price: 0.464
     spot_ondemand_fallback: true # {{ end }} {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -115,10 +129,13 @@ vm_types:
 - name: concourse-4xlarge
   cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.4xlarge {{ if .Spot }}
-    spot_bid_price: 1.03 # on-demand price: 0.856
+    spot_bid_price: 1.066 # on-demand price: 0.888
+    spot_ondemand_fallback: true # {{ end }} {{else if eq .WorkerType "m5a" }}
+    instance_type: m5a.4xlarge {{ if .Spot }}
+    spot_bid_price: 0.960 # on-demand price: 0.800
     spot_ondemand_fallback: true # {{ end }} {{ else }}
     instance_type: m4.4xlarge {{ if .Spot }}
-    spot_bid_price: 1.07 # on-demand price: 0.888
+    spot_bid_price: 1.114 # on-demand price: 0.928
     spot_ondemand_fallback: true # {{ end }} {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -130,7 +147,7 @@ vm_types:
 - name: concourse-10xlarge
   cloud_properties:
     instance_type: m4.10xlarge {{ if .Spot }}
-    spot_bid_price: 2.67 # on-demand price: 2.22
+    spot_bid_price: 2.784 # on-demand price: 2.32
     spot_ondemand_fallback: true # {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -140,10 +157,13 @@ vm_types:
     - {{ .VMsSecurityGroupID }}
 
 - name: concourse-12xlarge
-  cloud_properties:
+  cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.12xlarge {{ if .Spot }}
-    spot_bid_price: 3.08 # on-demand price: 2.57
-    spot_ondemand_fallback: true # {{ end }}
+    spot_bid_price: 3.197 # on-demand price: 2.664
+    spot_ondemand_fallback: true # {{ end }} {{ else }}
+    instance_type: m5a.12xlarge {{ if .Spot }}
+    spot_bid_price: 2.880 # on-demand price: 2.400
+    spot_ondemand_fallback: true # {{ end }} {{ end }}
     ephemeral_disk:
       size: 200_000
       type: gp2
@@ -154,7 +174,7 @@ vm_types:
 - name: concourse-16xlarge
   cloud_properties:
     instance_type: m4.16xlarge {{ if .Spot }}
-    spot_bid_price: 4.26 # on-demand price: 3.55
+    spot_bid_price: 4.454 # on-demand price: 3.712
     spot_ondemand_fallback: true # {{ end }}
     ephemeral_disk:
       size: 200_000
@@ -164,10 +184,13 @@ vm_types:
     - {{ .VMsSecurityGroupID }}
 
 - name: concourse-24xlarge
-  cloud_properties:
+  cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.24xlarge {{ if .Spot }}
-    spot_bid_price: 6.17 # on-demand price: 5.14
-    spot_ondemand_fallback: true # {{ end }}
+    spot_bid_price: 6.394 # on-demand price: 5.328
+    spot_ondemand_fallback: true # {{ end }} {{ else }}
+    instance_type: m5a.24xlarge {{ if .Spot }}
+    spot_bid_price: 5.760 # on-demand price: 4.800
+    spot_ondemand_fallback: true # {{ end }} {{ end }}
     ephemeral_disk:
       size: 200_000
       type: gp2
@@ -178,10 +201,13 @@ vm_types:
 - name: compilation
   cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.large {{ if .Spot }}
-    spot_bid_price: 0.13 # on-demand price: 0.107
+    spot_bid_price: 0.133 # on-demand price: 0.111
+    spot_ondemand_fallback: true # {{ end }} {{else if eq .WorkerType "m5a" }}
+    instance_type: m5a.large {{ if .Spot }}
+    spot_bid_price: 0.120 # on-demand price: 0.100
     spot_ondemand_fallback: true # {{ end }} {{ else }}
     instance_type: m4.large {{ if .Spot }}
-    spot_bid_price: 0.13 # on-demand price: 0.111
+    spot_bid_price: 0.139 # on-demand price: 0.116
     spot_ondemand_fallback: true # {{ end }} {{ end }}
 
 disk_types:
