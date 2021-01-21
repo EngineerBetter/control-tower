@@ -53,15 +53,16 @@ func (fake *FakeCLIInterface) Apply(arg1 terraform.InputVars) error {
 	fake.applyArgsForCall = append(fake.applyArgsForCall, struct {
 		arg1 terraform.InputVars
 	}{arg1})
+	stub := fake.ApplyStub
+	fakeReturns := fake.applyReturns
 	fake.recordInvocation("Apply", []interface{}{arg1})
 	fake.applyMutex.Unlock()
-	if fake.ApplyStub != nil {
-		return fake.ApplyStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.applyReturns
 	return fakeReturns.result1
 }
 
@@ -113,15 +114,16 @@ func (fake *FakeCLIInterface) BuildOutput(arg1 terraform.InputVars) (terraform.O
 	fake.buildOutputArgsForCall = append(fake.buildOutputArgsForCall, struct {
 		arg1 terraform.InputVars
 	}{arg1})
+	stub := fake.BuildOutputStub
+	fakeReturns := fake.buildOutputReturns
 	fake.recordInvocation("BuildOutput", []interface{}{arg1})
 	fake.buildOutputMutex.Unlock()
-	if fake.BuildOutputStub != nil {
-		return fake.BuildOutputStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.buildOutputReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -176,15 +178,16 @@ func (fake *FakeCLIInterface) Destroy(arg1 terraform.InputVars) error {
 	fake.destroyArgsForCall = append(fake.destroyArgsForCall, struct {
 		arg1 terraform.InputVars
 	}{arg1})
+	stub := fake.DestroyStub
+	fakeReturns := fake.destroyReturns
 	fake.recordInvocation("Destroy", []interface{}{arg1})
 	fake.destroyMutex.Unlock()
-	if fake.DestroyStub != nil {
-		return fake.DestroyStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.destroyReturns
 	return fakeReturns.result1
 }
 

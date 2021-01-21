@@ -8,7 +8,9 @@ import (
 	"github.com/EngineerBetter/control-tower/terraform"
 )
 
-//go:generate counterfeiter . TFInputVarsFactory
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate . TFInputVarsFactory
 type TFInputVarsFactory interface {
 	NewInputVars(conf config.ConfigView) terraform.InputVars
 }

@@ -31,15 +31,16 @@ func (fake *FakeTFInputVarsFactory) NewInputVars(arg1 config.ConfigView) terrafo
 	fake.newInputVarsArgsForCall = append(fake.newInputVarsArgsForCall, struct {
 		arg1 config.ConfigView
 	}{arg1})
+	stub := fake.NewInputVarsStub
+	fakeReturns := fake.newInputVarsReturns
 	fake.recordInvocation("NewInputVars", []interface{}{arg1})
 	fake.newInputVarsMutex.Unlock()
-	if fake.NewInputVarsStub != nil {
-		return fake.NewInputVarsStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.newInputVarsReturns
 	return fakeReturns.result1
 }
 

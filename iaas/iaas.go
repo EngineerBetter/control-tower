@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 // Choice is an interface which can help on the abstraction of provider data
 // by defining any kind of data mapped against the available providers
 type Choice struct {
@@ -40,7 +42,7 @@ func Validate(name string) (Name, error) {
 	return Unknown, fmt.Errorf("cannot map iaas [%s] as any of %+v", name, names[1:])
 }
 
-//go:generate counterfeiter . Provider
+//counterfeiter:generate . Provider
 // Provider represents actions taken against AWS
 type Provider interface {
 	Attr(string) (string, error)

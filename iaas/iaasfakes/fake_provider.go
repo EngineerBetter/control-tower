@@ -258,15 +258,16 @@ func (fake *FakeProvider) Attr(arg1 string) (string, error) {
 	fake.attrArgsForCall = append(fake.attrArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.AttrStub
+	fakeReturns := fake.attrReturns
 	fake.recordInvocation("Attr", []interface{}{arg1})
 	fake.attrMutex.Unlock()
-	if fake.AttrStub != nil {
-		return fake.AttrStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.attrReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -321,15 +322,16 @@ func (fake *FakeProvider) BucketExists(arg1 string) (bool, error) {
 	fake.bucketExistsArgsForCall = append(fake.bucketExistsArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.BucketExistsStub
+	fakeReturns := fake.bucketExistsReturns
 	fake.recordInvocation("BucketExists", []interface{}{arg1})
 	fake.bucketExistsMutex.Unlock()
-	if fake.BucketExistsStub != nil {
-		return fake.BucketExistsStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.bucketExistsReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -385,15 +387,16 @@ func (fake *FakeProvider) CheckForWhitelistedIP(arg1 string, arg2 string) (bool,
 		arg1 string
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.CheckForWhitelistedIPStub
+	fakeReturns := fake.checkForWhitelistedIPReturns
 	fake.recordInvocation("CheckForWhitelistedIP", []interface{}{arg1, arg2})
 	fake.checkForWhitelistedIPMutex.Unlock()
-	if fake.CheckForWhitelistedIPStub != nil {
-		return fake.CheckForWhitelistedIPStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.checkForWhitelistedIPReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -448,15 +451,16 @@ func (fake *FakeProvider) Choose(arg1 iaas.Choice) interface{} {
 	fake.chooseArgsForCall = append(fake.chooseArgsForCall, struct {
 		arg1 iaas.Choice
 	}{arg1})
+	stub := fake.ChooseStub
+	fakeReturns := fake.chooseReturns
 	fake.recordInvocation("Choose", []interface{}{arg1})
 	fake.chooseMutex.Unlock()
-	if fake.ChooseStub != nil {
-		return fake.ChooseStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.chooseReturns
 	return fakeReturns.result1
 }
 
@@ -508,15 +512,16 @@ func (fake *FakeProvider) CreateBucket(arg1 string) error {
 	fake.createBucketArgsForCall = append(fake.createBucketArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.CreateBucketStub
+	fakeReturns := fake.createBucketReturns
 	fake.recordInvocation("CreateBucket", []interface{}{arg1})
 	fake.createBucketMutex.Unlock()
-	if fake.CreateBucketStub != nil {
-		return fake.CreateBucketStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.createBucketReturns
 	return fakeReturns.result1
 }
 
@@ -570,15 +575,16 @@ func (fake *FakeProvider) CreateDatabases(arg1 string, arg2 string, arg3 string)
 		arg2 string
 		arg3 string
 	}{arg1, arg2, arg3})
+	stub := fake.CreateDatabasesStub
+	fakeReturns := fake.createDatabasesReturns
 	fake.recordInvocation("CreateDatabases", []interface{}{arg1, arg2, arg3})
 	fake.createDatabasesMutex.Unlock()
-	if fake.CreateDatabasesStub != nil {
-		return fake.CreateDatabasesStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.createDatabasesReturns
 	return fakeReturns.result1
 }
 
@@ -630,15 +636,16 @@ func (fake *FakeProvider) DBType(arg1 string) string {
 	fake.dBTypeArgsForCall = append(fake.dBTypeArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.DBTypeStub
+	fakeReturns := fake.dBTypeReturns
 	fake.recordInvocation("DBType", []interface{}{arg1})
 	fake.dBTypeMutex.Unlock()
-	if fake.DBTypeStub != nil {
-		return fake.DBTypeStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.dBTypeReturns
 	return fakeReturns.result1
 }
 
@@ -692,15 +699,16 @@ func (fake *FakeProvider) DeleteVMsInDeployment(arg1 string, arg2 string, arg3 s
 		arg2 string
 		arg3 string
 	}{arg1, arg2, arg3})
+	stub := fake.DeleteVMsInDeploymentStub
+	fakeReturns := fake.deleteVMsInDeploymentReturns
 	fake.recordInvocation("DeleteVMsInDeployment", []interface{}{arg1, arg2, arg3})
 	fake.deleteVMsInDeploymentMutex.Unlock()
-	if fake.DeleteVMsInDeploymentStub != nil {
-		return fake.DeleteVMsInDeploymentStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteVMsInDeploymentReturns
 	return fakeReturns.result1
 }
 
@@ -752,15 +760,16 @@ func (fake *FakeProvider) DeleteVMsInVPC(arg1 string) ([]string, error) {
 	fake.deleteVMsInVPCArgsForCall = append(fake.deleteVMsInVPCArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.DeleteVMsInVPCStub
+	fakeReturns := fake.deleteVMsInVPCReturns
 	fake.recordInvocation("DeleteVMsInVPC", []interface{}{arg1})
 	fake.deleteVMsInVPCMutex.Unlock()
-	if fake.DeleteVMsInVPCStub != nil {
-		return fake.DeleteVMsInVPCStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.deleteVMsInVPCReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -815,15 +824,16 @@ func (fake *FakeProvider) DeleteVersionedBucket(arg1 string) error {
 	fake.deleteVersionedBucketArgsForCall = append(fake.deleteVersionedBucketArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.DeleteVersionedBucketStub
+	fakeReturns := fake.deleteVersionedBucketReturns
 	fake.recordInvocation("DeleteVersionedBucket", []interface{}{arg1})
 	fake.deleteVersionedBucketMutex.Unlock()
-	if fake.DeleteVersionedBucketStub != nil {
-		return fake.DeleteVersionedBucketStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteVersionedBucketReturns
 	return fakeReturns.result1
 }
 
@@ -881,15 +891,16 @@ func (fake *FakeProvider) DeleteVolumes(arg1 []string, arg2 func(ec2Client iaas.
 		arg1 []string
 		arg2 func(ec2Client iaas.IEC2, volumeID *string) error
 	}{arg1Copy, arg2})
+	stub := fake.DeleteVolumesStub
+	fakeReturns := fake.deleteVolumesReturns
 	fake.recordInvocation("DeleteVolumes", []interface{}{arg1Copy, arg2})
 	fake.deleteVolumesMutex.Unlock()
-	if fake.DeleteVolumesStub != nil {
-		return fake.DeleteVolumesStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteVolumesReturns
 	return fakeReturns.result1
 }
 
@@ -948,15 +959,16 @@ func (fake *FakeProvider) EnsureFileExists(arg1 string, arg2 string, arg3 []byte
 		arg2 string
 		arg3 []byte
 	}{arg1, arg2, arg3Copy})
+	stub := fake.EnsureFileExistsStub
+	fakeReturns := fake.ensureFileExistsReturns
 	fake.recordInvocation("EnsureFileExists", []interface{}{arg1, arg2, arg3Copy})
 	fake.ensureFileExistsMutex.Unlock()
-	if fake.EnsureFileExistsStub != nil {
-		return fake.EnsureFileExistsStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2, ret.result3
 	}
-	fakeReturns := fake.ensureFileExistsReturns
 	return fakeReturns.result1, fakeReturns.result2, fakeReturns.result3
 }
 
@@ -1014,15 +1026,16 @@ func (fake *FakeProvider) FindLongestMatchingHostedZone(arg1 string) (string, st
 	fake.findLongestMatchingHostedZoneArgsForCall = append(fake.findLongestMatchingHostedZoneArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.FindLongestMatchingHostedZoneStub
+	fakeReturns := fake.findLongestMatchingHostedZoneReturns
 	fake.recordInvocation("FindLongestMatchingHostedZone", []interface{}{arg1})
 	fake.findLongestMatchingHostedZoneMutex.Unlock()
-	if fake.FindLongestMatchingHostedZoneStub != nil {
-		return fake.FindLongestMatchingHostedZoneStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2, ret.result3
 	}
-	fakeReturns := fake.findLongestMatchingHostedZoneReturns
 	return fakeReturns.result1, fakeReturns.result2, fakeReturns.result3
 }
 
@@ -1081,15 +1094,16 @@ func (fake *FakeProvider) HasFile(arg1 string, arg2 string) (bool, error) {
 		arg1 string
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.HasFileStub
+	fakeReturns := fake.hasFileReturns
 	fake.recordInvocation("HasFile", []interface{}{arg1, arg2})
 	fake.hasFileMutex.Unlock()
-	if fake.HasFileStub != nil {
-		return fake.HasFileStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.hasFileReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1143,15 +1157,16 @@ func (fake *FakeProvider) IAAS() iaas.Name {
 	ret, specificReturn := fake.iAASReturnsOnCall[len(fake.iAASArgsForCall)]
 	fake.iAASArgsForCall = append(fake.iAASArgsForCall, struct {
 	}{})
+	stub := fake.IAASStub
+	fakeReturns := fake.iAASReturns
 	fake.recordInvocation("IAAS", []interface{}{})
 	fake.iAASMutex.Unlock()
-	if fake.IAASStub != nil {
-		return fake.IAASStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.iAASReturns
 	return fakeReturns.result1
 }
 
@@ -1197,15 +1212,16 @@ func (fake *FakeProvider) LoadFile(arg1 string, arg2 string) ([]byte, error) {
 		arg1 string
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.LoadFileStub
+	fakeReturns := fake.loadFileReturns
 	fake.recordInvocation("LoadFile", []interface{}{arg1, arg2})
 	fake.loadFileMutex.Unlock()
-	if fake.LoadFileStub != nil {
-		return fake.LoadFileStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.loadFileReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1259,15 +1275,16 @@ func (fake *FakeProvider) Region() string {
 	ret, specificReturn := fake.regionReturnsOnCall[len(fake.regionArgsForCall)]
 	fake.regionArgsForCall = append(fake.regionArgsForCall, struct {
 	}{})
+	stub := fake.RegionStub
+	fakeReturns := fake.regionReturns
 	fake.recordInvocation("Region", []interface{}{})
 	fake.regionMutex.Unlock()
-	if fake.RegionStub != nil {
-		return fake.RegionStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.regionReturns
 	return fakeReturns.result1
 }
 
@@ -1319,15 +1336,16 @@ func (fake *FakeProvider) WriteFile(arg1 string, arg2 string, arg3 []byte) error
 		arg2 string
 		arg3 []byte
 	}{arg1, arg2, arg3Copy})
+	stub := fake.WriteFileStub
+	fakeReturns := fake.writeFileReturns
 	fake.recordInvocation("WriteFile", []interface{}{arg1, arg2, arg3Copy})
 	fake.writeFileMutex.Unlock()
-	if fake.WriteFileStub != nil {
-		return fake.WriteFileStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.writeFileReturns
 	return fakeReturns.result1
 }
 
@@ -1380,15 +1398,16 @@ func (fake *FakeProvider) Zone(arg1 string, arg2 string) string {
 		arg1 string
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.ZoneStub
+	fakeReturns := fake.zoneReturns
 	fake.recordInvocation("Zone", []interface{}{arg1, arg2})
 	fake.zoneMutex.Unlock()
-	if fake.ZoneStub != nil {
-		return fake.ZoneStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.zoneReturns
 	return fakeReturns.result1
 }
 

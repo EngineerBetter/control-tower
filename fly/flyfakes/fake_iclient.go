@@ -52,15 +52,16 @@ func (fake *FakeIClient) CanConnect() (bool, error) {
 	ret, specificReturn := fake.canConnectReturnsOnCall[len(fake.canConnectArgsForCall)]
 	fake.canConnectArgsForCall = append(fake.canConnectArgsForCall, struct {
 	}{})
+	stub := fake.CanConnectStub
+	fakeReturns := fake.canConnectReturns
 	fake.recordInvocation("CanConnect", []interface{}{})
 	fake.canConnectMutex.Unlock()
-	if fake.CanConnectStub != nil {
-		return fake.CanConnectStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.canConnectReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -107,15 +108,16 @@ func (fake *FakeIClient) Cleanup() error {
 	ret, specificReturn := fake.cleanupReturnsOnCall[len(fake.cleanupArgsForCall)]
 	fake.cleanupArgsForCall = append(fake.cleanupArgsForCall, struct {
 	}{})
+	stub := fake.CleanupStub
+	fakeReturns := fake.cleanupReturns
 	fake.recordInvocation("Cleanup", []interface{}{})
 	fake.cleanupMutex.Unlock()
-	if fake.CleanupStub != nil {
-		return fake.CleanupStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.cleanupReturns
 	return fakeReturns.result1
 }
 
@@ -161,15 +163,16 @@ func (fake *FakeIClient) SetDefaultPipeline(arg1 config.ConfigView, arg2 bool) e
 		arg1 config.ConfigView
 		arg2 bool
 	}{arg1, arg2})
+	stub := fake.SetDefaultPipelineStub
+	fakeReturns := fake.setDefaultPipelineReturns
 	fake.recordInvocation("SetDefaultPipeline", []interface{}{arg1, arg2})
 	fake.setDefaultPipelineMutex.Unlock()
-	if fake.SetDefaultPipelineStub != nil {
-		return fake.SetDefaultPipelineStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.setDefaultPipelineReturns
 	return fakeReturns.result1
 }
 

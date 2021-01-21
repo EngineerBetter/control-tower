@@ -52,15 +52,16 @@ func (fake *FakeOutputs) AssertValid() error {
 	ret, specificReturn := fake.assertValidReturnsOnCall[len(fake.assertValidArgsForCall)]
 	fake.assertValidArgsForCall = append(fake.assertValidArgsForCall, struct {
 	}{})
+	stub := fake.AssertValidStub
+	fakeReturns := fake.assertValidReturns
 	fake.recordInvocation("AssertValid", []interface{}{})
 	fake.assertValidMutex.Unlock()
-	if fake.AssertValidStub != nil {
-		return fake.AssertValidStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.assertValidReturns
 	return fakeReturns.result1
 }
 
@@ -105,15 +106,16 @@ func (fake *FakeOutputs) Get(arg1 string) (string, error) {
 	fake.getArgsForCall = append(fake.getArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetStub
+	fakeReturns := fake.getReturns
 	fake.recordInvocation("Get", []interface{}{arg1})
 	fake.getMutex.Unlock()
-	if fake.GetStub != nil {
-		return fake.GetStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -168,15 +170,16 @@ func (fake *FakeOutputs) Init(arg1 *bytes.Buffer) error {
 	fake.initArgsForCall = append(fake.initArgsForCall, struct {
 		arg1 *bytes.Buffer
 	}{arg1})
+	stub := fake.InitStub
+	fakeReturns := fake.initReturns
 	fake.recordInvocation("Init", []interface{}{arg1})
 	fake.initMutex.Unlock()
-	if fake.InitStub != nil {
-		return fake.InitStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.initReturns
 	return fakeReturns.result1
 }
 

@@ -16,12 +16,14 @@ import (
 	"github.com/EngineerBetter/control-tower/util"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 // InputVars exposes ConfigureDirectorManifestCPI
 type InputVars interface {
 	ConfigureTerraform(string) (string, error)
 }
 
-//go:generate counterfeiter . Outputs
+//counterfeiter:generate . Outputs
 // Outputs holds IAAS specific terraform outputs
 type Outputs interface {
 	AssertValid() error
@@ -29,7 +31,7 @@ type Outputs interface {
 	Get(string) (string, error)
 }
 
-//go:generate counterfeiter . CLIInterface
+//counterfeiter:generate . CLIInterface
 //CLIInterface is the abstraction of execCmd
 type CLIInterface interface {
 	Apply(InputVars) error

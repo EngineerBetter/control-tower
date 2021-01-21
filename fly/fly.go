@@ -20,10 +20,12 @@ import (
 	"github.com/EngineerBetter/control-tower/util"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
 // ControlTowerVersion is a compile-time variable set with -ldflags
 var ControlTowerVersion = "COMPILE_TIME_VARIABLE_fly_control_tower_version"
 
-//go:generate counterfeiter . IClient
+//counterfeiter:generate . IClient
 type IClient interface {
 	CanConnect() (bool, error)
 	SetDefaultPipeline(config config.ConfigView, allowFlyVersionDiscrepancy bool) error

@@ -95,15 +95,16 @@ func (fake *FakeIClient) Cleanup() error {
 	ret, specificReturn := fake.cleanupReturnsOnCall[len(fake.cleanupArgsForCall)]
 	fake.cleanupArgsForCall = append(fake.cleanupArgsForCall, struct {
 	}{})
+	stub := fake.CleanupStub
+	fakeReturns := fake.cleanupReturns
 	fake.recordInvocation("Cleanup", []interface{}{})
 	fake.cleanupMutex.Unlock()
-	if fake.CleanupStub != nil {
-		return fake.CleanupStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.cleanupReturns
 	return fakeReturns.result1
 }
 
@@ -160,15 +161,16 @@ func (fake *FakeIClient) CreateEnv(arg1 []byte, arg2 []byte, arg3 string) ([]byt
 		arg2 []byte
 		arg3 string
 	}{arg1Copy, arg2Copy, arg3})
+	stub := fake.CreateEnvStub
+	fakeReturns := fake.createEnvReturns
 	fake.recordInvocation("CreateEnv", []interface{}{arg1Copy, arg2Copy, arg3})
 	fake.createEnvMutex.Unlock()
-	if fake.CreateEnvStub != nil {
-		return fake.CreateEnvStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2, ret.result3
 	}
-	fakeReturns := fake.createEnvReturns
 	return fakeReturns.result1, fakeReturns.result2, fakeReturns.result3
 }
 
@@ -238,15 +240,16 @@ func (fake *FakeIClient) Deploy(arg1 []byte, arg2 []byte, arg3 bool) ([]byte, []
 		arg2 []byte
 		arg3 bool
 	}{arg1Copy, arg2Copy, arg3})
+	stub := fake.DeployStub
+	fakeReturns := fake.deployReturns
 	fake.recordInvocation("Deploy", []interface{}{arg1Copy, arg2Copy, arg3})
 	fake.deployMutex.Unlock()
-	if fake.DeployStub != nil {
-		return fake.DeployStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2, ret.result3
 	}
-	fakeReturns := fake.deployReturns
 	return fakeReturns.result1, fakeReturns.result2, fakeReturns.result3
 }
 
@@ -303,15 +306,16 @@ func (fake *FakeIClient) Instances() ([]bosh.Instance, error) {
 	ret, specificReturn := fake.instancesReturnsOnCall[len(fake.instancesArgsForCall)]
 	fake.instancesArgsForCall = append(fake.instancesArgsForCall, struct {
 	}{})
+	stub := fake.InstancesStub
+	fakeReturns := fake.instancesReturns
 	fake.recordInvocation("Instances", []interface{}{})
 	fake.instancesMutex.Unlock()
-	if fake.InstancesStub != nil {
-		return fake.InstancesStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.instancesReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -358,15 +362,16 @@ func (fake *FakeIClient) Locks() ([]byte, error) {
 	ret, specificReturn := fake.locksReturnsOnCall[len(fake.locksArgsForCall)]
 	fake.locksArgsForCall = append(fake.locksArgsForCall, struct {
 	}{})
+	stub := fake.LocksStub
+	fakeReturns := fake.locksReturns
 	fake.recordInvocation("Locks", []interface{}{})
 	fake.locksMutex.Unlock()
-	if fake.LocksStub != nil {
-		return fake.LocksStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.locksReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -413,15 +418,16 @@ func (fake *FakeIClient) Recreate() error {
 	ret, specificReturn := fake.recreateReturnsOnCall[len(fake.recreateArgsForCall)]
 	fake.recreateArgsForCall = append(fake.recreateArgsForCall, struct {
 	}{})
+	stub := fake.RecreateStub
+	fakeReturns := fake.recreateReturns
 	fake.recordInvocation("Recreate", []interface{}{})
 	fake.recreateMutex.Unlock()
-	if fake.RecreateStub != nil {
-		return fake.RecreateStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.recreateReturns
 	return fakeReturns.result1
 }
 
