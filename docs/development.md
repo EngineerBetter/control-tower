@@ -8,7 +8,7 @@
 
 To build and test you'll need:
 
-- Golang 1.11+
+- Golang 1.15+
 - to have installed `github.com/kevinburke/go-bindata`
 
 ### Building locally
