@@ -144,6 +144,7 @@ vm_types:
     security_groups:
     - {{ .VMsSecurityGroupID }}
 
+{{ if eq .WorkerType "m4" }}
 - name: concourse-10xlarge
   cloud_properties:
     instance_type: m4.10xlarge {{ if .Spot }}
@@ -156,6 +157,18 @@ vm_types:
     security_groups:
     - {{ .VMsSecurityGroupID }}
 
+- name: concourse-16xlarge
+  cloud_properties:
+    instance_type: m4.16xlarge {{ if .Spot }}
+    spot_bid_price: 4.454 # on-demand price: 3.712
+    spot_ondemand_fallback: true # {{ end }}
+    ephemeral_disk:
+      size: 200_000
+      type: gp2
+      encrypted: true
+    security_groups:
+    - {{ .VMsSecurityGroupID }}
+{{ else }}
 - name: concourse-12xlarge
   cloud_properties: {{ if eq .WorkerType "m5" }}
     instance_type: m5.12xlarge {{ if .Spot }}
@@ -164,18 +177,6 @@ vm_types:
     instance_type: m5a.12xlarge {{ if .Spot }}
     spot_bid_price: 2.880 # on-demand price: 2.400
     spot_ondemand_fallback: true # {{ end }} {{ end }}
-    ephemeral_disk:
-      size: 200_000
-      type: gp2
-      encrypted: true
-    security_groups:
-    - {{ .VMsSecurityGroupID }}
-
-- name: concourse-16xlarge
-  cloud_properties:
-    instance_type: m4.16xlarge {{ if .Spot }}
-    spot_bid_price: 4.454 # on-demand price: 3.712
-    spot_ondemand_fallback: true # {{ end }}
     ephemeral_disk:
       size: 200_000
       type: gp2
@@ -197,6 +198,7 @@ vm_types:
       encrypted: true
     security_groups:
     - {{ .VMsSecurityGroupID }}
+{{ end }}
 
 - name: compilation
   cloud_properties: {{ if eq .WorkerType "m5" }}

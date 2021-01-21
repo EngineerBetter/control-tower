@@ -21,7 +21,7 @@ func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 		PublicSubnetID:      "public_subnet_id",
 		PrivateSubnetID:     "private_subnet_id",
 		Spot:                false,
-		WorkerType:          "worker_type",
+		WorkerType:          "m4",
 		PublicCIDR:          "public_cidr",
 		PublicCIDRGateway:   "public_cidr_gateway",
 		PublicCIDRReserved:  "public_cidr_reserved",
@@ -53,7 +53,7 @@ func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 				return e
 			},
 			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("basic rendering expected to work")
+				return a == b, "basic rendering expected to work"
 			},
 		},
 		{
@@ -67,10 +67,9 @@ func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 				return n
 			},
 			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("templating failed while rendering without spots")
+				return a == b, "templating failed while rendering without spots"
 			},
 		},
-
 		{
 			name:    "Success- running with no spot",
 			fields:  fullTemplateParams,
@@ -82,7 +81,7 @@ func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 				return n
 			},
 			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("templating failed while rendering without spots")
+				return a == b, "templating failed while rendering without spots"
 			},
 		},
 		{
@@ -96,7 +95,7 @@ func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 				return n
 			},
 			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("m5 worker templating failed")
+				return a == b, "m5 worker templating failed"
 			},
 		},
 		{
@@ -110,7 +109,7 @@ func TestAWSEnvironment_ConfigureDirectorCloudConfig(t *testing.T) {
 				return n
 			},
 			validate: func(a, b string) (bool, string) {
-				return a == b, fmt.Sprintf("m4 worker templating failed")
+				return a == b, "m4 worker templating failed"
 			},
 		},
 	}

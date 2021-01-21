@@ -55,6 +55,11 @@ vm_types:
     security_groups:
     - vm_security_group
 
+# on-demand prices for eu-west-2 region
+# this is roughly a middle ground of pricing
+# across regions and is also where EB is
+# we set spot bid to on-demand * 1.2
+
 - name: concourse-medium
   cloud_properties:
     instance_type: t3.medium 
@@ -105,29 +110,10 @@ vm_types:
     security_groups:
     - vm_security_group
 
-- name: concourse-10xlarge
-  cloud_properties:
-    instance_type: m4.10xlarge 
-    ephemeral_disk:
-      size: 200_000
-      type: gp2
-      encrypted: true
-    security_groups:
-    - vm_security_group
 
 - name: concourse-12xlarge
-  cloud_properties:
-    instance_type: m5.12xlarge 
-    ephemeral_disk:
-      size: 200_000
-      type: gp2
-      encrypted: true
-    security_groups:
-    - vm_security_group
-
-- name: concourse-16xlarge
-  cloud_properties:
-    instance_type: m4.16xlarge 
+  cloud_properties: 
+    instance_type: m5.12xlarge  
     ephemeral_disk:
       size: 200_000
       type: gp2
@@ -136,14 +122,15 @@ vm_types:
     - vm_security_group
 
 - name: concourse-24xlarge
-  cloud_properties:
-    instance_type: m5.24xlarge 
+  cloud_properties: 
+    instance_type: m5.24xlarge  
     ephemeral_disk:
       size: 200_000
       type: gp2
       encrypted: true
     security_groups:
     - vm_security_group
+
 
 - name: compilation
   cloud_properties: 
