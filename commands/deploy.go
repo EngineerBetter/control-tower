@@ -150,6 +150,24 @@ var deployFlags = []cli.Flag{
 		EnvVar:      "GITHUB_AUTH_CLIENT_SECRET",
 		Destination: &initialDeployArgs.GithubAuthClientSecret,
 	},
+	cli.StringFlag{
+		Name:        "microsoft-auth-client-id",
+		Usage:       "(optional) Client ID for a microsoft OAuth application - Used for Microsoft Auth",
+		EnvVar:      "MICROSOFT_AUTH_CLIENT_ID",
+		Destination: &initialDeployArgs.MicrosoftAuthClientID,
+	},
+	cli.StringFlag{
+		Name:        "microsoft-auth-client-secret",
+		Usage:       "(optional) Client Secret for a microsoft OAuth application - Used for Microsoft Auth",
+		EnvVar:      "MICROSOFT_AUTH_CLIENT_SECRET",
+		Destination: &initialDeployArgs.MicrosoftAuthClientSecret,
+	},
+	cli.StringFlag{
+		Name:        "microsoft-auth-tenant",
+		Usage:       "(optional) Tenant for a microsoft OAuth application - Used for Microsoft Auth",
+		EnvVar:      "MICROSOFT_AUTH_TENANT",
+		Destination: &initialDeployArgs.MicrosoftAuthTenant,
+	},
 	cli.StringSliceFlag{
 		Name:  "add-tag",
 		Usage: "(optional) Key=Value pair to tag EC2 instances with - Multiple tags can be applied with multiple uses of this flag",

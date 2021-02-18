@@ -120,6 +120,14 @@ control-tower deploy \
 |`--github-auth-client-id value`|Client ID for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_ID`|
 |`--github-auth-client-secret value`|Client Secret for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_SECRET`|
 
+## Microsoft Auth
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--microsoft-auth-client-id value`|Client ID for a microsoft OAuth application - Used for Microsoft Auth|`MICROSOFT_AUTH_CLIENT_ID`|
+|`--microsoft-auth-client-secret value`|Client Secret for a microsoft OAuth application - Used for Microsoft Auth|`MICROSOFT_AUTH_CLIENT_SECRET`|
+|`--microsoft-auth-tenant value`|Tenant for a microsoft OAuth application - Used for Microsoft Auth|`MICROSOFT_AUTH_TENANT`|
+
 ## Custom Tagging
 
 |**Flag**|**Description**|**Environment Variable**|

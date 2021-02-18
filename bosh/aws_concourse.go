@@ -91,6 +91,13 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubAuthFilename))
 	}
 
+	if client.config.IsMicrosoftAuthSet() {
+		vmap["microsoft_client_id"] = client.config.GetMicrosoftClientID()
+		vmap["microsoft_client_secret"] = client.config.GetMicrosoftClientSecret()
+		vmap["microsoft_tenant"] = client.config.GetMicrosoftTenant()
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseMicrosoftAuthFilename))
+	}
+
 	t, err1 := client.buildTagsYaml(vmap["project"], "concourse")
 	if err1 != nil {
 		return creds, err

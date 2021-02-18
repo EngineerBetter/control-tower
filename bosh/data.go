@@ -8,6 +8,7 @@ const concourseSHAsFilename = "shas.json"
 const concourseGrafanaFilename = "grafana_dashboard.yml"
 const concourseBitBucketAuthFilename = "bitbucket-auth.yml"
 const concourseGitHubAuthFilename = "github-auth.yml"
+const concourseMicrosoftAuthFilename = "microsoft-auth.yml"
 const extraTagsFilename = "extra_tags.yml"
 const uaaCertFilename = "uaa-cert.yml"
 
@@ -15,6 +16,7 @@ const uaaCertFilename = "uaa-cert.yml"
 var concourseGrafana = MustAsset("assets/grafana_dashboard.yml")
 var concourseBitBucketAuth = MustAsset("assets/ops/bitbucket-auth.yml")
 var concourseGitHubAuth = MustAsset("assets/ops/github-auth.yml")
+var concourseMicrosoftAuth = MustAsset("assets/ops/microsoft-auth.yml")
 var extraTags = MustAsset("assets/ops/extra_tags.yml")
 var concourseManifestContents = MustAsset("../../control-tower-ops/manifest.yml")
 var awsConcourseVersions = MustAsset("../../control-tower-ops/ops/versions-aws.json")
