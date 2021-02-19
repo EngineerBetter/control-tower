@@ -157,6 +157,11 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.GithubClientID = deployArgs.GithubAuthClientID
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret
 	}
+	if deployArgs.MicrosoftAuthIsSet {
+		conf.MicrosoftClientID = deployArgs.MicrosoftAuthClientID
+		conf.MicrosoftClientSecret = deployArgs.MicrosoftAuthClientSecret
+		conf.MicrosoftTenant = deployArgs.MicrosoftAuthTenant
+	}
 	if deployArgs.TagsIsSet {
 		conf.Tags = deployArgs.Tags
 	}

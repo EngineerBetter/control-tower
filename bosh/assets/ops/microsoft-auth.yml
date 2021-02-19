@@ -1,0 +1,6 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/microsoft_auth?
+  value:
+    client_id: ((microsoft_client_id))
+    client_secret: ((microsoft_client_secret))
+    tenant: ((microsoft_tenant))

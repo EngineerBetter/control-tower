@@ -13,6 +13,8 @@ source control-tower/ci/tasks/lib/github-auth.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/bitbucket-auth.sh
 # shellcheck disable=SC1091
+source control-tower/ci/tasks/lib/microsoft-auth.sh
+# shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/tags.sh
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/letsencrypt.sh
@@ -56,6 +58,7 @@ trapCustomCleanup
 
 addBitBucketFlagsToArgs
 addGitHubFlagsToArgs
+addMicrosoftFlagsToArgs
 addTagsFlagsToArgs
 args+=(--region "$region")
 ./cup deploy "${args[@]}" --iaas "$IAAS" "$deployment"
@@ -66,6 +69,7 @@ updateFly "${domain}"
 assertTagsSet
 assertBitBucketAuthConfigured
 assertGitHubAuthConfigured
+assertMicrosoftAuthConfigured
 
 # Check Concourse global resources is disabled (as it should be by default)
 info_output="$(./cup info --region "$region" --env "$deployment")"

@@ -631,6 +631,9 @@ jobs:
       BITBUCKET_AUTH_CLIENT_SECRET: placeholder
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret))
+      MICROSOFT_AUTH_CLIENT_ID: placeholder
+      MICROSOFT_AUTH_CLIENT_SECRET: placeholder
+      MICROSOFT_AUTH_TENANT: placeholder
     on_failure:
       put: slack-alert
       params:
@@ -655,6 +658,9 @@ jobs:
       BITBUCKET_AUTH_CLIENT_SECRET: placeholder
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
       GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret_gcp))
+      MICROSOFT_AUTH_CLIENT_ID: placeholder
+      MICROSOFT_AUTH_CLIENT_SECRET: placeholder
+      MICROSOFT_AUTH_TENANT: placeholder
     on_failure:
       put: slack-alert
       params:

@@ -53,6 +53,7 @@ You can keep up to date on Control Tower announcements by reading the [EngineerB
 | Database vertical scaling | **+** | **+** |
 | BitBucket authentication | **+** | **+** |
 | GitHub authentication | **+** | **+** |
+| Microsoft authentication | **+** | **+** |
 | Grafana (on port 3000) | **+** | **+** |
 | Interruptable worker support | **+** | **+** |
 | Letsencrypt integration | **+** | **+** |

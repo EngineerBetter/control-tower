@@ -50,6 +50,14 @@ type Args struct {
 	GithubAuthClientSecretIsSet bool
 	// GithubAuthIsSet is true if the user has specified both the --github-auth-client-secret and --github-auth-client-id flags
 	GithubAuthIsSet bool
+	MicrosoftAuthClientID          string
+	MicrosoftAuthClientIDIsSet     bool
+	MicrosoftAuthClientSecret      string
+	MicrosoftAuthClientSecretIsSet bool
+	MicrosoftAuthTenant            string
+	MicrosoftAuthTenantIsSet       bool
+	// MicrosoftAuthIsSet is true if the user has specified both the --microsoft-auth-client-secret and --microsoft-auth-client-id flags
+	MicrosoftAuthIsSet bool
 	Tags            cli.StringSlice
 	// TagsIsSet is true if the user has specified tags using --tags
 	TagsIsSet        bool
@@ -110,6 +118,12 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
 				a.GithubAuthClientSecretIsSet = true
+			case "microsoft-auth-client-id":
+				a.MicrosoftAuthClientIDIsSet = true
+			case "microsoft-auth-client-secret":
+				a.MicrosoftAuthClientSecretIsSet = true
+			case "microsoft-auth-tenant":
+				a.MicrosoftAuthTenantIsSet = true
 			case "add-tag":
 				a.TagsIsSet = true
 			case "namespace":
@@ -135,6 +149,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 	}
 	a.BitbucketAuthIsSet = c.IsSet("bitbucket-auth-client-id") && c.IsSet("bitbucket-auth-client-secret")
 	a.GithubAuthIsSet = c.IsSet("github-auth-client-id") && c.IsSet("github-auth-client-secret")
+	a.MicrosoftAuthIsSet = c.IsSet("microsoft-auth-client-id") && c.IsSet("microsoft-auth-client-secret")
 
 	return nil
 }
