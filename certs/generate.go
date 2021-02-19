@@ -7,15 +7,16 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
-	"github.com/xenolf/lego/platform/config/env"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/dns/v1"
 	"io/ioutil"
 	"net"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/xenolf/lego/platform/config/env"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/dns/v1"
 
 	"github.com/EngineerBetter/control-tower/iaas"
 
