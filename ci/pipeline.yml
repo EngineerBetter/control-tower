@@ -573,45 +573,6 @@ jobs:
         text: |
           Control-Tower *((branch))* branch *system-test-m5* failure!
 
-- name: system-test-letsencrypt
-  serial_groups:
-  - system-test-letencrypt
-  serial: true
-  plan:
-  - in_parallel: *system-test-gets
-  - task: system-test-letsencrypt
-    file: control-tower/ci/tasks/system-test-letsencrypt.yml
-    params:
-      IAAS: AWS
-      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
-    on_failure:
-      put: slack-alert
-      params:
-        channel: "#integrations"
-        text: |
-          Control-Tower *((branch))* branch *system-test-letsencrypt* failure!
-
-- name: system-test-letsencrypt-gcp
-  serial_groups:
-  - system-test-letencrypt-gcp
-  serial: true
-  plan:
-  - in_parallel: *system-test-gets-gcp
-  - task: system-test-letsencrypt
-    file: control-tower/ci/tasks/system-test-letsencrypt.yml
-    params:
-      IAAS: GCP
-      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
-    on_failure:
-      put: slack-alert
-      params:
-        channel: "#integrations"
-        text: |
-          Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
-
 - name: system-test-zone-delegation
   serial_groups:
   - system-test-zone-delegation
@@ -664,7 +625,7 @@ jobs:
   - system-test-options-and-destroy
   serial: true
   plan:
-  - in_parallel:
+  - in_parallel: &secondary-system-test-gets
     - get: binary-linux
       trigger: true
       passed: &system-tests
@@ -672,7 +633,6 @@ jobs:
       - system-test-update
       - system-test-rds-ca
       - system-test-m5
-      - system-test-letsencrypt
       - system-test-zone-delegation
     - get: binary-darwin
       trigger: true
@@ -713,12 +673,11 @@ jobs:
   - system-test-options-and-destroy-gcp
   serial: true
   plan:
-  - in_parallel:
+  - in_parallel: &secondary-system-test-gets-gcp
     - get: binary-linux
       trigger: true
       passed: &system-tests-gcp
       - system-test-gcp
-      - system-test-letsencrypt-gcp
       - system-test-update-gcp
       - system-test-zone-delegation-gcp
     - get: binary-darwin
@@ -754,6 +713,45 @@ jobs:
         text: |
           Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
 
+- name: system-test-letsencrypt
+  serial_groups:
+  - system-test-letencrypt
+  serial: true
+  plan:
+  - in_parallel: *secondary-system-test-gets
+  - task: system-test-letsencrypt
+    file: control-tower/ci/tasks/system-test-letsencrypt.yml
+    params:
+      IAAS: AWS
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
+      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+    on_failure:
+      put: slack-alert
+      params:
+        channel: "#integrations"
+        text: |
+          Control-Tower *((branch))* branch *system-test-letsencrypt* failure!
+
+- name: system-test-letsencrypt-gcp
+  serial_groups:
+  - system-test-letencrypt-gcp
+  serial: true
+  plan:
+  - in_parallel: *secondary-system-test-gets-gcp
+  - task: system-test-letsencrypt
+    file: control-tower/ci/tasks/system-test-letsencrypt.yml
+    params:
+      IAAS: GCP
+      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
+      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+    on_failure:
+      put: slack-alert
+      params:
+        channel: "#integrations"
+        text: |
+          Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
+
 - name: release-notification
   serial: true
   plan:
@@ -761,7 +759,9 @@ jobs:
     - get: pcf-ops
       passed: &system-tests-options-and-destroy
       - system-test-options-and-destroy
+      - system-test-letsencrypt
       - system-test-options-and-destroy-gcp
+      - system-test-letsencrypt-gcp
     - get: control-tower
       trigger: true
       passed: *system-tests-options-and-destroy
