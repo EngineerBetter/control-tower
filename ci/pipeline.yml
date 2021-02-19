@@ -612,62 +612,6 @@ jobs:
         text: |
           Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
 
-- name: system-test-options-and-destroy
-  serial_groups:
-  - system-test-options-and-destroy
-  serial: true
-  plan:
-  - in_parallel: *system-test-gets
-  - task: system-test-options-and-destroy
-    file: control-tower/ci/tasks/system-test-options-and-destroy.yml
-    params:
-      IAAS: AWS
-      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
-      EB_WILDCARD_CERT: ((eb_wildcard.certificate))
-      EB_WILDCARD_KEY: ((eb_wildcard.private_key))
-      BITBUCKET_AUTH_CLIENT_ID: placeholder
-      BITBUCKET_AUTH_CLIENT_SECRET: placeholder
-      GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
-      GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret))
-      MICROSOFT_AUTH_CLIENT_ID: placeholder
-      MICROSOFT_AUTH_CLIENT_SECRET: placeholder
-      MICROSOFT_AUTH_TENANT: placeholder
-    on_failure:
-      put: slack-alert
-      params:
-        channel: "#integrations"
-        text: |
-          Control-Tower *((branch))* branch *system-test-options-and-destroy* failure!
-- name: system-test-options-and-destroy-gcp
-  serial_groups:
-  - system-test-options-and-destroy-gcp
-  serial: true
-  plan:
-  - in_parallel: *system-test-gets-gcp
-  - task: system-test-options-and-destroy
-    file: control-tower/ci/tasks/system-test-options-and-destroy.yml
-    params:
-      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
-      IAAS: GCP
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
-      EB_WILDCARD_CERT: ((eb_wildcard.certificate))
-      EB_WILDCARD_KEY: ((eb_wildcard.private_key))
-      BITBUCKET_AUTH_CLIENT_ID: placeholder
-      BITBUCKET_AUTH_CLIENT_SECRET: placeholder
-      GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
-      GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret_gcp))
-      MICROSOFT_AUTH_CLIENT_ID: placeholder
-      MICROSOFT_AUTH_CLIENT_SECRET: placeholder
-      MICROSOFT_AUTH_TENANT: placeholder
-    on_failure:
-      put: slack-alert
-      params:
-        channel: "#integrations"
-        text: |
-          Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
-
 - name: system-test-zone-delegation
   serial_groups:
   - system-test-zone-delegation
@@ -691,6 +635,7 @@ jobs:
         channel: "#integrations"
         text: |
           Control-Tower *((branch))* branch *system-test-zone-delegation* failure!
+
 - name: system-test-zone-delegation-gcp
   serial_groups:
   - system-test-zone-delegation-gcp
@@ -714,30 +659,115 @@ jobs:
         text: |
           Control-Tower *((branch))* branch *system-test-zone-delegation-gcp* failure!
 
-- name: release-notification
+- name: system-test-options-and-destroy
+  serial_groups:
+  - system-test-options-and-destroy
   serial: true
   plan:
   - in_parallel:
-    - get: pcf-ops
+    - get: binary-linux
+      trigger: true
       passed: &system-tests
       - system-test
       - system-test-update
       - system-test-rds-ca
       - system-test-m5
       - system-test-letsencrypt
-      - system-test-options-and-destroy
       - system-test-zone-delegation
-      - system-test-gcp
-      - system-test-options-and-destroy-gcp
-      - system-test-letsencrypt-gcp
-      - system-test-update-gcp
-      - system-test-zone-delegation-gcp
+    - get: binary-darwin
+      trigger: true
+      passed: *system-tests
     - get: control-tower
       trigger: true
       passed: *system-tests
     - get: control-tower-ops
       trigger: true
       passed: *system-tests
+    - get: pcf-ops
+      passed: *system-tests
+  - task: system-test-options-and-destroy
+    file: control-tower/ci/tasks/system-test-options-and-destroy.yml
+    params:
+      IAAS: AWS
+      AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
+      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      EB_WILDCARD_CERT: ((eb_wildcard.certificate))
+      EB_WILDCARD_KEY: ((eb_wildcard.private_key))
+      BITBUCKET_AUTH_CLIENT_ID: placeholder
+      BITBUCKET_AUTH_CLIENT_SECRET: placeholder
+      GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
+      GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret))
+      MICROSOFT_AUTH_CLIENT_ID: placeholder
+      MICROSOFT_AUTH_CLIENT_SECRET: placeholder
+      MICROSOFT_AUTH_TENANT: placeholder
+    on_failure:
+      put: slack-alert
+      params:
+        channel: "#integrations"
+        text: |
+          Control-Tower *((branch))* branch *system-test-options-and-destroy* failure!
+
+- name: system-test-options-and-destroy-gcp
+  serial_groups:
+  - system-test-options-and-destroy-gcp
+  serial: true
+  plan:
+  - in_parallel:
+    - get: binary-linux
+      trigger: true
+      passed: &system-tests-gcp
+      - system-test-gcp
+      - system-test-letsencrypt-gcp
+      - system-test-update-gcp
+      - system-test-zone-delegation-gcp
+    - get: binary-darwin
+      trigger: true
+      passed: *system-tests-gcp
+    - get: control-tower
+      trigger: true
+      passed: *system-tests-gcp
+    - get: control-tower-ops
+      trigger: true
+      passed: *system-tests-gcp
+    - get: pcf-ops
+      passed: *system-tests-gcp
+  - task: system-test-options-and-destroy
+    file: control-tower/ci/tasks/system-test-options-and-destroy.yml
+    params:
+      GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
+      IAAS: GCP
+      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      EB_WILDCARD_CERT: ((eb_wildcard.certificate))
+      EB_WILDCARD_KEY: ((eb_wildcard.private_key))
+      BITBUCKET_AUTH_CLIENT_ID: placeholder
+      BITBUCKET_AUTH_CLIENT_SECRET: placeholder
+      GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
+      GITHUB_AUTH_CLIENT_SECRET: ((github_auth_client_secret_gcp))
+      MICROSOFT_AUTH_CLIENT_ID: placeholder
+      MICROSOFT_AUTH_CLIENT_SECRET: placeholder
+      MICROSOFT_AUTH_TENANT: placeholder
+    on_failure:
+      put: slack-alert
+      params:
+        channel: "#integrations"
+        text: |
+          Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
+
+- name: release-notification
+  serial: true
+  plan:
+  - in_parallel:
+    - get: pcf-ops
+      passed: &system-tests-options-and-destroy
+      - system-test-options-and-destroy
+      - system-test-options-and-destroy-gcp
+    - get: control-tower
+      trigger: true
+      passed: *system-tests-options-and-destroy
+    - get: control-tower-ops
+      trigger: true
+      passed: *system-tests-options-and-destroy
     - get: release-versions
   - *generate-versions-file
   - task: write-release-notification
