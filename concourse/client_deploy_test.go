@@ -50,7 +50,7 @@ var _ = Describe("client", func() {
 	var setupFakeAwsProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
 		provider.DBTypeStub = func(size string) string {
-			return "db.t2." + size
+			return "db.t3." + size
 		}
 		provider.RegionReturns("eu-west-1")
 		provider.ZoneReturns("eu-west-1a")
@@ -193,7 +193,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			Project:                "happymeal",
 			PublicKey:              "example-public-key",
 			RDSDefaultDatabaseName: "bosh_abcdefgh",
-			RDSInstanceClass:       "db.t2.medium",
+			RDSInstanceClass:       "db.t3.medium",
 			RDSPassword:            "s3cret",
 			RDSUsername:            "admin",
 			Region:                 "eu-west-1",
@@ -524,7 +524,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					configAfterLoad.PublicCIDR = "10.0.0.0/24"
 					configAfterLoad.RDS1CIDR = "10.0.4.0/24"
 					configAfterLoad.RDS2CIDR = "10.0.5.0/24"
-					configAfterLoad.RDSInstanceClass = "db.t2.4xlarge"
+					configAfterLoad.RDSInstanceClass = "db.t3.4xlarge"
 					configAfterLoad.SourceAccessIP = "192.0.2.0"
 					configAfterLoad.Tags = args.Tags
 					configAfterLoad.WorkerType = args.WorkerType
@@ -639,7 +639,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					RDS1CIDR:                 "10.0.4.0/24",
 					RDS2CIDR:                 "10.0.5.0/24",
 					RDSDefaultDatabaseName:   "bosh_8letters",
-					RDSInstanceClass:         "db.t2.small",
+					RDSInstanceClass:         "db.t3.small",
 					RDSPassword:              "generatedPassword20",
 					RDSUsername:              "admingeneratedPassword7",
 					Region:                   "eu-west-1",

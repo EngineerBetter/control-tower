@@ -14,8 +14,8 @@ import (
 
 // AWSDBSizes maps user set size to RDS instance classes
 var AWSDBSizes = map[string]string{
-	"small":   "db.t2.small",
-	"medium":  "db.t2.medium",
+	"small":   "db.t3.small",
+	"medium":  "db.t3.medium",
 	"large":   "db.m4.large",
 	"xlarge":  "db.m4.xlarge",
 	"2xlarge": "db.m4.2xlarge",

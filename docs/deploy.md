@@ -83,8 +83,8 @@ control-tower deploy \
 
 |--db-size|AWS Instance type|GCP Instance type|
 |:-|:-|:-|
-|small|db.t2.small|db-g1-small|
-|medium|db.t2.medium|db-custom-2-4096|
+|small|db.t3.small|db-g1-small|
+|medium|db.t3.medium|db-custom-2-4096|
 |large|db.m4.large|db-custom-2-8192|
 |xlarge|db.m4.xlarge|db-custom-4-16384|
 |2xlarge|db.m4.2xlarge|db-custom-8-32768|

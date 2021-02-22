@@ -76,7 +76,7 @@ then
   export CLOUDSDK_CORE_PROJECT=control-tower-233017
 fi
 
-# Check RDS instance class is db.t2.small
+# Check RDS instance class is db.t3.small
 assertDbCorrect
 assertNetworkCidrsCorrect
 assertConfigBucketVersioned
@@ -112,7 +112,7 @@ waitForBoshLock
 
 sleep 60
 
-# Check RDS instance class is still db.t2.small
+# Check RDS instance class is still db.t3.small
 assertDbCorrect
 
 # Check Concourse global resources is disabled

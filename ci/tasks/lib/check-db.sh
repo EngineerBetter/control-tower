@@ -4,7 +4,7 @@ function assertDbCorrect() {
   if [ "$IAAS" = "AWS" ]; then
   echo "About to check DB class"
   rds_instance_class=$(aws --region eu-west-1 rds describe-db-instances | jq -r ".DBInstances[] | select(.DBSubnetGroup.DBSubnetGroupName==\"control-tower-$deployment\") | .DBInstanceClass")
-    if [ "$rds_instance_class" != "db.t2.small" ]; then
+    if [ "$rds_instance_class" != "db.t3.small" ]; then
       echo "Unexpected DB instance class: $rds_instance_class"
       exit 1
     fi

@@ -9,7 +9,7 @@ By default, `control-tower` deploys to the AWS eu-west-1 (Ireland) region or the
 | BOSH director | t3.small         |     1 |       16.70 |
 | Web Server    | t3.small         |     1 |       16.70 |
 | Worker        | m4.xlarge (spot) |     1 |      ~50.00 |
-| RDS instance  | db.t2.small      |     1 |       28.47 |
+| RDS instance  | db.t3.small      |     1 |       28.47 |
 | NAT Gateway*  |         -        |     1 |       35.15 |
 | gp2 storage   | 20GB (bosh, web) |     2 |        4.40 |
 | gp2 storage   | 200GB (worker)   |     1 |       22.00 |

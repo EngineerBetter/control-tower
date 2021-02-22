@@ -21,7 +21,7 @@ var _ = Describe("Client", func() {
 	BeforeEach(func() {
 		provider = &iaasfakes.FakeProvider{}
 		provider.RegionReturns("eu-west-1")
-		provider.DBTypeReturns("db.t2.medium")
+		provider.DBTypeReturns("db.t3.medium")
 		provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
 			return defaultContents, true, nil
 		}
@@ -92,7 +92,7 @@ func TestNew(t *testing.T) {
 	var provider *iaasfakes.FakeProvider
 	provider = &iaasfakes.FakeProvider{}
 	provider.RegionReturns("eu-west-1")
-	provider.DBTypeReturns("db.t2.medium")
+	provider.DBTypeReturns("db.t3.medium")
 	provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
 		return defaultContents, true, nil
 	}
@@ -224,7 +224,7 @@ func TestClient_Load(t *testing.T) {
 	var provider *iaasfakes.FakeProvider
 	provider = &iaasfakes.FakeProvider{}
 	provider.RegionReturns("eu-west-1")
-	provider.DBTypeReturns("db.t2.medium")
+	provider.DBTypeReturns("db.t3.medium")
 	provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
 		return defaultContents, true, nil
 	}
@@ -292,7 +292,7 @@ func TestClient_HasConfig(t *testing.T) {
 	var provider *iaasfakes.FakeProvider
 	provider = &iaasfakes.FakeProvider{}
 	provider.RegionReturns("eu-west-1")
-	provider.DBTypeReturns("db.t2.medium")
+	provider.DBTypeReturns("db.t3.medium")
 	provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
 		return defaultContents, true, nil
 	}

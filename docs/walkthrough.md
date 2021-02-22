@@ -44,8 +44,8 @@ It then uses Terraform to deploy the following infrastructure:
   - A Sql database
   - A Sql user
 
-Once the terraform step is complete, `control-tower` deploys a BOSH director on an t2.small/n1-standard-1 instance, and then uses that to deploy a Concourse with the following settings:
+Once the terraform step is complete, `control-tower` deploys a BOSH director on an t3.small/n1-standard-1 instance, and then uses that to deploy a Concourse with the following settings:
 
-- One t2.small/n1-standard-1 for the Concourse web server
+- One t3.small/n1-standard-1 for the Concourse web server
 - One m4.xlarge [spot](https://aws.amazon.com/ec2/spot/)/n1-standard-4 [preemptible](https://cloud.google.com/preemptible-vms/) instance used as a Concourse worker
 - Access via over HTTP and HTTPS using a user-provided certificate, or an auto-generated self-signed certificate if one isn't provided.

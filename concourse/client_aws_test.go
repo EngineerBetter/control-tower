@@ -45,7 +45,7 @@ var _ = Describe("client", func() {
 
 	var setupFakeAwsProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
-		provider.DBTypeReturns("db.t2.small")
+		provider.DBTypeReturns("db.t3.small")
 		provider.RegionReturns("eu-west-1")
 		provider.IAASReturns(iaas.AWS)
 		provider.CheckForWhitelistedIPStub = func(ip, securityGroup string) (bool, error) {
@@ -222,7 +222,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			Project:                "happymeal",
 			PublicKey:              "example-public-key",
 			RDSDefaultDatabaseName: "bosh_abcdefgh",
-			RDSInstanceClass:       "db.t2.medium",
+			RDSInstanceClass:       "db.t3.medium",
 			RDSPassword:            "s3cret",
 			RDSUsername:            "admin",
 			Region:                 "eu-west-1",

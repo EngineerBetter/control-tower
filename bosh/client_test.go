@@ -59,7 +59,7 @@ var _ = Describe("Client", func() {
 	var setupFakeGcpProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
 		provider.DBTypeStub = func(size string) string {
-			return "db.t2." + size
+			return "db.t3." + size
 		}
 		provider.RegionReturns("eu-west-1")
 		provider.IAASReturns(iaas.GCP)
