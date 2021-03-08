@@ -111,6 +111,10 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseMicrosoftAuthFilename))
 	}
 
+	if client.config.IsSpot() {
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseEphemeralWorkersFilename))
+	}
+
 	t, err1 := client.buildTagsYaml(vmap["project"], "concourse")
 	if err1 != nil {
 		return nil, err
