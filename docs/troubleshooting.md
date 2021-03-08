@@ -42,3 +42,44 @@ Solution:
 1. Optionally run the `renew-https-cert` job in the `control-tower-self-update` pipeline in your main team to renew the outward facing SSL cert
 
 Further information can be found in [the BOSH docs](https://bosh.io/docs/nats-ca-rotation/#expired).
+
+
+## BOSH Director certificate has expired
+
+If the certificate (the Director API endpoint) has expired then you'll see the following error when interacting with `control-tower` which remsembles:
+
+```sh
+Succeeded
+Fetching info:
+  Performing request GET 'https://<redacted>:25555/info':
+    Performing GET request:
+      Retry: Get https://<redacted>:25555/info: x509: certificate has expired or is not yet valid
+
+Exit code 1
+exit status 1
+```
+
+You can check the certificate expiry dates using the following command:
+
+```sh
+echo | openssl s_client -showcerts -connect <director-ip>:25555 | openssl x509 -noout -text
+```
+
+Solution:
+
+
+1. Download `config.json` from the config bucket of your deployment (in S3 or GCS depending on your IAAS), whose name *should* resemble `control-tower-<deployment>-<region>-config`
+1. Delete the `director_ca_cert`, `director_cert` and `director_key` from the `config.json` file.
+1. Overwrite the `config.json` in your bucket with your newly modified one
+1. Run `control-tower deploy` to force BOSH to generate new certs:
+
+*e.g*
+```sh
+$ control-tower deploy --iaas <AWS or GCP> --region <region> <deployment>
+```
+
+Once the certificate has been regenerated and deployed, you can check with the following command:
+
+```sh
+echo | openssl s_client -showcerts -connect <director-ip>:25555 | openssl x509 -noout -text
+```
