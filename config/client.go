@@ -172,7 +172,7 @@ func determineBucketName(iaas iaas.Provider, namespace, project string) (string,
 	if err != nil {
 		foundNamespacedBucket, err = iaas.BucketExists(namespaceBucketName)
 		if err != nil {
-			return "", false, err
+			return "", false, fmt.Errorf("error looking for possible config buckets [%v] or [%v]: [%v]", regionBucketName, namespaceBucketName, err)
 		}
 	}
 
