@@ -16,9 +16,8 @@ func FakeGCPStorage() iaas.GCPOption {
 }
 func TestNew(t *testing.T) {
 	type args struct {
-		iaas    iaas.Name
-		region  string
-		project string
+		iaas   iaas.Name
+		region string
 	}
 
 	tests := []struct {

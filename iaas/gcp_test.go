@@ -9,8 +9,6 @@ import (
 
 // GCP authorisation requires that the environment variable $GOOGLE_APPLICATION_CREDENTIALS be set
 
-var ctx = context.Background()
-
 // IAAS represents actions taken against GCP
 type IAAS interface {
 	BucketExists(string) (bool, error)

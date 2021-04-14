@@ -300,7 +300,7 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 
 	resp, err := ec2Client.DescribeInstances(&ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
-			&ec2.Filter{
+			{
 				Name: &filterName,
 				Values: []*string{
 					&vpcID,
@@ -375,7 +375,7 @@ func (a *AWSProvider) FindLongestMatchingHostedZone(subdomain string) (string, s
 	}
 
 	if longestMatchingHostedZoneName == "" {
-		return "", "", fmt.Errorf("No matching hosted zone found for domain %s", subdomain)
+		return "", "", fmt.Errorf("no matching hosted zone found for domain %s", subdomain)
 	}
 
 	longestMatchingHostedZoneID = strings.Replace(longestMatchingHostedZoneID, "/hostedzone/", "", -1)
@@ -385,5 +385,5 @@ func (a *AWSProvider) FindLongestMatchingHostedZone(subdomain string) (string, s
 
 // CreateDatabases creates databases on the server
 func (a *AWSProvider) CreateDatabases(name, username, password string) error {
-	return fmt.Errorf("Not implemented yet")
+	return fmt.Errorf("not implemented")
 }

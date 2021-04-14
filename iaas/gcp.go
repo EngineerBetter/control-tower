@@ -408,12 +408,12 @@ func getCredentials() (string, string, error) {
 
 	jsonFile, err := os.Open(path)
 	if err != nil {
-		return "", "", fmt.Errorf("File %v not found", path)
+		return "", "", fmt.Errorf("file %v not found", path)
 	}
 	defer jsonFile.Close()
 	byteValue, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		return "", "", fmt.Errorf("Unable to read file %v", path)
+		return "", "", fmt.Errorf("unable to read file %v", path)
 	}
 	json.Unmarshal(byteValue, &credsStruct)
 	projectID, ok := credsStruct["project_id"]
@@ -422,8 +422,6 @@ func getCredentials() (string, string, error) {
 	}
 	return projectID.(string), path, nil
 }
-
-var gcpDB *sql.DB
 
 func (g *GCPProvider) CreateDatabases(name, username, password string) error {
 	project, err := g.Attr("project")
