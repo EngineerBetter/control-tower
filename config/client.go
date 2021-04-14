@@ -130,6 +130,10 @@ func (client *Client) NewConfig() Config {
 }
 
 func (client *Client) EnsureBucketExists() error {
+	if client.BucketError != nil {
+		return fmt.Errorf("client failed to configure properly: [%v]", client.BucketError)
+	}
+
 	exists, err := client.Iaas.BucketExists(client.BucketName)
 
 	if err != nil {

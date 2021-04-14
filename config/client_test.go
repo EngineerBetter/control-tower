@@ -2,6 +2,7 @@ package config_test
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
@@ -48,14 +49,24 @@ var _ = Describe("Client", func() {
 			client = New(provider, "test", "")
 		})
 
+		Context("creating the client caused a BucketError", func() {
+			JustBeforeEach(func() {
+				client.BucketError = errors.New("Ooops")
+			})
+
+			It("returns the error", func() {
+				err := client.EnsureBucketExists()
+				Expect(err).To(MatchError("client failed to configure properly: [Ooops]"))
+			})
+		})
+
 		Context("when the bucket exists", func() {
 			JustBeforeEach(func() {
 				provider.BucketExistsReturns(false, nil)
 			})
 
 			It("no-ops and returns no error", func() {
-				err := client.EnsureBucketExists()
-				Expect(err).ToNot(HaveOccurred())
+				Expect(client.EnsureBucketExists()).To(Succeed())
 			})
 		})
 
@@ -66,8 +77,7 @@ var _ = Describe("Client", func() {
 			})
 
 			It("creates it", func() {
-				err := client.EnsureBucketExists()
-				Expect(err).ToNot(HaveOccurred())
+				Expect(client.EnsureBucketExists()).To(Succeed())
 				// Will be 1 once we remove invocation from New()
 				Expect(provider.CreateBucketCallCount()).To(Equal(1))
 			})
@@ -89,8 +99,7 @@ var _ = Describe("Client", func() {
 })
 
 func TestNew(t *testing.T) {
-	var provider *iaasfakes.FakeProvider
-	provider = &iaasfakes.FakeProvider{}
+	provider := new(iaasfakes.FakeProvider)
 	provider.RegionReturns("eu-west-1")
 	provider.DBTypeReturns("db.t3.medium")
 	provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
@@ -221,8 +230,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestClient_Load(t *testing.T) {
-	var provider *iaasfakes.FakeProvider
-	provider = &iaasfakes.FakeProvider{}
+	provider := new(iaasfakes.FakeProvider)
 	provider.RegionReturns("eu-west-1")
 	provider.DBTypeReturns("db.t3.medium")
 	provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
@@ -289,8 +297,7 @@ func TestClient_Load(t *testing.T) {
 }
 
 func TestClient_HasConfig(t *testing.T) {
-	var provider *iaasfakes.FakeProvider
-	provider = &iaasfakes.FakeProvider{}
+	provider := new(iaasfakes.FakeProvider)
 	provider.RegionReturns("eu-west-1")
 	provider.DBTypeReturns("db.t3.medium")
 	provider.EnsureFileExistsStub = func(bucket, path string, defaultContents []byte) ([]byte, bool, error) {
