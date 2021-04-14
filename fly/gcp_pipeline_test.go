@@ -102,8 +102,13 @@ jobs:
           not_after=$(echo | openssl s_client -connect ci.engineerbetter.com:443 2>/dev/null | openssl x509 -noout -enddate)
           expires_on=${not_after#'notAfter='}
           expires_on_seconds=$(date --date="$expires_on" +%s)
+
+          # "let" fails when the result is 0
+          set +e
           let "seconds_until_expiry = $expires_on_seconds - $now_seconds"
           let "days_until_expiry = $seconds_until_expiry / 60 / 60 / 24"
+          set -e
+
           if [ $days_until_expiry -gt 2 ]; then
             echo Not renewing HTTPS cert, as they do not expire in the next two days.
             exit 0
