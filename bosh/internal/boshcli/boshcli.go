@@ -64,7 +64,7 @@ func concourseStemcellURL(releaseVersionsFile, urlFormat string) (string, error)
 	}
 	var version string
 	for _, op := range ops {
-		if op.Path != "/stemcells/alias=xenial/version" {
+		if op.Path != "/stemcells/alias=bionic/version" {
 			continue
 		}
 		err := json.Unmarshal(op.Value, &version)

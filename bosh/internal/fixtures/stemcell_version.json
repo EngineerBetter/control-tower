@@ -1,7 +1,7 @@
 [
     {
         "type": "replace",
-        "path": "/stemcells/alias=xenial/version",
+        "path": "/stemcells/alias=bionic/version",
         "value": "5"
     }
 ]
