@@ -77,7 +77,7 @@ func TestGCPEnvironment_ConfigureConcourseStemcell(t *testing.T) {
 	}{
 		{
 			name:    "parse versions and provide a valid stemcell url",
-			want:    "https://s3.amazonaws.com/bosh-gce-light-stemcells/5/light-bosh-stemcell-5-google-kvm-ubuntu-bionic-go_agent.tgz",
+			want:    "https://storage.googleapis.com/bosh-gce-light-stemcells/5/light-bosh-stemcell-5-google-kvm-ubuntu-bionic-go_agent.tgz",
 			wantErr: false,
 			fixture: "stemcell_version",
 		},

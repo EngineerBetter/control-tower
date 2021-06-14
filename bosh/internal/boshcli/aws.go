@@ -138,5 +138,5 @@ func (e AWSEnvironment) ConfigureDirectorCloudConfig() (string, error) {
 }
 
 func (e AWSEnvironment) ConcourseStemcellURL() (string, error) {
-	return concourseStemcellURL(resource.AWSReleaseVersions, "https://s3.amazonaws.com/bosh-aws-light-stemcells/%s/light-bosh-stemcell-%s-aws-xen-hvm-ubuntu-bionic-go_agent.tgz")
+	return concourseStemcellURL(resource.AWSReleaseVersions, "https://storage.googleapis.com/bosh-aws-light-stemcells/%s/light-bosh-stemcell-%s-aws-xen-hvm-ubuntu-bionic-go_agent.tgz")
 }

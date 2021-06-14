@@ -120,5 +120,5 @@ func (e GCPEnvironment) ConfigureDirectorCloudConfig() (string, error) {
 }
 
 func (e GCPEnvironment) ConcourseStemcellURL() (string, error) {
-	return concourseStemcellURL(resource.GCPReleaseVersions, "https://s3.amazonaws.com/bosh-gce-light-stemcells/%s/light-bosh-stemcell-%s-google-kvm-ubuntu-bionic-go_agent.tgz")
+	return concourseStemcellURL(resource.GCPReleaseVersions, "https://storage.googleapis.com/bosh-gce-light-stemcells/%s/light-bosh-stemcell-%s-google-kvm-ubuntu-bionic-go_agent.tgz")
 }
