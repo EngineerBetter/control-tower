@@ -590,7 +590,7 @@ resource "aws_db_instance" "default" {
   port                        = 5432
   engine                      = "postgres"
   instance_class              = "${var.rds_instance_class}"
-  engine_version              = "10.16"
+  engine_version              = "13.2"
   auto_minor_version_upgrade  = false
   name                        = "${var.rds_default_database_name}"
   username                    = "${var.rds_instance_username}"
