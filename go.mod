@@ -14,6 +14,7 @@ require (
 	github.com/cloudfoundry/bosh-utils v0.0.0-20190206192830-9a0affed2bf1 // indirect
 	github.com/cppforlife/go-patch v0.2.0
 	github.com/fatih/color v1.7.0
+	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/imdario/mergo v0.3.7
 	github.com/lib/pq v1.0.0
@@ -22,19 +23,21 @@ require (
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.3.0
 	github.com/miekg/dns v1.1.4 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/onsi/ginkgo v1.12.1
-	github.com/onsi/gomega v1.10.3
+	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/gomega v1.16.0
 	github.com/square/certstrap v1.1.1
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.5.1
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	github.com/xenolf/lego v2.2.0+incompatible
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/net v0.0.0-20201026091529-146b70c837a4
+	golang.org/x/net v0.0.0-20210825183410-e898025ed96a
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
+	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.9.0
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 go 1.15
