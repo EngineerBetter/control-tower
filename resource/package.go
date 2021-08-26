@@ -1,6 +1,8 @@
 package resource
 
 import (
+	_ "embed"
+
 	"github.com/EngineerBetter/control-tower/resource/internal/file"
 )
 
@@ -8,11 +10,17 @@ import (
 
 var (
 	// DirectorManifest statically defines director-manifest.yml contents
-	DirectorManifest = file.MustAssetString("assets/manifest.yml")
+	//go:embed assets/manifest.yml
+	DirectorManifest string
+
 	// AWSDirectorCloudConfig statically defines aws cloud-config.yml
-	AWSDirectorCloudConfig = file.MustAssetString("assets/aws/cloud-config.yml")
+	//go:embed assets/aws/cloud-config.yml
+	AWSDirectorCloudConfig string
+
 	// AWSCPIOps statically defines aws-cpi.yml contents
-	AWSCPIOps = file.MustAssetString("assets/aws/cpi.yml")
+	//go:embed assets/aws/cpi.yml
+	AWSCPIOps string
+
 	// ExternalIPOps statically defines external-ip.yml contents
 	AWSExternalIPOps = file.MustAssetString("assets/aws/external-ip.yml")
 	// AWSDirectorCustomOps statically defines custom-ops.yml contents
