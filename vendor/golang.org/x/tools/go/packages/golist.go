@@ -827,7 +827,6 @@ func (state *golistState) cfgInvocation() gocommand.Invocation {
 		BuildFlags: cfg.BuildFlags,
 		ModFile:    cfg.modFile,
 		ModFlag:    cfg.modFlag,
-		CleanEnv:   cfg.Env != nil,
 		Env:        cfg.Env,
 		Logf:       cfg.Logf,
 		WorkingDir: cfg.Dir,
@@ -902,13 +901,8 @@ func (state *golistState) invokeGo(verb string, args ...string) (*bytes.Buffer, 
 			return unicode.IsOneOf([]*unicode.RangeTable{unicode.L, unicode.M, unicode.N, unicode.P, unicode.S}, r) &&
 				!strings.ContainsRune("!\"#$%&'()*,:;<=>?[\\]^`{|}\uFFFD", r)
 		}
-		// golang/go#36770: Handle case where cmd/go prints module download messages before the error.
-		msg := stderr.String()
-		for strings.HasPrefix(msg, "go: downloading") {
-			msg = msg[strings.IndexRune(msg, '\n')+1:]
-		}
 		if len(stderr.String()) > 0 && strings.HasPrefix(stderr.String(), "# ") {
-			msg := msg[len("# "):]
+			msg := stderr.String()[len("# "):]
 			if strings.HasPrefix(strings.TrimLeftFunc(msg, isPkgPathRune), "\n") {
 				return stdout, nil
 			}
@@ -1075,22 +1069,17 @@ func containsGoFile(s []string) bool {
 	return false
 }
 
-func cmdDebugStr(cmd *exec.Cmd) string {
+func cmdDebugStr(cmd *exec.Cmd, args ...string) string {
 	env := make(map[string]string)
 	for _, kv := range cmd.Env {
-		split := strings.SplitN(kv, "=", 2)
+		split := strings.Split(kv, "=")
 		k, v := split[0], split[1]
 		env[k] = v
 	}
-
-	var args []string
-	for _, arg := range cmd.Args {
-		quoted := strconv.Quote(arg)
-		if quoted[1:len(quoted)-1] != arg || strings.Contains(arg, " ") {
-			args = append(args, quoted)
-		} else {
-			args = append(args, arg)
-		}
+	var quotedArgs []string
+	for _, arg := range args {
+		quotedArgs = append(quotedArgs, strconv.Quote(arg))
 	}
-	return fmt.Sprintf("GOROOT=%v GOPATH=%v GO111MODULE=%v GOPROXY=%v PWD=%v %v", env["GOROOT"], env["GOPATH"], env["GO111MODULE"], env["GOPROXY"], env["PWD"], strings.Join(args, " "))
+
+	return fmt.Sprintf("GOROOT=%v GOPATH=%v GO111MODULE=%v PWD=%v go %s", env["GOROOT"], env["GOPATH"], env["GO111MODULE"], env["PWD"], strings.Join(quotedArgs, " "))
 }

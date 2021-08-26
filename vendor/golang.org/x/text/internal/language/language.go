@@ -251,13 +251,6 @@ func (t Tag) Parent() Tag {
 
 // ParseExtension parses s as an extension and returns it on success.
 func ParseExtension(s string) (ext string, err error) {
-	defer func() {
-		if recover() != nil {
-			ext = ""
-			err = ErrSyntax
-		}
-	}()
-
 	scan := makeScannerString(s)
 	var end int
 	if n := len(scan.token); n != 1 {
@@ -310,17 +303,9 @@ func (t Tag) Extensions() []string {
 // are of the allowed values defined for the Unicode locale extension ('u') in
 // https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
 // TypeForKey will traverse the inheritance chain to get the correct value.
-//
-// If there are multiple types associated with a key, only the first will be
-// returned. If there is no type associated with a key, it returns the empty
-// string.
 func (t Tag) TypeForKey(key string) string {
-	if _, start, end, _ := t.findTypeForKey(key); end != start {
-		s := t.str[start:end]
-		if p := strings.IndexByte(s, '-'); p >= 0 {
-			s = s[:p]
-		}
-		return s
+	if start, end, _ := t.findTypeForKey(key); end != start {
+		return t.str[start:end]
 	}
 	return ""
 }
@@ -344,13 +329,13 @@ func (t Tag) SetTypeForKey(key, value string) (Tag, error) {
 
 	// Remove the setting if value is "".
 	if value == "" {
-		start, sep, end, _ := t.findTypeForKey(key)
-		if start != sep {
+		start, end, _ := t.findTypeForKey(key)
+		if start != end {
+			// Remove key tag and leading '-'.
+			start -= 4
+
 			// Remove a possible empty extension.
-			switch {
-			case t.str[start-2] != '-': // has previous elements.
-			case end == len(t.str), // end of string
-				end+2 < len(t.str) && t.str[end+2] == '-': // end of extension
+			if (end == len(t.str) || t.str[end+2] == '-') && t.str[start-2] == '-' {
 				start -= 2
 			}
 			if start == int(t.pVariant) && end == len(t.str) {
@@ -396,14 +381,14 @@ func (t Tag) SetTypeForKey(key, value string) (Tag, error) {
 		t.str = string(buf[:uStart+len(b)])
 	} else {
 		s := t.str
-		start, sep, end, hasExt := t.findTypeForKey(key)
-		if start == sep {
+		start, end, hasExt := t.findTypeForKey(key)
+		if start == end {
 			if hasExt {
 				b = b[2:]
 			}
-			t.str = fmt.Sprintf("%s-%s%s", s[:sep], b, s[end:])
+			t.str = fmt.Sprintf("%s-%s%s", s[:start], b, s[end:])
 		} else {
-			t.str = fmt.Sprintf("%s-%s%s", s[:start+3], value, s[end:])
+			t.str = fmt.Sprintf("%s%s%s", s[:start], value, s[end:])
 		}
 	}
 	return t, nil
@@ -414,10 +399,10 @@ func (t Tag) SetTypeForKey(key, value string) (Tag, error) {
 // wasn't found. The hasExt return value reports whether an -u extension was present.
 // Note: the extensions are typically very small and are likely to contain
 // only one key-type pair.
-func (t Tag) findTypeForKey(key string) (start, sep, end int, hasExt bool) {
+func (t Tag) findTypeForKey(key string) (start, end int, hasExt bool) {
 	p := int(t.pExt)
 	if len(key) != 2 || p == len(t.str) || p == 0 {
-		return p, p, p, false
+		return p, p, false
 	}
 	s := t.str
 
@@ -425,10 +410,10 @@ func (t Tag) findTypeForKey(key string) (start, sep, end int, hasExt bool) {
 	for p++; s[p] != 'u'; p++ {
 		if s[p] > 'u' {
 			p--
-			return p, p, p, false
+			return p, p, false
 		}
 		if p = nextExtension(s, p); p == len(s) {
-			return len(s), len(s), len(s), false
+			return len(s), len(s), false
 		}
 	}
 	// Proceed to the hyphen following the extension name.
@@ -439,28 +424,40 @@ func (t Tag) findTypeForKey(key string) (start, sep, end int, hasExt bool) {
 
 	// Iterate over keys until we get the end of a section.
 	for {
-		end = p
-		for p++; p < len(s) && s[p] != '-'; p++ {
-		}
-		n := p - end - 1
-		if n <= 2 && curKey == key {
-			if sep < end {
-				sep++
+		// p points to the hyphen preceding the current token.
+		if p3 := p + 3; s[p3] == '-' {
+			// Found a key.
+			// Check whether we just processed the key that was requested.
+			if curKey == key {
+				return start, p, true
 			}
-			return start, sep, end, true
-		}
-		switch n {
-		case 0, // invalid string
-			1: // next extension
-			return end, end, end, true
-		case 2:
-			// next key
-			curKey = s[end+1 : p]
+			// Set to the next key and continue scanning type tokens.
+			curKey = s[p+1 : p3]
 			if curKey > key {
-				return end, end, end, true
+				return p, p, true
 			}
-			start = end
-			sep = p
+			// Start of the type token sequence.
+			start = p + 4
+			// A type is at least 3 characters long.
+			p += 7 // 4 + 3
+		} else {
+			// Attribute or type, which is at least 3 characters long.
+			p += 4
+		}
+		// p points past the third character of a type or attribute.
+		max := p + 5 // maximum length of token plus hyphen.
+		if len(s) < max {
+			max = len(s)
+		}
+		for ; p < max && s[p] != '-'; p++ {
+		}
+		// Bail if we have exhausted all tokens or if the next token starts
+		// a new extension.
+		if p == len(s) || s[p+2] == '-' {
+			if curKey == key {
+				return start, p, true
+			}
+			return p, p, true
 		}
 	}
 }
@@ -468,14 +465,7 @@ func (t Tag) findTypeForKey(key string) (start, sep, end int, hasExt bool) {
 // ParseBase parses a 2- or 3-letter ISO 639 code.
 // It returns a ValueError if s is a well-formed but unknown language identifier
 // or another error if another error occurred.
-func ParseBase(s string) (l Language, err error) {
-	defer func() {
-		if recover() != nil {
-			l = 0
-			err = ErrSyntax
-		}
-	}()
-
+func ParseBase(s string) (Language, error) {
 	if n := len(s); n < 2 || 3 < n {
 		return 0, ErrSyntax
 	}
@@ -486,14 +476,7 @@ func ParseBase(s string) (l Language, err error) {
 // ParseScript parses a 4-letter ISO 15924 code.
 // It returns a ValueError if s is a well-formed but unknown script identifier
 // or another error if another error occurred.
-func ParseScript(s string) (scr Script, err error) {
-	defer func() {
-		if recover() != nil {
-			scr = 0
-			err = ErrSyntax
-		}
-	}()
-
+func ParseScript(s string) (Script, error) {
 	if len(s) != 4 {
 		return 0, ErrSyntax
 	}
@@ -510,14 +493,7 @@ func EncodeM49(r int) (Region, error) {
 // ParseRegion parses a 2- or 3-letter ISO 3166-1 or a UN M.49 code.
 // It returns a ValueError if s is a well-formed but unknown region identifier
 // or another error if another error occurred.
-func ParseRegion(s string) (r Region, err error) {
-	defer func() {
-		if recover() != nil {
-			r = 0
-			err = ErrSyntax
-		}
-	}()
-
+func ParseRegion(s string) (Region, error) {
 	if n := len(s); n < 2 || 3 < n {
 		return 0, ErrSyntax
 	}
@@ -606,14 +582,7 @@ type Variant struct {
 
 // ParseVariant parses and returns a Variant. An error is returned if s is not
 // a valid variant.
-func ParseVariant(s string) (v Variant, err error) {
-	defer func() {
-		if recover() != nil {
-			v = Variant{}
-			err = ErrSyntax
-		}
-	}()
-
+func ParseVariant(s string) (Variant, error) {
 	s = strings.ToLower(s)
 	if id, ok := variantIndex[s]; ok {
 		return Variant{id, s}, nil
