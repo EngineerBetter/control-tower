@@ -13,13 +13,16 @@
 // limitations under the License.
 
 // Package logging contains helpers to support log messages. If you are using
-// the Cloud SQL Proxy as a Go library, you can override these variables to
+// the Cloud SQL Auth proxy as a Go library, you can override these variables to
 // control where log messages end up.
 package logging
 
 import (
 	"log"
 	"os"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 // Verbosef is called to write verbose logs, such as when a new connection is
@@ -39,7 +42,65 @@ func LogDebugToStdout() {
 	Infof = logger.Printf
 }
 
+func noop(string, ...interface{}) {}
+
 // LogVerboseToNowhere updates Verbosef so verbose log messages are discarded
 func LogVerboseToNowhere() {
-	Verbosef = func(string, ...interface{}) {}
+	Verbosef = noop
+}
+
+// DisableLogging sets all logging levels to no-op's.
+func DisableLogging() {
+	Verbosef = noop
+	Infof = noop
+	Errorf = noop
+}
+
+// EnableStructuredLogs replaces all logging functions with structured logging
+// variants.
+func EnableStructuredLogs(logDebugStdout, verbose bool) (func(), error) {
+	// Configuration of zap is based on its Advanced Configuration example.
+	// See: https://pkg.go.dev/go.uber.org/zap#example-package-AdvancedConfiguration
+
+	// Define level-handling logic.
+	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel
+	})
+	lowPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.ErrorLevel
+	})
+
+	// Lock wraps a WriteSyncer in a mutex to make it safe for concurrent use. In
+	// particular, *os.File types must be locked before use.
+	consoleErrors := zapcore.Lock(os.Stderr)
+	consoleDebugging := consoleErrors
+	if logDebugStdout {
+		consoleDebugging = zapcore.Lock(os.Stdout)
+	}
+
+	config := zap.NewProductionEncoderConfig()
+	config.LevelKey = "severity"
+	config.MessageKey = "message"
+	config.TimeKey = "timestamp"
+	config.EncodeLevel = zapcore.CapitalLevelEncoder
+	config.EncodeTime = zapcore.ISO8601TimeEncoder
+	consoleEncoder := zapcore.NewJSONEncoder(config)
+	core := zapcore.NewTee(
+		zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),
+		zapcore.NewCore(consoleEncoder, consoleDebugging, lowPriority),
+	)
+	// By default, caller and stacktrace are not included, so add them here
+	logger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
+
+	sugar := logger.Sugar()
+	Verbosef = sugar.Infof
+	if !verbose {
+		Verbosef = noop
+	}
+	Infof = sugar.Infof
+	Errorf = sugar.Errorf
+
+	return func() {
+		logger.Sync()
+	}, nil
 }

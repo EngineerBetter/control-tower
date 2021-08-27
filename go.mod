@@ -1,40 +1,46 @@
 module github.com/EngineerBetter/control-tower
 
 require (
-	cloud.google.com/go v0.47.0 // indirect
-	cloud.google.com/go/storage v1.0.0
-	github.com/GoogleCloudPlatform/cloudsql-proxy v0.0.0-20190129172621-c8b1d7a94ddf
-	github.com/apparentlymart/go-cidr v1.0.0
-	github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf
-	github.com/aws/aws-sdk-go v1.17.7
-	github.com/bmatcuk/doublestar v1.1.1 // indirect
-	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
-	github.com/charlievieth/fs v0.0.0-20170613215519-7dc373669fa1 // indirect
+	cloud.google.com/go v0.93.3 // indirect
+	cloud.google.com/go/storage v1.16.0
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.24.0
+	github.com/apparentlymart/go-cidr v1.1.0
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
+	github.com/aws/aws-sdk-go v1.40.31
+	github.com/bmatcuk/doublestar v1.3.4 // indirect
+	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/charlievieth/fs v0.0.1 // indirect
 	github.com/cloudfoundry/bosh-cli v5.4.0+incompatible
 	github.com/cloudfoundry/bosh-utils v0.0.0-20190206192830-9a0affed2bf1 // indirect
 	github.com/cppforlife/go-patch v0.2.0
-	github.com/fatih/color v1.7.0
+	github.com/fatih/color v1.12.0
+	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/imdario/mergo v0.3.7
-	github.com/lib/pq v1.0.0
-	github.com/mattn/go-colorable v0.1.1 // indirect
-	github.com/mattn/go-isatty v0.0.6 // indirect
-	github.com/maxbrunsfeld/counterfeiter/v6 v6.3.0
-	github.com/miekg/dns v1.1.4 // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/googleapis/gax-go/v2 v2.1.0 // indirect
+	github.com/imdario/mergo v0.3.12
+	github.com/lib/pq v1.10.2
+	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1
+	github.com/miekg/dns v1.1.43 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/onsi/ginkgo v1.12.1
-	github.com/onsi/gomega v1.10.3
+	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/gomega v1.16.0
 	github.com/square/certstrap v1.1.1
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.7.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	github.com/xenolf/lego v2.2.0+incompatible
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/net v0.0.0-20201026091529-146b70c837a4
-	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
-	google.golang.org/api v0.9.0
-	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+	golang.org/x/mod v0.5.0 // indirect
+	golang.org/x/net v0.0.0-20210825183410-e898025ed96a
+	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
+	golang.org/x/text v0.3.7 // indirect
+	google.golang.org/api v0.54.0
+	google.golang.org/genproto v0.0.0-20210825212027-de86158e7fda // indirect
+	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 go 1.16

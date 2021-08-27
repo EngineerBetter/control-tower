@@ -27,10 +27,12 @@ import (
 	mrand "math/rand"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/logging"
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/util"
+	"golang.org/x/oauth2"
 	"google.golang.org/api/googleapi"
 	sqladmin "google.golang.org/api/sqladmin/v1beta4"
 )
@@ -68,6 +70,17 @@ type RemoteOpts struct {
 
 	// IP address type options
 	IPAddrTypeOpts []string
+
+	// Enable IAM proxy db authentication
+	EnableIAMLogin bool
+
+	// Token source for token information used in cert creation
+	TokenSource oauth2.TokenSource
+
+	// DelayKeyGenerate, if true, causes the RSA key to be generated lazily
+	// on the first connection to a database. The default behavior is to generate
+	// the key when the CertSource is created.
+	DelayKeyGenerate bool
 }
 
 // NewCertSourceOpts returns a CertSource configured with the provided Opts.
@@ -76,10 +89,6 @@ type RemoteOpts struct {
 // Use this function instead of NewCertSource; it has a more forward-compatible
 // signature.
 func NewCertSourceOpts(c *http.Client, opts RemoteOpts) *RemoteCertSource {
-	pkey, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		panic(err) // very unexpected.
-	}
 	serv, err := sqladmin.New(c)
 	if err != nil {
 		panic(err) // Only will happen if the provided client is nil.
@@ -93,19 +102,31 @@ func NewCertSourceOpts(c *http.Client, opts RemoteOpts) *RemoteCertSource {
 	}
 	serv.UserAgent = ua
 
-	// Set default value to be PRIMARY if input opts.IPAddrTypeOpts is empty
-	if len(opts.IPAddrTypeOpts) < 1 {
-		opts.IPAddrTypeOpts = append(opts.IPAddrTypeOpts, "PRIMARY")
-	} else {
-		// Add "PUBLIC" as an alias for "PRIMARY"
-		for index, ipAddressType := range opts.IPAddrTypeOpts {
-			if strings.ToUpper(ipAddressType) == "PUBLIC" {
-				opts.IPAddrTypeOpts[index] = "PRIMARY"
-			}
+	// Set default value to be "PUBLIC,PRIVATE" if not specified
+	if len(opts.IPAddrTypeOpts) == 0 {
+		opts.IPAddrTypeOpts = []string{"PUBLIC", "PRIVATE"}
+	}
+
+	// Add "PUBLIC" as an alias for "PRIMARY"
+	for index, ipAddressType := range opts.IPAddrTypeOpts {
+		if strings.ToUpper(ipAddressType) == "PUBLIC" {
+			opts.IPAddrTypeOpts[index] = "PRIMARY"
 		}
 	}
 
-	return &RemoteCertSource{pkey, serv, !opts.IgnoreRegion, opts.IPAddrTypeOpts}
+	certSource := &RemoteCertSource{
+		serv:           serv,
+		checkRegion:    !opts.IgnoreRegion,
+		IPAddrTypes:    opts.IPAddrTypeOpts,
+		EnableIAMLogin: opts.EnableIAMLogin,
+		TokenSource:    opts.TokenSource,
+	}
+	if !opts.DelayKeyGenerate {
+		// Generate the RSA key now, but don't block on it.
+		go certSource.generateKey()
+	}
+
+	return certSource
 }
 
 // RemoteCertSource implements a CertSource, using Cloud SQL APIs to
@@ -113,6 +134,8 @@ func NewCertSourceOpts(c *http.Client, opts RemoteOpts) *RemoteCertSource {
 // to the remote instance and Remote certificates for confirming the
 // remote database's identity.
 type RemoteCertSource struct {
+	// keyOnce is used to create `key` lazily.
+	keyOnce sync.Once
 	// key is the private key used for certificates returned by Local.
 	key *rsa.PrivateKey
 	// serv is used to make authenticated API calls to Cloud SQL.
@@ -123,6 +146,10 @@ type RemoteCertSource struct {
 	checkRegion bool
 	// a list of ip address types that users select
 	IPAddrTypes []string
+	// flag to enable IAM proxy db authentication
+	EnableIAMLogin bool
+	// token source for the token information used in cert creation
+	TokenSource oauth2.TokenSource
 }
 
 // Constants for backoffAPIRetry. These cause the retry logic to scale the
@@ -161,20 +188,50 @@ func backoffAPIRetry(desc, instance string, do func() error) error {
 	return err
 }
 
+func refreshToken(ts oauth2.TokenSource, tok *oauth2.Token) (*oauth2.Token, error) {
+	expiredToken := &oauth2.Token{
+		AccessToken:  tok.AccessToken,
+		TokenType:    tok.TokenType,
+		RefreshToken: tok.RefreshToken,
+		Expiry:       time.Time{}.Add(1), // Expired
+	}
+	return oauth2.ReuseTokenSource(expiredToken, ts).Token()
+}
+
 // Local returns a certificate that may be used to establish a TLS
 // connection to the specified instance.
-func (s *RemoteCertSource) Local(instance string) (ret tls.Certificate, err error) {
-	pkix, err := x509.MarshalPKIXPublicKey(&s.key.PublicKey)
+func (s *RemoteCertSource) Local(instance string) (tls.Certificate, error) {
+	pkix, err := x509.MarshalPKIXPublicKey(s.generateKey().Public())
 	if err != nil {
-		return ret, err
+		return tls.Certificate{}, err
 	}
 
-	p, _, n := util.SplitName(instance)
-	req := s.serv.SslCerts.CreateEphemeral(p, n,
-		&sqladmin.SslCertsCreateEphemeralRequest{
-			PublicKey: string(pem.EncodeToMemory(&pem.Block{Bytes: pkix, Type: "RSA PUBLIC KEY"})),
-		},
-	)
+	p, r, n := util.SplitName(instance)
+	regionName := fmt.Sprintf("%s~%s", r, n)
+	pubKey := string(pem.EncodeToMemory(&pem.Block{Bytes: pkix, Type: "RSA PUBLIC KEY"}))
+	createEphemeralRequest := sqladmin.SslCertsCreateEphemeralRequest{
+		PublicKey: pubKey,
+	}
+	var tok *oauth2.Token
+	// If IAM login is enabled, add the OAuth2 token into the ephemeral
+	// certificate request.
+	if s.EnableIAMLogin {
+		var tokErr error
+		tok, tokErr = s.TokenSource.Token()
+		if tokErr != nil {
+			return tls.Certificate{}, tokErr
+		}
+		// Always refresh the token to ensure its expiration is far enough in
+		// the future.
+		tok, tokErr = refreshToken(s.TokenSource, tok)
+		if tokErr != nil {
+			return tls.Certificate{}, tokErr
+		}
+		// TODO: remove this once issue with OAuth2 Tokens is resolved.
+		// See https://github.com/GoogleCloudPlatform/cloudsql-proxy/issues/852.
+		createEphemeralRequest.AccessToken = strings.TrimRight(tok.AccessToken, ".")
+	}
+	req := s.serv.SslCerts.CreateEphemeral(p, regionName, &createEphemeralRequest)
 
 	var data *sqladmin.SslCert
 	err = backoffAPIRetry("createEphemeral for", instance, func() error {
@@ -182,16 +239,22 @@ func (s *RemoteCertSource) Local(instance string) (ret tls.Certificate, err erro
 		return err
 	})
 	if err != nil {
-		return ret, err
+		return tls.Certificate{}, err
 	}
 
 	c, err := parseCert(data.Cert)
 	if err != nil {
-		return ret, fmt.Errorf("couldn't parse ephemeral certificate for instance %q: %v", instance, err)
+		return tls.Certificate{}, fmt.Errorf("couldn't parse ephemeral certificate for instance %q: %v", instance, err)
+	}
+	if s.EnableIAMLogin {
+		// Adjust the certificate's expiration to be the earlier of tok.Expiry or c.NotAfter
+		if tok.Expiry.Before(c.NotAfter) {
+			c.NotAfter = tok.Expiry
+		}
 	}
 	return tls.Certificate{
 		Certificate: [][]byte{c.Raw},
-		PrivateKey:  s.key,
+		PrivateKey:  s.generateKey(),
 		Leaf:        c,
 	}, nil
 }
@@ -202,6 +265,20 @@ func parseCert(pemCert string) (*x509.Certificate, error) {
 		return nil, errors.New("invalid PEM: " + pemCert)
 	}
 	return x509.ParseCertificate(bl.Bytes)
+}
+
+// Return the RSA private key, which is lazily initialized.
+func (s *RemoteCertSource) generateKey() *rsa.PrivateKey {
+	s.keyOnce.Do(func() {
+		start := time.Now()
+		pkey, err := rsa.GenerateKey(rand.Reader, 2048)
+		if err != nil {
+			panic(err) // very unexpected.
+		}
+		logging.Verbosef("Generated RSA key in %v", time.Since(start))
+		s.key = pkey
+	})
+	return s.key
 }
 
 // Find the first matching IP address by user input IP address types
@@ -226,9 +303,10 @@ func (s *RemoteCertSource) findIPAddr(data *sqladmin.DatabaseInstance, instance 
 }
 
 // Remote returns the specified instance's CA certificate, address, and name.
-func (s *RemoteCertSource) Remote(instance string) (cert *x509.Certificate, addr, name string, err error) {
+func (s *RemoteCertSource) Remote(instance string) (cert *x509.Certificate, addr, name, version string, err error) {
 	p, region, n := util.SplitName(instance)
-	req := s.serv.Instances.Get(p, n)
+	regionName := fmt.Sprintf("%s~%s", region, n)
+	req := s.serv.Instances.Get(p, regionName)
 
 	var data *sqladmin.DatabaseInstance
 	err = backoffAPIRetry("get instance", instance, func() error {
@@ -236,7 +314,7 @@ func (s *RemoteCertSource) Remote(instance string) (cert *x509.Certificate, addr
 		return err
 	})
 	if err != nil {
-		return nil, "", "", err
+		return nil, "", "", "", err
 	}
 
 	// TODO(chowski): remove this when us-central is removed.
@@ -250,24 +328,28 @@ func (s *RemoteCertSource) Remote(instance string) (cert *x509.Certificate, addr
 			err = fmt.Errorf(`for connection string "%s": got region %q, want %q`, instance, region, data.Region)
 		}
 		if s.checkRegion {
-			return nil, "", "", err
+			return nil, "", "", "", err
 		}
 		logging.Errorf("%v", err)
 		logging.Errorf("WARNING: specifying the correct region in an instance string will become required in a future version!")
 	}
 
 	if len(data.IpAddresses) == 0 {
-		return nil, "", "", fmt.Errorf("no IP address found for %v", instance)
+		return nil, "", "", "", fmt.Errorf("no IP address found for %v", instance)
+	}
+	if data.BackendType == "FIRST_GEN" {
+		logging.Errorf("WARNING: proxy client does not support first generation Cloud SQL instances.")
+		return nil, "", "", "", fmt.Errorf("%q is a first generation instance", instance)
 	}
 
 	// Find the first matching IP address by user input IP address types
 	ipAddrInUse := ""
 	ipAddrInUse, err = s.findIPAddr(data, instance)
 	if err != nil {
-		return nil, "", "", err
+		return nil, "", "", "", err
 	}
 
 	c, err := parseCert(data.ServerCaCert.Cert)
 
-	return c, ipAddrInUse, p + ":" + n, err
+	return c, ipAddrInUse, p + ":" + n, data.DatabaseVersion, err
 }

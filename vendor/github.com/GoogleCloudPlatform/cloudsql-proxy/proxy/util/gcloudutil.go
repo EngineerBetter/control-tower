@@ -19,12 +19,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os/exec"
 	"runtime"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/logging"
 	"golang.org/x/oauth2"
+	exec "golang.org/x/sys/execabs"
 )
 
 // GcloudConfigData represents the data returned by `gcloud config config-helper`.
@@ -80,7 +80,7 @@ func GcloudConfig() (*GcloudConfigData, error) {
 	}
 
 	buf, errbuf := new(bytes.Buffer), new(bytes.Buffer)
-	cmd := exec.Command(gcloudCmd, "--format", "json", "config", "config-helper")
+	cmd := exec.Command(gcloudCmd, "--format", "json", "config", "config-helper", "--min-expiry", "1h")
 	cmd.Stdout = buf
 	cmd.Stderr = errbuf
 
@@ -114,9 +114,10 @@ func (src *gcloudTokenSource) Token() (*oauth2.Token, error) {
 }
 
 func GcloudTokenSource(ctx context.Context) (oauth2.TokenSource, error) {
-	cfg, err := GcloudConfig()
+	src := &gcloudTokenSource{}
+	tok, err := src.Token()
 	if err != nil {
 		return nil, err
 	}
-	return oauth2.ReuseTokenSource(cfg.oauthToken(), &gcloudTokenSource{}), nil
+	return oauth2.ReuseTokenSource(tok, src), nil
 }
