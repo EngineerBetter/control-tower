@@ -3,10 +3,8 @@ package resource
 import (
 	_ "embed"
 
-	"github.com/EngineerBetter/control-tower/resource/internal/file"
+	"github.com/EngineerBetter/control-tower/opsassets"
 )
-
-//go:generate go-bindata -o internal/file/file.go -ignore (\.go$)|(\.git)|(bosh/assets) -nometadata -pkg file ../../control-tower-ops/... assets/...
 
 var (
 	// DirectorManifest statically defines director-manifest.yml contents
@@ -62,10 +60,10 @@ var (
 	GCPTerraformConfig string
 
 	// AWSReleaseVersions carries all versions of releases
-	AWSReleaseVersions = file.MustAssetString("../../control-tower-ops/ops/versions-aws.json")
+	AWSReleaseVersions = string(opsassets.AwsConcourseVersions)
 
 	// GCPReleaseVersions carries all versions of releases
-	GCPReleaseVersions = file.MustAssetString("../../control-tower-ops/ops/versions-gcp.json")
+	GCPReleaseVersions = string(opsassets.GcpConcourseVersions)
 
 	// AddNewCa carries the ops file that adds a new CA required for cert rotation
 	//go:embed assets/maintenance/add-new-ca.yml
@@ -79,7 +77,9 @@ var (
 	//go:embed assets/maintenance/cleanup-certs.yml
 	CleanupCerts string
 
-	AWSVersionFile = file.MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json")
+	AWSVersionFile = opsassets.AWSVersionFile
+	GCPVersionFile = opsassets.GCPVersionFile
 
-	GCPVersionFile = file.MustAsset("../../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json")
+	//go:embed assets/gcp/uaa-cert.yml
+	UAACert []byte
 )

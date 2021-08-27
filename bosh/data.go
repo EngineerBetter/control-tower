@@ -1,6 +1,11 @@
 package bosh
 
-import _ "embed"
+import (
+	_ "embed"
+
+	"github.com/EngineerBetter/control-tower/opsassets"
+	"github.com/EngineerBetter/control-tower/resource"
+)
 
 const (
 	credsFilename                     = "concourse-creds.yml"
@@ -16,8 +21,6 @@ const (
 	extraTagsFilename                 = "extra_tags.yml"
 	uaaCertFilename                   = "uaa-cert.yml"
 )
-
-//go:generate go-bindata -pkg $GOPACKAGE -ignore \.git assets/... ../../control-tower-ops/... ../resource/assets/...
 
 var (
 	//go:embed assets/grafana_dashboard.yml
@@ -38,10 +41,10 @@ var (
 	//go:embed assets/ops/extra_tags.yml
 	extraTags []byte
 
-	concourseManifestContents = MustAsset("../../control-tower-ops/manifest.yml")
-	awsConcourseVersions      = MustAsset("../../control-tower-ops/ops/versions-aws.json")
-	awsConcourseSHAs          = MustAsset("../../control-tower-ops/ops/shas-aws.json")
-	gcpConcourseVersions      = MustAsset("../../control-tower-ops/ops/versions-gcp.json")
-	gcpConcourseSHAs          = MustAsset("../../control-tower-ops/ops/shas-gcp.json")
-	uaaCert                   = MustAsset("../resource/assets/gcp/uaa-cert.yml")
+	concourseManifestContents = opsassets.ConcourseManifestContents
+	awsConcourseVersions      = opsassets.AwsConcourseVersions
+	awsConcourseSHAs          = opsassets.AwsConcourseSHAs
+	gcpConcourseVersions      = opsassets.GcpConcourseVersions
+	gcpConcourseSHAs          = opsassets.GcpConcourseSHAs
+	uaaCert                   = resource.UAACert
 )

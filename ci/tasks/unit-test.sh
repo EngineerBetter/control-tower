@@ -9,9 +9,12 @@ mv control-tower/* "$GOPATH/src/github.com/EngineerBetter/control-tower"
 mv control-tower-ops/* "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
 cd "$GOPATH/src/github.com/EngineerBetter/control-tower" || exit 1
 
-GO111MODULE=off go get -u github.com/kevinburke/go-bindata/...
 GO111MODULE=off go get -u github.com/maxbrunsfeld/counterfeiter
-go generate bosh/data.go
-go generate resource/package.go
+
+cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/manifest.yml" opsassets/assets/
+cp -R "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/ops" opsassets/assets/ 
+cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/createenv-dependencies-and-cli-versions-aws.json" opsassets/assets/
+cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json" opsassets/assets/
+
 go generate github.com/EngineerBetter/control-tower/...
 go test ./...
