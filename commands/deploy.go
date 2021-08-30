@@ -100,6 +100,12 @@ var deployFlags = []cli.Flag{
 		EnvVar:      "ENABLE_GLOBAL_RESOURCES",
 		Destination: &initialDeployArgs.EnableGlobalResources,
 	},
+	cli.BoolFlag{
+		Name:        "enable-pipeline-instances",
+		Usage:       "(optional) Enables Concourse pipeline instances. Can be true/false (default: false)",
+		EnvVar:      "ENABLE_PIPELINE_INSTANCES",
+		Destination: &initialDeployArgs.EnablePipelineInstances,
+	},
 	cli.StringFlag{
 		Name:        "db-size",
 		Usage:       "(optional) Size of Concourse RDS instance. Can be small, medium, large, xlarge, 2xlarge, or 4xlarge",

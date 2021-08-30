@@ -71,11 +71,13 @@ assertBitBucketAuthConfigured
 assertGitHubAuthConfigured
 assertMicrosoftAuthConfigured
 
-# Check Concourse global resources is disabled (as it should be by default)
+# Check Concourse global resources & pipeline instances are disabled (as it should be by default)
 info_output="$(./cup info --region "$region" --env "$deployment")"
 eval "$info_output"
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
 checkManifestProperty "${global_resources_path}" false
+pipeline_instances_path="/instance_groups/name=web/jobs/name=web/properties/enable_pipeline_instances"
+checkManifestProperty "${pipeline_instances_path}" false
 
 if [ "$IAAS" = "AWS" ]
 then
