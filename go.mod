@@ -1,8 +1,7 @@
 module github.com/EngineerBetter/control-tower
 
 require (
-	cloud.google.com/go v0.93.3 // indirect
-	cloud.google.com/go/storage v1.16.0
+	cloud.google.com/go/storage v1.16.1
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.24.0
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
@@ -32,7 +31,6 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.54.0
-	google.golang.org/genproto v0.0.0-20210825212027-de86158e7fda // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.4.0
