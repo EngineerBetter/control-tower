@@ -2,7 +2,7 @@ module github.com/EngineerBetter/control-tower
 
 require (
 	cloud.google.com/go/storage v1.16.1
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.24.0
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.25.0
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.40.31
@@ -26,7 +26,7 @@ require (
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/mod v0.5.0 // indirect
-	golang.org/x/net v0.0.0-20210825183410-e898025ed96a
+	golang.org/x/net v0.0.0-20210903162142-ad29c8ab022f
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.56.0

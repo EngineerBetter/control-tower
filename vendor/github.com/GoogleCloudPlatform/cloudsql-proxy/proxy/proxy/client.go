@@ -21,11 +21,13 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/logging"
+	"github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/util"
 	"golang.org/x/net/proxy"
 	"golang.org/x/time/rate"
 )
@@ -138,16 +140,33 @@ type cacheEntry struct {
 // Run causes the client to start waiting for new connections to connSrc and
 // proxy them to the destination instance. It blocks until connSrc is closed.
 func (c *Client) Run(connSrc <-chan Conn) {
-	for conn := range connSrc {
-		go c.handleConn(conn)
+	c.RunContext(context.Background(), connSrc)
+}
+
+func (c *Client) run(ctx context.Context, connSrc <-chan Conn) {
+	for {
+		select {
+		case conn, ok := <-connSrc:
+			if !ok {
+				return
+			}
+			go c.handleConn(ctx, conn)
+		case <-ctx.Done():
+			return
+		}
 	}
+}
+
+// RunContext is like Run with an additional context.Context argument.
+func (c *Client) RunContext(ctx context.Context, connSrc <-chan Conn) {
+	c.run(ctx, connSrc)
 
 	if err := c.Conns.Close(); err != nil {
 		logging.Errorf("closing client had error: %v", err)
 	}
 }
 
-func (c *Client) handleConn(conn Conn) {
+func (c *Client) handleConn(ctx context.Context, conn Conn) {
 	active := atomic.AddUint64(&c.ConnectionsCounter, 1)
 
 	// Deferred decrement of ConnectionsCounter upon connection closing
@@ -159,7 +178,7 @@ func (c *Client) handleConn(conn Conn) {
 		return
 	}
 
-	server, err := c.Dial(conn.Instance)
+	server, err := c.DialContext(ctx, conn.Instance)
 	if err != nil {
 		logging.Errorf("couldn't connect to %q: %v", conn.Instance, err)
 		conn.Conn.Close()
@@ -208,6 +227,7 @@ func (c *Client) refreshCfg(instance string) (addr string, cfg *tls.Config, vers
 		// that will verify that the certificate is OK.
 		InsecureSkipVerify:    true,
 		VerifyPeerCertificate: genVerifyPeerCertificateFunc(name, certs),
+		MinVersion:            tls.VersionTLS13,
 	}
 
 	return fmt.Sprintf("%s:%d", addr, c.Port), cfg, version, nil
@@ -520,6 +540,40 @@ func (c *Client) InstanceVersionContext(ctx context.Context, instance string) (s
 		return "", nil
 	}
 	return version, nil
+}
+
+// ParseInstanceConnectionName verifies that instances are in the expected format and include
+// the necessary components.
+func ParseInstanceConnectionName(instance string) (string, string, string, []string, error) {
+	args := strings.Split(instance, "=")
+	if len(args) > 2 {
+		return "", "", "", nil, fmt.Errorf("invalid instance argument: must be either form - `<instance_connection_string>` or `<instance_connection_string>=<options>`; invalid arg was %q", instance)
+	}
+	// Parse the instance connection name - everything before the "=".
+	proj, region, name := util.SplitName(args[0])
+	if proj == "" || region == "" || name == "" {
+		return "", "", "", nil, fmt.Errorf("invalid instance connection string: must be in the form `project:region:instance-name`; invalid name was %q", args[0])
+	}
+	return proj, region, name, args, nil
+}
+
+// GetInstances iterates through the client cache, returning a list of previously dialed
+// instances.
+func (c *Client) GetInstances() []string {
+	var insts []string
+	c.cacheL.Lock()
+	cfgCache := c.cfgCache
+	c.cacheL.Unlock()
+	for i := range cfgCache {
+		insts = append(insts, i)
+	}
+	return insts
+}
+
+// AvailableConn returns false if MaxConnections has been reached, true otherwise.
+// When MaxConnections is 0, there is no limit.
+func (c *Client) AvailableConn() bool {
+	return c.MaxConnections == 0 || atomic.LoadUint64(&c.ConnectionsCounter) < c.MaxConnections
 }
 
 // Shutdown waits up to a given amount of time for all active connections to
