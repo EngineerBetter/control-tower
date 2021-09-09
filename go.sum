@@ -75,8 +75,8 @@ github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWR
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
-github.com/cloudfoundry/bosh-cli v5.4.0+incompatible h1:KpT2PBB7nP1QnK8guXeZ/D2k7FZYAOxcveKgYTDEDBI=
-github.com/cloudfoundry/bosh-cli v5.4.0+incompatible/go.mod h1:rzIB+e1sn7wQL/TJ54bl/FemPKRhXby5BIMS3tLuWFM=
+github.com/cloudfoundry/bosh-cli v6.4.1+incompatible h1:n5/+NIF9QxvGINOrjh6DmO+GTen78MoCj5+LU9L8bR4=
+github.com/cloudfoundry/bosh-cli v6.4.1+incompatible/go.mod h1:rzIB+e1sn7wQL/TJ54bl/FemPKRhXby5BIMS3tLuWFM=
 github.com/cloudfoundry/bosh-utils v0.0.273 h1:D8zMmJ9337MaUGlQtqmVPtVmkgAgcUVaxg3/4D4/r8k=
 github.com/cloudfoundry/bosh-utils v0.0.273/go.mod h1:lXgg7JeJErwkX9pQF1jDhg367OG0mIYHZ7+lXfChBLI=
 github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e/go.mod h1:PXmcacyJB/pJjSxEl15IU6rEIKXrhZQRzsr0UTkgNNs=

@@ -10,6 +10,8 @@ cloud.google.com/go/internal/version
 # cloud.google.com/go/storage v1.16.0
 ## explicit
 cloud.google.com/go/storage
+# code.cloudfoundry.org/workpool v0.0.0-20200131000409-2ac56b354115
+## explicit
 # github.com/GoogleCloudPlatform/cloudsql-proxy v1.24.0
 ## explicit
 github.com/GoogleCloudPlatform/cloudsql-proxy/logging
@@ -84,19 +86,35 @@ github.com/bmatcuk/doublestar
 github.com/cenkalti/backoff
 # github.com/charlievieth/fs v0.0.1
 github.com/charlievieth/fs
-# github.com/cloudfoundry/bosh-cli v5.4.0+incompatible
+# github.com/cheggaaa/pb v1.0.29
+## explicit
+# github.com/cloudfoundry/bosh-agent v2.367.0+incompatible
+## explicit
+# github.com/cloudfoundry/bosh-cli v6.4.1+incompatible
 ## explicit
 github.com/cloudfoundry/bosh-cli/director/template
+# github.com/cloudfoundry/bosh-davcli v0.0.45
+## explicit
+# github.com/cloudfoundry/bosh-gcscli v0.0.19
+## explicit
+# github.com/cloudfoundry/bosh-s3cli v0.0.98
+## explicit
 # github.com/cloudfoundry/bosh-utils v0.0.273
 ## explicit
 github.com/cloudfoundry/bosh-utils/errors
 github.com/cloudfoundry/bosh-utils/logger
 github.com/cloudfoundry/bosh-utils/system
+# github.com/cloudfoundry/config-server v0.1.26
+## explicit
 # github.com/cppforlife/go-patch v0.2.0
 ## explicit
 github.com/cppforlife/go-patch/patch
+# github.com/cppforlife/go-semi-semantic v0.0.0-20160921010311-576b6af77ae4
+## explicit
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
+# github.com/dustin/go-humanize v1.0.0
+## explicit
 # github.com/fatih/color v1.12.0
 ## explicit
 github.com/fatih/color
@@ -120,6 +138,8 @@ github.com/golang/protobuf/ptypes/timestamp
 github.com/googleapis/gax-go/v2
 github.com/googleapis/gax-go/v2/apierror
 github.com/googleapis/gax-go/v2/apierror/internal/proto
+# github.com/hashicorp/go-multierror v1.1.1
+## explicit
 # github.com/imdario/mergo v0.3.12
 ## explicit
 github.com/imdario/mergo
@@ -198,6 +218,8 @@ github.com/stretchr/testify/require
 ## explicit
 github.com/tjarratt/gcounterfeiter
 github.com/tjarratt/gcounterfeiter/invocations
+# github.com/vito/go-interact v1.0.0
+## explicit
 # github.com/xenolf/lego v2.2.0+incompatible
 ## explicit
 github.com/xenolf/lego/acme
