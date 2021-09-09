@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-
-# shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/set-flags.sh
+set -euo pipefail
 
 build_dir=$PWD/build-$GOOS
 mkdir -p build_dir

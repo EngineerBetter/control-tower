@@ -1,11 +1,13 @@
 #!/bin/bash
+set -euo pipefail
+
 # shellcheck disable=SC2091,SC2006
 
 # Disabling SC2091 above because we want to print commands encased in $()
 # Disabling SC2006 above because ``` code blocks are misinterpretted as shell execution
 
 # shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/set-flags.sh
+
 source control-tower/ci/tasks/lib/get-versions.sh
 
 version=$(cat version/version)

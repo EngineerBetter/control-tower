@@ -1,8 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
 # shellcheck disable=SC1091
 source control-tower/ci/tasks/lib/get-versions.sh
-source control-tower/ci/tasks/lib/set-flags.sh
 
 pushd control-tower-ops
   getVersions

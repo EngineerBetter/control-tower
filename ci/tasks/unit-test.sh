@@ -1,7 +1,5 @@
 #!/bin/bash
-
-# shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/set-flags.sh
+set -euo pipefail
 
 mkdir -p "$GOPATH/src/github.com/EngineerBetter/control-tower"
 mkdir -p "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
