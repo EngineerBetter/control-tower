@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -250,6 +251,7 @@ func generateCertificateSigningRequest(ipOrDomains []string) (*pkix.CertificateS
 	var name string
 	domains := []string{}
 	ips := []net.IP{}
+	urls := []*url.URL{}
 
 	for _, ipOrDomain := range ipOrDomains {
 		if name == "" {
@@ -278,6 +280,7 @@ func generateCertificateSigningRequest(ipOrDomains []string) (*pkix.CertificateS
 		"",
 		ips,
 		domains,
+		urls,
 		"",
 		"",
 		"",

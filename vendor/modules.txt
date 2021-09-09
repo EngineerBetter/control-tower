@@ -78,18 +78,16 @@ github.com/aws/aws-sdk-go/service/sso/ssoiface
 github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/bmatcuk/doublestar v1.3.4
-## explicit
 github.com/bmatcuk/doublestar
 # github.com/cenkalti/backoff v2.2.1+incompatible
 ## explicit
 github.com/cenkalti/backoff
 # github.com/charlievieth/fs v0.0.1
-## explicit
 github.com/charlievieth/fs
 # github.com/cloudfoundry/bosh-cli v5.4.0+incompatible
 ## explicit
 github.com/cloudfoundry/bosh-cli/director/template
-# github.com/cloudfoundry/bosh-utils v0.0.0-20190206192830-9a0affed2bf1
+# github.com/cloudfoundry/bosh-utils v0.0.273
 ## explicit
 github.com/cloudfoundry/bosh-utils/errors
 github.com/cloudfoundry/bosh-utils/logger
@@ -146,8 +144,6 @@ github.com/maxbrunsfeld/counterfeiter/v6/generator
 # github.com/miekg/dns v1.1.43
 ## explicit
 github.com/miekg/dns
-# github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
-## explicit
 # github.com/nxadm/tail v1.4.8
 github.com/nxadm/tail
 github.com/nxadm/tail/ratelimiter
@@ -191,7 +187,7 @@ github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/square/certstrap v1.1.1
+# github.com/square/certstrap v1.2.0
 ## explicit
 github.com/square/certstrap/pkix
 # github.com/stretchr/testify v1.7.0
@@ -300,7 +296,6 @@ golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
-## explicit
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/internal/unsafeheader

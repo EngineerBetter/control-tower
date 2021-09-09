@@ -31,25 +31,13 @@ import (
 	"fmt"
 	"math/big"
 	"net"
+	"net/url"
 	"strings"
 )
 
 const (
-	csrPEMBlockType = "CERTIFICATE REQUEST"
-)
-
-var (
-	csrPkixName = pkix.Name{
-		Country:            []string{},
-		Organization:       []string{},
-		OrganizationalUnit: nil,
-		Locality:           nil,
-		Province:           nil,
-		StreetAddress:      nil,
-		PostalCode:         nil,
-		SerialNumber:       "",
-		CommonName:         "",
-	}
+	csrPEMBlockType    = "CERTIFICATE REQUEST"
+	oldCsrPEMBlockType = "NEW CERTIFICATE REQUEST"
 )
 
 // ParseAndValidateIPs parses a comma-delimited list of IP addresses into an array of IP addresses
@@ -68,10 +56,30 @@ func ParseAndValidateIPs(ipList string) (res []net.IP, err error) {
 	return
 }
 
-// CreateCertificateSigningRequest sets up a request to create a csr file with the given parameters
-func CreateCertificateSigningRequest(key *Key, organizationalUnit string, ipList []net.IP, domainList []string, organization string, country string, province string, locality string, commonName string) (*CertificateSigningRequest, error) {
+// ParseAndValidateURIs parses a comma-delimited list of URIs into an array of url.URLs
+func ParseAndValidateURIs(uriList string) (res []*url.URL, err error) {
+	if len(uriList) > 0 {
+		uris := strings.Split(uriList, ",")
+		for _, uri := range uris {
+			parsedURI, err := url.Parse(uri)
+			if err != nil {
+				parsedURI = nil
+			}
+			if parsedURI == nil {
+				return nil, fmt.Errorf("Invalid URI: %s", uri)
+			}
+			if !parsedURI.IsAbs() {
+				return nil, fmt.Errorf("Invalid URI: %s", uri)
+			}
+			res = append(res, parsedURI)
+		}
+	}
+	return
+}
 
-	csrPkixName.CommonName = commonName
+// CreateCertificateSigningRequest sets up a request to create a csr file with the given parameters
+func CreateCertificateSigningRequest(key *Key, organizationalUnit string, ipList []net.IP, domainList []string, uriList []*url.URL, organization string, country string, province string, locality string, commonName string) (*CertificateSigningRequest, error) {
+	csrPkixName := pkix.Name{CommonName: commonName}
 
 	if len(organizationalUnit) > 0 {
 		csrPkixName.OrganizationalUnit = []string{organizationalUnit}
@@ -92,6 +100,7 @@ func CreateCertificateSigningRequest(key *Key, organizationalUnit string, ipList
 		Subject:     csrPkixName,
 		IPAddresses: ipList,
 		DNSNames:    domainList,
+		URIs:        uriList,
 	}
 
 	csrBytes, err := x509.CreateCertificateRequest(rand.Reader, csrTemplate, key.Private)
@@ -121,7 +130,7 @@ func NewCertificateSigningRequestFromPEM(data []byte) (*CertificateSigningReques
 	if pemBlock == nil {
 		return nil, errors.New("cannot find the next PEM formatted block")
 	}
-	if pemBlock.Type != csrPEMBlockType || len(pemBlock.Headers) != 0 {
+	if (pemBlock.Type != csrPEMBlockType && pemBlock.Type != oldCsrPEMBlockType) || len(pemBlock.Headers) != 0 {
 		return nil, errors.New("unmatched type or headers")
 	}
 	return &CertificateSigningRequest{derBytes: pemBlock.Bytes}, nil
