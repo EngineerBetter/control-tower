@@ -1,18 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
-mkdir -p "$GOPATH/src/github.com/EngineerBetter/control-tower"
-mkdir -p "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
-mv control-tower/* "$GOPATH/src/github.com/EngineerBetter/control-tower"
-mv control-tower-ops/* "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
-cd "$GOPATH/src/github.com/EngineerBetter/control-tower" || exit 1
+cd control-tower
 
-GO111MODULE=off go get -u github.com/maxbrunsfeld/counterfeiter
+go install github.com/maxbrunsfeld/counterfeiter/v6
 
-cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/manifest.yml" opsassets/assets/
-cp -R "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/ops" opsassets/assets/ 
-cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/createenv-dependencies-and-cli-versions-aws.json" opsassets/assets/
-cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json" opsassets/assets/
+cp ../control-tower-ops/manifest.yml opsassets/assets/
+cp -R ../control-tower-ops/ops opsassets/assets/ 
+cp ../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json opsassets/assets/
+cp ../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json opsassets/assets/
 
-go generate github.com/EngineerBetter/control-tower/...
+go generate ./...
 go test ./...
