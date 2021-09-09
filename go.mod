@@ -15,7 +15,7 @@ require (
 	github.com/go-acme/lego/v4 v4.4.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/imdario/mergo v0.3.12
-	github.com/lib/pq v1.10.2
+	github.com/lib/pq v1.10.3
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1
 	github.com/miekg/dns v1.1.43 // indirect
