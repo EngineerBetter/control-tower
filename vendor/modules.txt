@@ -23,7 +23,7 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 ## explicit
 github.com/asaskevich/govalidator
-# github.com/aws/aws-sdk-go v1.40.31
+# github.com/aws/aws-sdk-go v1.40.39
 ## explicit
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/arn
@@ -79,8 +79,6 @@ github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/bmatcuk/doublestar v1.3.4
 github.com/bmatcuk/doublestar
-# github.com/cenkalti/backoff v2.2.1+incompatible
-## explicit
 # github.com/cenkalti/backoff/v4 v4.1.0
 github.com/cenkalti/backoff/v4
 # github.com/charlievieth/fs v0.0.1
