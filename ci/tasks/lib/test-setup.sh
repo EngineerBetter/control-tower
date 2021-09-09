@@ -1,7 +1,7 @@
 #!/bin/bash
-set -euo pipefail
+# shellcheck disable=SC1091
 
-# Disabling SC1091 because shellcheck can't find our sourced files
+set -euo pipefail
 
 source control-tower/ci/tasks/lib/assert-iaas.sh
 source control-tower/ci/tasks/lib/verbose.sh
