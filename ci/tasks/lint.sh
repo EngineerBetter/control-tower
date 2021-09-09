@@ -1,18 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# shellcheck disable=SC1091
-source control-tower/ci/tasks/lib/set-flags.sh
+cd control-tower
 
-mkdir -p "$GOPATH/src/github.com/EngineerBetter/control-tower"
-mkdir -p "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
-mv control-tower/* "$GOPATH/src/github.com/EngineerBetter/control-tower"
-mv control-tower-ops/* "$GOPATH/src/github.com/EngineerBetter/control-tower-ops"
-cd "$GOPATH/src/github.com/EngineerBetter/control-tower" || exit 1
-
-cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/manifest.yml" opsassets/assets/
-cp -R "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/ops" opsassets/assets/ 
-cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/createenv-dependencies-and-cli-versions-aws.json" opsassets/assets/
-cp "$GOPATH/src/github.com/EngineerBetter/control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json" opsassets/assets/
+cp ../control-tower-ops/manifest.yml opsassets/assets/
+cp -R ../control-tower-ops/ops opsassets/assets/ 
+cp ../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json opsassets/assets/
+cp ../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json opsassets/assets/
 
 gometalinter \
 --disable-all \
@@ -20,8 +14,6 @@ gometalinter \
 --enable=ineffassign \
 --enable=vetshadow \
 --enable=deadcode \
---exclude=bindata \
---exclude=resource/internal/file \
 --vendor \
 --enable-gc \
 --deadline=120s \
