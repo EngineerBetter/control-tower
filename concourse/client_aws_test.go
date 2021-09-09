@@ -21,11 +21,11 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/terraform/terraformfakes"
+	"github.com/go-acme/lego/v4/lego"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	. "github.com/tjarratt/gcounterfeiter"
-	"github.com/xenolf/lego/lego"
 )
 
 var _ = Describe("client", func() {

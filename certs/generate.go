@@ -15,19 +15,19 @@ import (
 	"sync"
 	"time"
 
-	"github.com/xenolf/lego/platform/config/env"
+	"github.com/go-acme/lego/v4/platform/config/env"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/dns/v1"
 
 	"github.com/EngineerBetter/control-tower/iaas"
 
+	"github.com/go-acme/lego/v4/certificate"
+	"github.com/go-acme/lego/v4/challenge"
+	"github.com/go-acme/lego/v4/lego"
+	"github.com/go-acme/lego/v4/providers/dns/gcloud"
+	"github.com/go-acme/lego/v4/providers/dns/route53"
+	"github.com/go-acme/lego/v4/registration"
 	"github.com/square/certstrap/pkix"
-	"github.com/xenolf/lego/certificate"
-	"github.com/xenolf/lego/challenge"
-	"github.com/xenolf/lego/lego"
-	"github.com/xenolf/lego/providers/dns/gcloud"
-	"github.com/xenolf/lego/providers/dns/route53"
-	"github.com/xenolf/lego/registration"
 )
 
 // Certs contains certificates and keys

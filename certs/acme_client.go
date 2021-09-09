@@ -3,7 +3,7 @@ package certs
 import (
 	"os"
 
-	"github.com/xenolf/lego/lego"
+	"github.com/go-acme/lego/v4/lego"
 )
 
 // NewAcmeClient returns a new AcmeClient

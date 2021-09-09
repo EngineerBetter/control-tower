@@ -13,7 +13,7 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/terraform"
 
-	"github.com/xenolf/lego/lego"
+	"github.com/go-acme/lego/v4/lego"
 )
 
 // client is a concrete implementation of IClient interface

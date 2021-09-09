@@ -18,7 +18,7 @@ import (
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/terraform"
-	"github.com/xenolf/lego/lego"
+	"github.com/go-acme/lego/v4/lego"
 	"gopkg.in/yaml.v2"
 )
 

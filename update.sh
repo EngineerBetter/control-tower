@@ -27,7 +27,7 @@ declare -a arr=(
 	"github.com/square/certstrap" 
 	"github.com/stretchr/testify" 
 	"github.com/tjarratt/gcounterfeiter"
-	"github.com/xenolf/lego" 
+	"github.com/go-acme/lego/v4" 
 	"golang.org/x/crypto"
 	"golang.org/x/net"
 	"golang.org/x/oauth2" 

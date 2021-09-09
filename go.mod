@@ -14,6 +14,7 @@ require (
 	github.com/fatih/color v1.12.0
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/ghodss/yaml v1.0.0
+	github.com/go-acme/lego/v4 v4.4.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/googleapis/gax-go/v2 v2.1.0 // indirect
 	github.com/imdario/mergo v0.3.12
@@ -26,7 +27,6 @@ require (
 	github.com/square/certstrap v1.2.0
 	github.com/stretchr/testify v1.7.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
-	github.com/xenolf/lego v2.2.0+incompatible
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/mod v0.5.0 // indirect
 	golang.org/x/net v0.0.0-20210825183410-e898025ed96a
