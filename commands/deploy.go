@@ -21,7 +21,7 @@ import (
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/util"
 
-	"github.com/urfave/cli"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 const maxAllowedNameLength = 11

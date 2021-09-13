@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/urfave/cli"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 // Commands is a list of all supported CLI commands
