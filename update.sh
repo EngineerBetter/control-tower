@@ -33,7 +33,7 @@ declare -a arr=(
 	"golang.org/x/oauth2" 
 	"google.golang.org/api" 
 	"gopkg.in/square/go-jose.v2" 
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2" 
 )
 

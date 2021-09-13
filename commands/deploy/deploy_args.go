@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 // Args are arguments passed to the deploy command
@@ -49,7 +49,7 @@ type Args struct {
 	GithubAuthClientSecret      string
 	GithubAuthClientSecretIsSet bool
 	// GithubAuthIsSet is true if the user has specified both the --github-auth-client-secret and --github-auth-client-id flags
-	GithubAuthIsSet bool
+	GithubAuthIsSet                bool
 	MicrosoftAuthClientID          string
 	MicrosoftAuthClientIDIsSet     bool
 	MicrosoftAuthClientSecret      string
@@ -58,7 +58,7 @@ type Args struct {
 	MicrosoftAuthTenantIsSet       bool
 	// MicrosoftAuthIsSet is true if the user has specified both the --microsoft-auth-client-secret and --microsoft-auth-client-id flags
 	MicrosoftAuthIsSet bool
-	Tags            cli.StringSlice
+	Tags               cli.StringSlice
 	// TagsIsSet is true if the user has specified tags using --tags
 	TagsIsSet        bool
 	Spot             bool

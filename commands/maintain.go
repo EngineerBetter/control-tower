@@ -16,7 +16,7 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 var initialMaintainArgs maintain.Args
