@@ -17,4 +17,4 @@ params:
   AWS_SECRET_ACCESS_KEY:
   BINARY_PATH:
   IAAS: AWS
-  VERBOSE:
+  VERBOSE: true
