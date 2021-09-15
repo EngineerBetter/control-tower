@@ -175,6 +175,9 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	if deployArgs.EnableGlobalResourcesIsSet {
 		conf.EnableGlobalResources = deployArgs.EnableGlobalResources
 	}
+	if deployArgs.EnablePipelineInstancesIsSet {
+		conf.EnablePipelineInstances = deployArgs.EnablePipelineInstances
+	}
 
 	var isDomainUpdated bool
 	if deployArgs.DomainIsSet {

@@ -34,6 +34,8 @@ type Args struct {
 	DBSizeIsSet                    bool
 	EnableGlobalResources          bool
 	EnableGlobalResourcesIsSet     bool
+	EnablePipelineInstances        bool
+	EnablePipelineInstancesIsSet   bool
 	Namespace                      string
 	NamespaceIsSet                 bool
 	AllowIPs                       string
@@ -49,7 +51,7 @@ type Args struct {
 	GithubAuthClientSecret      string
 	GithubAuthClientSecretIsSet bool
 	// GithubAuthIsSet is true if the user has specified both the --github-auth-client-secret and --github-auth-client-id flags
-	GithubAuthIsSet bool
+	GithubAuthIsSet                bool
 	MicrosoftAuthClientID          string
 	MicrosoftAuthClientIDIsSet     bool
 	MicrosoftAuthClientSecret      string
@@ -58,7 +60,7 @@ type Args struct {
 	MicrosoftAuthTenantIsSet       bool
 	// MicrosoftAuthIsSet is true if the user has specified both the --microsoft-auth-client-secret and --microsoft-auth-client-id flags
 	MicrosoftAuthIsSet bool
-	Tags            cli.StringSlice
+	Tags               cli.StringSlice
 	// TagsIsSet is true if the user has specified tags using --tags
 	TagsIsSet        bool
 	Spot             bool
@@ -88,6 +90,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.RegionIsSet = true
 			case "enable-global-resources":
 				a.EnableGlobalResourcesIsSet = true
+			case "enable-pipeline-instances":
+				a.EnablePipelineInstancesIsSet = true
 			case "domain":
 				a.DomainIsSet = true
 			case "tls-cert":
