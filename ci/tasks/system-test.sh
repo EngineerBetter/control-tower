@@ -52,7 +52,8 @@ echo "DEPLOY WITH A USER PROVIDED CERT, CUSTOM DOMAIN, DEFAULT WORKERS, DEFAULT 
   --spot=false \
   --tls-cert "$(cat out/"$custom_domain".crt)" \
   --tls-key "$(cat out/"$custom_domain".key)" \
-  --enable-global-resources=true
+  --enable-global-resources=true \
+  --enable-pipeline-instances=true
 
 sleep 60
 
@@ -83,11 +84,15 @@ assertDbCorrect
 assertNetworkCidrsCorrect
 assertConfigBucketVersioned
 assertBucketRegion
-echo "MADE IT TO LINE 86 IN system-test.sh"
-# Check Concourse global resources is enabled
+
+echo "MADE IT TO LINE 90 IN system-test.sh"
+
+# Check Concourse global resources & pipeline resources are enabled
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
 checkManifestProperty "${global_resources_path}" true
-echo "MADE IT TO LINE 90 IN system-test.sh"
+pipeline_instances_path="/instance_groups/name=web/jobs/name=web/properties/enable_pipeline_instances"
+checkManifestProperty "${pipeline_instances_path}" true
+
 # shellcheck disable=SC2034
 cert="generated-ca-cert.pem"
 # shellcheck disable=SC2034
@@ -110,15 +115,17 @@ waitForBoshLock
   --allow-ips "$(dig +short myip.opendns.com @resolver1.opendns.com)" \
   --workers 2 \
   --worker-size large \
-  --enable-global-resources=false
+  --enable-global-resources=false \
+  --enable-pipeline-instances=false
 
 sleep 60
 
 # Check RDS instance class is still db.t3.small
 assertDbCorrect
 
-# Check Concourse global resources is disabled
+# Check Concourse global resources & pipeline resources are disabled
 checkManifestProperty "${global_resources_path}" false
+checkManifestProperty "${pipeline_instances_path}" false
 
 config=$(./cup info --json "$deployment")
 # shellcheck disable=SC2034

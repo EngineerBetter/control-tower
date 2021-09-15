@@ -45,6 +45,7 @@ type Config struct {
 	DirectorUsername         string `json:"director_username"`
 	Domain                   string `json:"domain"`
 	EnableGlobalResources    bool   `json:"enable_global_resources"`
+	EnablePipelineInstances  bool   `json:"enable_pipeline_instances"`
 	EncryptionKey            string `json:"encryption_key"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
@@ -112,6 +113,7 @@ type ConfigView interface {
 	GetDirectorUsername() string
 	GetDomain() string
 	GetEnableGlobalResources() bool
+	GetEnablePipelineInstances() bool
 	GetEncryptionKey() string
 	GetGithubClientID() string
 	GetGithubClientSecret() string
@@ -273,6 +275,10 @@ func (c Config) GetDomain() string {
 
 func (c Config) GetEnableGlobalResources() bool {
 	return c.EnableGlobalResources
+}
+
+func (c Config) GetEnablePipelineInstances() bool {
+	return c.EnablePipelineInstances
 }
 
 func (c Config) GetEncryptionKey() string {
