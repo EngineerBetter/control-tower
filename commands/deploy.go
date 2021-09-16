@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/EngineerBetter/control-tower/terraform"
+	"gopkg.in/urfave/cli.v1"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/certs"
@@ -19,9 +19,8 @@ import (
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
+	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
-
-	cli "gopkg.in/urfave/cli.v1"
 )
 
 const maxAllowedNameLength = 11

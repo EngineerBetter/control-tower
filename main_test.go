@@ -5,35 +5,17 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/onsi/gomega/gbytes"
-	. "github.com/onsi/gomega/gexec"
-)
-
-var (
-	cliPath string
 )
 
 var _ = Describe("control-tower", func() {
-	BeforeSuite(func() {
-		var err error
-
-		cliPath, err = Build("github.com/EngineerBetter/control-tower")
-		Expect(err).ToNot(HaveOccurred(), "Error building source")
-	})
-
-	AfterSuite(func() {
-		CleanupBuildArtifacts()
-	})
-
 	It("displays usage instructions on --help", func() {
-		command := exec.Command(cliPath, "--help")
-		session, err := Start(command, GinkgoWriter, GinkgoWriter)
-		Expect(err).ToNot(HaveOccurred(), "Error running CLI: "+cliPath)
-		Eventually(session).Should(Exit(0))
-		Expect(session.Out).To(Say("Control-Tower - A CLI tool to deploy Concourse CI"))
-		Expect(session.Out).To(Say("deploy, d    Deploys or updates a Concourse"))
-		Expect(session.Out).To(Say("destroy, x   Destroys a Concourse"))
-		Expect(session.Out).To(Say("info, i      Fetches information on a deployed environment"))
-		Expect(session.Out).To(Say("maintain, m  Handles maintenance operations in control-tower"))
+		output, err := exec.Command("go", "run", "github.com/EngineerBetter/control-tower", "--help").CombinedOutput()
+		Expect(err).NotTo(HaveOccurred())
+		outputStr := string(output)
+		Expect(outputStr).To(ContainSubstring("Control-Tower - A CLI tool to deploy Concourse CI"), outputStr)
+		Expect(outputStr).To(ContainSubstring("deploy, d    Deploys or updates a Concourse"), outputStr)
+		Expect(outputStr).To(ContainSubstring("destroy, x   Destroys a Concourse"), outputStr)
+		Expect(outputStr).To(ContainSubstring("info, i      Fetches information on a deployed environment"), outputStr)
+		Expect(outputStr).To(ContainSubstring("maintain, m  Handles maintenance operations in control-tower"), outputStr)
 	})
 })

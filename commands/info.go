@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 
+	"gopkg.in/urfave/cli.v1"
+
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/certs"
 	"github.com/EngineerBetter/control-tower/commands/info"
@@ -16,7 +18,6 @@ import (
 	"github.com/EngineerBetter/control-tower/resource"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
-	"gopkg.in/urfave/cli.v1"
 )
 
 var initialInfoArgs info.Args

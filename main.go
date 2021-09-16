@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/EngineerBetter/control-tower/commands"
 	"github.com/fatih/color"
-
 	"gopkg.in/urfave/cli.v1"
+
+	"github.com/EngineerBetter/control-tower/commands"
 )
 
 // ControlTowerVersion is a compile-time variable set with -ldflags
