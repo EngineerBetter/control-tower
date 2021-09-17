@@ -57,7 +57,7 @@ echo "DEPLOY WITH A USER PROVIDED CERT, CUSTOM DOMAIN, DEFAULT WORKERS, DEFAULT 
 
 sleep 60
 
-echo "MADE IT TO LINE 59 IN system-test.sh"
+
 
 # Check we can log into the BOSH director and SSH into a VM
 # Assigning a subshell to a variable fails fast; eval "$(... doesn't
@@ -65,27 +65,26 @@ info_output="$(./cup info --env "$deployment")"
 eval "$info_output"
 bosh vms
 bosh ssh worker true
-echo "MADE IT TO LINE 67 IN system-test.sh"
+
 config=$(./cup info --json "$deployment")
 # shellcheck disable=SC2034
 username=$(echo "$config" | jq -r '.config.concourse_username')
 # shellcheck disable=SC2034
 password=$(echo "$config" | jq -r '.config.concourse_password')
 echo "$config" | jq -r '.config.concourse_cert' > generated-ca-cert.pem
-echo "MADE IT TO LINE 74 IN system-test.sh"
+
 if [ "$IAAS" = "GCP" ]
 then
   gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
   export CLOUDSDK_CORE_PROJECT=control-tower-233017
 fi
-echo "MADE IT TO LINE 80 IN system-test.sh"
+
 # Check RDS instance class is db.t3.small
 assertDbCorrect
 assertNetworkCidrsCorrect
 assertConfigBucketVersioned
 assertBucketRegion
 
-echo "MADE IT TO LINE 90 IN system-test.sh"
 
 # Check Concourse global resources & pipeline resources are enabled
 global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable_global_resources"
@@ -101,10 +100,10 @@ manifest="$(dirname "$0")/hello.yml"
 job="hello"
 # shellcheck disable=SC2034
 domain=$custom_domain
-echo "MADE IT TO LINE 99 IN system-test.sh"
+
 # Download the right version of fly from Concourse UI
 updateFly "${domain}"
-echo "MADE IT TO LINE 102 IN system-test.sh"
+
 assertPipelineIsSettableAndRunnable
 
 echo "DEPLOY 2 LARGE WORKERS, FIREWALLED TO MY IP"
