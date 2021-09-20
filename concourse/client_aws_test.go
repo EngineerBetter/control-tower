@@ -1,6 +1,7 @@
 package concourse_test
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
 	"io"
