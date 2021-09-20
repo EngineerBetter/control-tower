@@ -648,6 +648,10 @@ output "nat_gateway_ip" {
   value = "${aws_nat_gateway.default.public_ip}"
 }
 
+output "nat_gateway_private_ip" {
+  value = "${aws_nat_gateway.default.private_ip}"
+}
+
 output "public_subnet_id" {
   value = "${aws_subnet.public.id}"
 }
