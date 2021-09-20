@@ -46,6 +46,7 @@ type Config struct {
 	Domain                   string `json:"domain"`
 	EnableGlobalResources    bool   `json:"enable_global_resources"`
 	EnablePipelineInstances  bool   `json:"enable_pipeline_instances"`
+	InfluxDbRetention        string `json:"influx_db_retention_period"`
 	EncryptionKey            string `json:"encryption_key"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
@@ -114,6 +115,7 @@ type ConfigView interface {
 	GetDomain() string
 	GetEnableGlobalResources() bool
 	GetEnablePipelineInstances() bool
+	GetInfluxDbRetention() string
 	GetEncryptionKey() string
 	GetGithubClientID() string
 	GetGithubClientSecret() string
@@ -275,6 +277,10 @@ func (c Config) GetDomain() string {
 
 func (c Config) GetEnableGlobalResources() bool {
 	return c.EnableGlobalResources
+}
+
+func (c Config) GetInfluxDbRetention() string {
+	return c.InfluxDbRetention
 }
 
 func (c Config) GetEnablePipelineInstances() bool {

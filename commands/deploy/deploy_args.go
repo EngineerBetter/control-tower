@@ -36,6 +36,8 @@ type Args struct {
 	EnableGlobalResourcesIsSet     bool
 	EnablePipelineInstances        bool
 	EnablePipelineInstancesIsSet   bool
+	InfluxDbRetention              string
+	InfluxDbRetentionIsSet         bool
 	Namespace                      string
 	NamespaceIsSet                 bool
 	AllowIPs                       string
@@ -92,6 +94,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.EnableGlobalResourcesIsSet = true
 			case "enable-pipeline-instances":
 				a.EnablePipelineInstancesIsSet = true
+			case "influxdb-retention-period":
+				a.InfluxDbRetentionIsSet = true
 			case "domain":
 				a.DomainIsSet = true
 			case "tls-cert":

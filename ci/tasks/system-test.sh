@@ -53,7 +53,8 @@ echo "DEPLOY WITH A USER PROVIDED CERT, CUSTOM DOMAIN, DEFAULT WORKERS, DEFAULT 
   --tls-cert "$(cat out/"$custom_domain".crt)" \
   --tls-key "$(cat out/"$custom_domain".key)" \
   --enable-global-resources=true \
-  --enable-pipeline-instances=true
+  --enable-pipeline-instances=true \
+  --influxdb-retention-period 7d
 
 sleep 60
 
@@ -91,6 +92,8 @@ global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable
 checkManifestProperty "${global_resources_path}" true
 pipeline_instances_path="/instance_groups/name=web/jobs/name=web/properties/enable_pipeline_instances"
 checkManifestProperty "${pipeline_instances_path}" true
+pipeline_instances_path="/instance_groups/name=web/jobs/name=web/properties/influx_db_retention_period"
+checkManifestProperty "${influx_db_retention_period_path}" "7d"
 
 # shellcheck disable=SC2034
 cert="generated-ca-cert.pem"

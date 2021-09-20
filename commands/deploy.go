@@ -106,6 +106,12 @@ var deployFlags = []cli.Flag{
 		Destination: &initialDeployArgs.EnablePipelineInstances,
 	},
 	cli.StringFlag{
+		Name:        "influxdb-retention-period",
+		Usage:       "(optional) Sets influxdb retention period. (default: 28d)",
+		EnvVar:      "INFLUXDB_RETENTION_PERIOD",
+		Destination: &initialDeployArgs.InfluxDbRetention,
+	},
+	cli.StringFlag{
 		Name:        "db-size",
 		Usage:       "(optional) Size of Concourse RDS instance. Can be small, medium, large, xlarge, 2xlarge, or 4xlarge",
 		EnvVar:      "DB_SIZE",
