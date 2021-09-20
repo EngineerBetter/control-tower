@@ -156,7 +156,7 @@ resource_types:
     repository: ljfranklin/terraform-resource
     tag: "0.13.5"
 
-- name: github-release-resource
+- name: github-release
   type: registry-image
   source:
     repository: concourse/github-release-resource
