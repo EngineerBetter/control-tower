@@ -4,7 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
+
+	"github.com/go-acme/lego/v4/lego"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/gbytes"
+	. "github.com/tjarratt/gcounterfeiter"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
@@ -21,12 +26,16 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/terraform/terraformfakes"
-	"github.com/go-acme/lego/v4/lego"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
-	. "github.com/tjarratt/gcounterfeiter"
 )
+
+//go:embed fixtures/director-state.json
+var directorStateFixture []byte
+
+//go:embed fixtures/director-creds.yml
+var directorCredsFixture []byte
+
+//go:embed fixtures/private-key.pem
+var privateKeyFixture string
 
 var _ = Describe("client", func() {
 	var buildClient func() concourse.IClient
@@ -36,7 +45,6 @@ var _ = Describe("client", func() {
 	var args *deploy.Args
 	var configInBucket, configAfterLoad, configAfterCreateEnv config.Config
 	var ipChecker func() (string, error)
-	var directorStateFixture, directorCredsFixture []byte
 	var tfInputVarsFactory *concoursefakes.FakeTFInputVarsFactory
 	var flyClient *flyfakes.FakeIClient
 	var terraformCLI *terraformfakes.FakeCLIInterface
@@ -126,12 +134,6 @@ var _ = Describe("client", func() {
 	}
 
 	BeforeEach(func() {
-		var err error
-		directorStateFixture, err = ioutil.ReadFile("fixtures/director-state.json")
-		Expect(err).ToNot(HaveOccurred())
-		directorCredsFixture, err = ioutil.ReadFile("fixtures/director-creds.yml")
-		Expect(err).ToNot(HaveOccurred())
-
 		certGenerator := func(c func(u *certs.User) (*lego.Client, error), caName string, provider iaas.Provider, ip ...string) (*certs.Certs, error) {
 			actions = append(actions, fmt.Sprintf("generating cert ca: %s, cn: %s", caName, ip))
 			return &certs.Certs{
@@ -192,42 +194,16 @@ var _ = Describe("client", func() {
 			DirectorUsername:         "admin",
 			EncryptionKey:            "123456789a123456789b123456789c",
 			IAAS:                     "AWS",
-			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEA2spClkDkFfy2c91Z7N3AImPf0v3o5OoqXUS6nE2NbV2bP/o7
-Oa3KnpzeQ5DBmW3EW7tuvA4bAHxPuk25T9tM8jiItg0TNtMlxzFYVxFq8jMmokEi
-sMVbjh9XIZptyZHbZzsJsbaP/xOGHSQNYwH/7qnszbPKN82zGwrsbrGh1hRMATbU
-S+oor1XTLWGKuLs72jWJK864RW/WiN8eNfk7on1Ugqep4hnXLQjrgbOOxeX7/Pap
-VEExC63c1FmZjLnOc6mLbZR07qM9jj5fmR94DzcliF8SXIvp6ERDMYtnI7gAC4XA
-ZgATsS0rkb5t7dxsaUl0pHfU9HlhbMciN3bJrwIDAQABAoIBADQIWiGluRjJixKv
-F83PRvxmyDpDjHm0fvLDf6Xgg7v4wQ1ME326KS/jmrBy4rf8dPBj+QfcSuuopMVn
-6qRlQT1x2IGDRoiJWriusZWzXL3REGUSHI/xv75jEbO6KFYBzC4Wyk1rX3+IQyL3
-Cf/738QAwYKCOZtf3jKWPHhu4lAo/rq6FY/okWMybaAXajCTF2MgJcmMm73jIgk2
-6A6k9Cobs7XXNZVogAUsHU7bgnkfxYgz34UTZu0FDQRGf3MpHeWp32dhw9UAaFz7
-nfoBVxU1ppqM4TCdXvezKgi8QV6imvDyD67/JNUn0B06LKMbAIK/mffA9UL8CXkc
-YSj5AIECgYEA/b9MVy//iggMAh+DZf8P+fS79bblVamdHsU8GvHEDdIg0lhBl3pQ
-Nrpi63sXVIMz52BONKLJ/c5/wh7xIiApOMcu2u+2VjN00dqpivasERf0WbgSdvMS
-Gi+0ofG0kF94W7z8Z1o9rT4Wn9wxuqkRLLp3A5CkpjzlEnPVoW9X2I8CgYEA3LuD
-ZpL2dRG5sLA6ahrJDZASk4cBaQGcYpx/N93dB3XlCTguPIJL0hbt1cwwhgCQh6cu
-B0mDWsiQIMwET7bL5PX37c1QBh0rPqQsz8/T7jNEDCnbWDWQSaR8z6sGJCWEkWzo
-AtzvPkTj75bDsYG0KVlYMfNJyYHZJ5ECJ08ZTOECgYEA5rLF9X7uFdC7GjMMg+8h
-119qhDuExh0vfIpV2ylz1hz1OkiDWfUaeKd8yBthWrTuu64TbEeU3eyguxzmnuAe
-mkB9mQ/X9wdRbnofKviZ9/CPeAKixwK3spcs4w+d2qTyCHYKBO1GpfuNFkpb7BlK
-RCBDlDotd/ZlTiGCWQOiGoECgYEAmM/sQUf+/b8+ubbXSfuvMweKBL5TWJn35UEI
-xemACpkw7fgJ8nQV/6VGFFxfP3YGmRNBR2Q6XtA5D6uOVI1tjN5IPUaFXyY0eRJ5
-v4jW5LJzKqSTqPa0JHeOvMpe3wlmRLOLz+eabZaN4qGSa0IrMvEaoMIYVDvj1YOL
-ZSFal6ECgYBDXbrmvF+G5HoASez0WpgrHxf3oZh+gP40rzwc94m9rVP28i8xTvT9
-5SrvtzwjMsmQPUM/ttaBnNj1PvmOTTmRhXVw5ztAN9hhuIwVm8+mECFObq95NIgm
-sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
------END RSA PRIVATE KEY-----`,
-			Project:                "happymeal",
-			PublicKey:              "example-public-key",
-			RDSDefaultDatabaseName: "bosh_abcdefgh",
-			RDSInstanceClass:       "db.t3.medium",
-			RDSPassword:            "s3cret",
-			RDSUsername:            "admin",
-			Region:                 "eu-west-1",
-			Spot:                   true,
-			TFStatePath:            "example-path",
+			PrivateKey:               privateKeyFixture,
+			Project:                  "happymeal",
+			PublicKey:                "example-public-key",
+			RDSDefaultDatabaseName:   "bosh_abcdefgh",
+			RDSInstanceClass:         "db.t3.medium",
+			RDSPassword:              "s3cret",
+			RDSUsername:              "admin",
+			Region:                   "eu-west-1",
+			Spot:                     true,
+			TFStatePath:              "example-path",
 			//These come from fixtures/director-creds.yml
 			CredhubUsername:          "credhub-cli",
 			CredhubPassword:          "f4b12bc0166cad1bc02b050e4e79ac4c",
@@ -239,7 +215,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 
 		//Mutations we expect to have been done after load
 		configAfterLoad = configInBucket
-		configAfterLoad.AllowIPs = "\"0.0.0.0/0\""
+		configAfterLoad.AllowIPs = `"0.0.0.0/0"`
 		configAfterLoad.AllowIPsUnformatted = "0.0.0.0/0"
 		configAfterLoad.SourceAccessIP = "192.0.2.0"
 		configAfterLoad.NetworkCIDR = "10.0.0.0/16"
@@ -317,54 +293,37 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 
 	Describe("Destroy", func() {
 		It("Loads the config file", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
-
+			Expect(buildClient().Destroy()).To(Succeed())
 			Expect(actions).To(ContainElement("loading config file"))
 		})
+
 		It("Builds IAAS environment", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
+			Expect(buildClient().Destroy()).To(Succeed())
 			Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configInBucket))
 		})
-		It("Loads terraform output", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
 
+		It("Loads terraform output", func() {
+			Expect(buildClient().Destroy()).To(Succeed())
 			Expect(actions).To(ContainElement("initializing terraform outputs"))
 		})
-		It("Deletes the vms in the vpcs", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
 
+		It("Deletes the vms in the vpcs", func() {
+			Expect(buildClient().Destroy()).To(Succeed())
 			Expect(actions).To(ContainElement("deleting vms in vpc-112233"))
 		})
 
 		It("Destroys the terraform infrastructure", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
-
+			Expect(buildClient().Destroy()).To(Succeed())
 			Expect(actions).To(ContainElement("destroying terraform"))
 		})
 
 		It("Deletes the config", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
-
+			Expect(buildClient().Destroy()).To(Succeed())
 			Expect(actions).To(ContainElement("deleting config"))
 		})
 
 		It("Prints a destroy success message", func() {
-			client := buildClient()
-			err := client.Destroy()
-			Expect(err).ToNot(HaveOccurred())
-
+			Expect(buildClient().Destroy()).To(Succeed())
 			Eventually(stdout).Should(gbytes.Say("DESTROY SUCCESSFUL"))
 		})
 	})
@@ -374,41 +333,33 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			configClient.HasAssetReturnsOnCall(0, true, nil)
 			configClient.LoadAssetReturnsOnCall(0, directorCredsFixture, nil)
 		})
-		It("Loads the config file", func() {
-			client := buildClient()
-			_, err := client.FetchInfo()
-			Expect(err).ToNot(HaveOccurred())
 
+		It("Loads the config file", func() {
+			_, err := buildClient().FetchInfo()
+			Expect(err).NotTo(HaveOccurred())
 			Expect(actions).To(ContainElement("loading config file"))
 		})
+
 		It("calls TFInputVarsFactory, having populated AllowIPs and SourceAccessIPs", func() {
-			client := buildClient()
-			err := client.Deploy()
-			Expect(err).ToNot(HaveOccurred())
+			Expect(buildClient().Deploy()).To(Succeed())
 			Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configAfterLoad))
 		})
 
 		It("Loads terraform output", func() {
-			client := buildClient()
-			_, err := client.FetchInfo()
-			Expect(err).ToNot(HaveOccurred())
-
+			_, err := buildClient().FetchInfo()
+			Expect(err).NotTo(HaveOccurred())
 			Expect(actions).To(ContainElement("initializing terraform outputs"))
 		})
 
 		It("Checks that the IP is whitelisted", func() {
-			client := buildClient()
-			_, err := client.FetchInfo()
-			Expect(err).ToNot(HaveOccurred())
-
+			_, err := buildClient().FetchInfo()
+			Expect(err).NotTo(HaveOccurred())
 			Expect(actions).To(ContainElement("checking security group for IP"))
 		})
 
 		It("Retrieves the BOSH instances", func() {
-			client := buildClient()
-			_, err := client.FetchInfo()
-			Expect(err).ToNot(HaveOccurred())
-
+			_, err := buildClient().FetchInfo()
+			Expect(err).NotTo(HaveOccurred())
 			Expect(actions).To(ContainElement("listing bosh instances"))
 		})
 
@@ -420,8 +371,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			})
 
 			It("Returns a meaningful error", func() {
-				client := buildClient()
-				_, err := client.FetchInfo()
+				_, err := buildClient().FetchInfo()
 				Expect(err).To(MatchError("Do you need to add your IP 1.2.3.4 to the control-tower-happymeal-director security group/source range entry for director firewall (for ports 22, 6868, and 25555)?"))
 			})
 		})
