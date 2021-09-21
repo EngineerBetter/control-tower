@@ -92,7 +92,7 @@ global_resources_path="/instance_groups/name=web/jobs/name=web/properties/enable
 checkManifestProperty "${global_resources_path}" true
 pipeline_instances_path="/instance_groups/name=web/jobs/name=web/properties/enable_pipeline_instances"
 checkManifestProperty "${pipeline_instances_path}" true
-pipeline_instances_path="/instance_groups/name=web/jobs/name=web/properties/influx_db_retention_period"
+influx_db_retention_period_path="/instance_groups/name=web/jobs/name=web/properties/influx_db_retention_period"
 checkManifestProperty "${influx_db_retention_period_path}" "7d"
 
 # shellcheck disable=SC2034
