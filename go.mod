@@ -12,13 +12,12 @@ require (
 	github.com/fatih/color v1.12.0
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-acme/lego/v4 v4.4.0
+	github.com/go-acme/lego/v4 v4.5.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/imdario/mergo v0.3.12
 	github.com/lib/pq v1.10.3
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1
-	github.com/miekg/dns v1.1.43 // indirect
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.16.0
 	github.com/square/certstrap v1.2.0
@@ -30,7 +29,6 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.57.0
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.4.0
 )
