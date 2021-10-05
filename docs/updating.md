@@ -11,3 +11,7 @@ This pipeline is paused by default, so just unpause it in the UI to enable the f
 Patch releases of `control-tower` are compiled, tested and released automatically whenever a new stemcell or component release appears on [bosh.io](https://bosh.io).
 
 To upgrade your Concourse, grab the [latest release](https://github.com/EngineerBetter/control-tower/releases/latest) and run `control-tower deploy --iaas [AWS|GCP] <your-project-name>` again.
+
+## Rolling back to an old release
+
+If necessary, you can release a specific version of Control Tower by pinning the `control-tower-release` resource to a selected version before running the `self-update` job. Don't forget to unpin it later to resume receiving regular updates.
