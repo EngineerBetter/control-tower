@@ -109,6 +109,7 @@ var deployFlags = []cli.Flag{
 		Name:        "influxdb-retention-period",
 		Usage:       "(optional) Sets influxdb retention period. (default: 28d)",
 		EnvVar:      "INFLUXDB_RETENTION_PERIOD",
+		Value:       "28d",
 		Destination: &initialDeployArgs.InfluxDbRetention,
 	},
 	cli.StringFlag{
