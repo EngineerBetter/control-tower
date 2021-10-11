@@ -5,7 +5,7 @@ require (
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.25.0
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
-	github.com/aws/aws-sdk-go v1.40.45
+	github.com/aws/aws-sdk-go v1.41.0
 	github.com/cloudfoundry/bosh-cli v6.4.1+incompatible
 	github.com/cloudfoundry/bosh-utils v0.0.273 // indirect
 	github.com/cppforlife/go-patch v0.2.0
