@@ -96,7 +96,7 @@ github.com/cloudfoundry/bosh-utils/system
 github.com/cppforlife/go-patch/patch
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/fatih/color v1.12.0
+# github.com/fatih/color v1.13.0
 ## explicit
 github.com/fatih/color
 # github.com/fsnotify/fsnotify v1.5.1
@@ -155,10 +155,9 @@ github.com/jmespath/go-jmespath
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
-# github.com/mattn/go-colorable v0.1.8
+# github.com/mattn/go-colorable v0.1.9
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.13
-## explicit
+# github.com/mattn/go-isatty v0.0.14
 github.com/mattn/go-isatty
 # github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1
 ## explicit
@@ -175,7 +174,7 @@ github.com/nxadm/tail/ratelimiter
 github.com/nxadm/tail/util
 github.com/nxadm/tail/watch
 github.com/nxadm/tail/winfile
-# github.com/onsi/ginkgo v1.16.4
+# github.com/onsi/ginkgo v1.16.5
 ## explicit
 github.com/onsi/ginkgo
 github.com/onsi/ginkgo/config
