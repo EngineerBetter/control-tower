@@ -6,4 +6,19 @@ inputs:
 - name: control-tower-ops
 
 run:
-  path: control-tower/ci/tasks/unit-test.sh
+  dir: control-tower
+  path: bash
+  args:
+  - -euo
+  - pipefail
+  - -c
+  - |
+    go install github.com/maxbrunsfeld/counterfeiter/v6
+
+    cp ../control-tower-ops/manifest.yml opsassets/assets/
+    cp -R ../control-tower-ops/ops opsassets/assets/
+    cp ../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json opsassets/assets/
+    cp ../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json opsassets/assets/
+
+    go generate ./...
+    go test ./...
