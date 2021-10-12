@@ -178,9 +178,9 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	if deployArgs.EnablePipelineInstancesIsSet {
 		conf.EnablePipelineInstances = deployArgs.EnablePipelineInstances
 	}
-	if deployArgs.InfluxDbRetentionIsSet {
-		conf.InfluxDbRetention = deployArgs.InfluxDbRetention
-	}
+
+	// Flag has default value, hence it's always set.
+	conf.InfluxDbRetention = deployArgs.InfluxDbRetention
 
 	var isDomainUpdated bool
 	if deployArgs.DomainIsSet {
