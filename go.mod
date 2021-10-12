@@ -18,7 +18,7 @@ require (
 	github.com/lib/pq v1.10.3
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1
 	github.com/miekg/dns v1.1.43 // indirect
-	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.16.0
 	github.com/square/certstrap v1.2.0
 	github.com/stretchr/testify v1.7.0
