@@ -3,8 +3,9 @@ package bosh
 import (
 	"net"
 
-	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 	"github.com/apparentlymart/go-cidr/cidr"
+
+	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 )
 
 // Deploy deploys a new Bosh director or converges an existing deployment

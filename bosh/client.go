@@ -7,13 +7,11 @@ import (
 	"io"
 	"os/exec"
 
-	"github.com/EngineerBetter/control-tower/iaas"
-
-	"github.com/EngineerBetter/control-tower/terraform"
-
 	"github.com/EngineerBetter/control-tower/bosh/internal/boshcli"
 	"github.com/EngineerBetter/control-tower/bosh/internal/workingdir"
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/iaas"
+	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/util"
 )
 

@@ -8,9 +8,8 @@ import (
 	"io"
 	"net"
 	"net/url"
-	"sync"
-
 	"strings"
+	"sync"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/net/proxy"
