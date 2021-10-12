@@ -85,6 +85,9 @@ type Args struct {
 
 // MarkSetFlags is marking the IsSet DeployArgs
 func (a *Args) MarkSetFlags(c FlagSetChecker) error {
+	// Always set as influxdb-retention-period has default value
+	a.InfluxDbRetentionIsSet = true
+
 	for _, f := range c.FlagNames() {
 		if c.IsSet(f) {
 			switch f {
@@ -94,8 +97,6 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.EnableGlobalResourcesIsSet = true
 			case "enable-pipeline-instances":
 				a.EnablePipelineInstancesIsSet = true
-			case "influxdb-retention-period":
-				a.InfluxDbRetentionIsSet = true
 			case "domain":
 				a.DomainIsSet = true
 			case "tls-cert":
