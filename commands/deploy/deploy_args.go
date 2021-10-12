@@ -286,12 +286,9 @@ func (a Args) validateNetworkRanges() error {
 }
 
 func (a Args) validateTags() error {
+	pattern := regexp.MustCompile(`\w+=\w+`)
 	for _, tag := range a.Tags {
-		m, err := regexp.MatchString(`\w+=\w+`, tag)
-		if err != nil {
-			return err
-		}
-		if !m {
+		if !pattern.MatchString(tag) {
 			return fmt.Errorf("`%v` is not in the format `key=value`", tag)
 		}
 	}
