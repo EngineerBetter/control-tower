@@ -10381,6 +10381,12 @@ var awsusgovPartition = partition{
 				"us-gov-west-1": endpoint{},
 			},
 		},
+		"kendra": service{
+
+			Endpoints: endpoints{
+				"us-gov-west-1": endpoint{},
+			},
+		},
 		"kinesis": service{
 
 			Endpoints: endpoints{
@@ -11527,6 +11533,7 @@ var awsisoPartition = partition{
 				"us-iso-east-1": endpoint{
 					Protocols: []string{"http", "https"},
 				},
+				"us-iso-west-1": endpoint{},
 			},
 		},
 		"ec2": service{
