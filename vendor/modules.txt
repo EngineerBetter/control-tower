@@ -297,7 +297,7 @@ golang.org/x/oauth2/google/internal/externalaccount
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sys v0.0.0-20211004093028-2c5d950f24ef
+# golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/internal/unsafeheader
@@ -349,7 +349,7 @@ golang.org/x/tools/internal/typesinternal
 # golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 golang.org/x/xerrors
 golang.org/x/xerrors/internal
-# google.golang.org/api v0.58.0
+# google.golang.org/api v0.59.0
 ## explicit
 google.golang.org/api/compute/v1
 google.golang.org/api/dns/v1
