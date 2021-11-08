@@ -329,6 +329,50 @@ func isValid(c cacheEntry) bool {
 	return c.err == nil && c.cfg != nil
 }
 
+// InvalidError is an error from an instance connection that is invalid because
+// its recent refresh attempt has failed, its TLS config is invalid, etc.
+type InvalidError struct {
+	// instance is the instance connection name
+	instance string
+	// err is what makes the instance invalid
+	err error
+	// hasTLS reports whether the instance has a valid TLS config
+	hasTLS bool
+}
+
+func (e *InvalidError) Error() string {
+	if e.hasTLS {
+		return e.instance + ": " + e.err.Error()
+	}
+	return e.instance + ": missing TLS config, " + e.err.Error()
+}
+
+// InvalidInstances reports whether the existing connections have valid
+// configuration.
+func (c *Client) InvalidInstances() []*InvalidError {
+	c.cacheL.RLock()
+	defer c.cacheL.RUnlock()
+
+	var invalid []*InvalidError
+	for instance, entry := range c.cfgCache {
+		var refreshInProgress bool
+		select {
+		case <-entry.done:
+			// refresh has already completed
+		default:
+			refreshInProgress = true
+		}
+		if !isValid(entry) && !refreshInProgress {
+			invalid = append(invalid, &InvalidError{
+				instance: instance,
+				err:      entry.err,
+				hasTLS:   entry.cfg != nil,
+			})
+		}
+	}
+	return invalid
+}
+
 func needsRefresh(e cacheEntry, refreshCfgBuffer time.Duration) bool {
 	if e.done == nil { // no refresh started
 		return true
@@ -424,7 +468,18 @@ func (c *Client) Dial(instance string) (net.Conn, error) {
 	return c.DialContext(context.Background(), instance)
 }
 
+// ErrUnexpectedFailure indicates the internal refresh operation failed unexpectedly.
+var ErrUnexpectedFailure = errors.New("ErrUnexpectedFailure")
+
 func (c *Client) tryConnect(ctx context.Context, addr, instance string, cfg *tls.Config) (net.Conn, error) {
+	// When multiple dial attempts start in quick succession, the internal
+	// refresh logic is sometimes subject to a race condition. If the first
+	// attempt fails on a handshake error, it will invalidate the cached config.
+	// In some cases, a second dial attempt will initiate a connection with an
+	// invalid config. This check fails fast in such cases.
+	if addr == "" {
+		return nil, ErrUnexpectedFailure
+	}
 	dial := c.selectDialer()
 	conn, err := dial(ctx, "tcp", addr)
 	if err != nil {
@@ -445,13 +500,7 @@ func (c *Client) tryConnect(ctx context.Context, addr, instance string, cfg *tls
 		logging.Verbosef("KeepAlive not supported: long-running tcp connections may be killed by the OS.")
 	}
 
-	ret := tls.Client(conn, cfg)
-	if err := ret.Handshake(); err != nil {
-		ret.Close()
-		c.invalidateCfg(cfg, instance)
-		return nil, err
-	}
-	return ret, nil
+	return c.connectTLS(ctx, conn, instance, cfg)
 }
 
 func (c *Client) selectDialer() func(context.Context, string, string) (net.Conn, error) {
