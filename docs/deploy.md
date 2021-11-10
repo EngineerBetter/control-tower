@@ -4,6 +4,8 @@ A new deploy from scratch takes approximately 20 minutes.
 
 All flags are optional. Configuration settings provided via flags will persist in later deployments unless explicitly overriden.
 
+In order for flags to be parsed correctly, the name of your deployment should be placed at the end of your command.
+
 ## Custom Domains
 
 |**Flag**|**Description**|**Environment Variable**|
