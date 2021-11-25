@@ -10,7 +10,7 @@ cloud.google.com/go/internal/version
 ## explicit
 cloud.google.com/go/storage
 cloud.google.com/go/storage/internal/apiv2
-# github.com/GoogleCloudPlatform/cloudsql-proxy v1.26.0
+# github.com/GoogleCloudPlatform/cloudsql-proxy v1.27.0
 ## explicit
 github.com/GoogleCloudPlatform/cloudsql-proxy/logging
 github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/certs
@@ -329,7 +329,7 @@ golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/mod/internal/lazyregexp
 golang.org/x/mod/module
 golang.org/x/mod/semver
-# golang.org/x/net v0.0.0-20211005001312-d4b1ae081e3b
+# golang.org/x/net v0.0.0-20211020060615-d418f374d309
 ## explicit
 golang.org/x/net/bpf
 golang.org/x/net/context
