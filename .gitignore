@@ -11,3 +11,5 @@ bindata.go
 .vs/
 .pre-commit-config.yaml
 opsassets/assets/
+.terraform/
+.envrc
