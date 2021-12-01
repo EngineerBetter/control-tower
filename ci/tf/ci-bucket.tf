@@ -1,14 +1,15 @@
 variable "region" {}
-variable "bucket-name" {
-}
+
+variable "bucket-name" {}
 
 provider "aws" {
-  region = "${var.region}"
+  region = var.region
 }
 
 resource "aws_s3_bucket" "ci" {
-  bucket        = "${var.bucket-name}"
-  acl           = "private"
+  bucket = var.bucket-name
+  acl    = "private"
+
   versioning {
     enabled = true
   }
