@@ -154,7 +154,7 @@ resource_types:
   type: docker-image
   source:
     repository: ljfranklin/terraform-resource
-    tag: "0.13.5"
+    tag: "0.14.10"
 
 - name: github-release
   type: registry-image

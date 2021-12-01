@@ -1,3 +1,7 @@
+terraform {
+  backend "s3" {}
+}
+
 variable "region" {}
 
 variable "bucket-name" {}
