@@ -2,7 +2,7 @@ module github.com/EngineerBetter/control-tower
 
 require (
 	cloud.google.com/go/storage v1.18.2
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.27.0
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.27.1
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.42.20
