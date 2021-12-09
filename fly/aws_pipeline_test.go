@@ -15,6 +15,7 @@ resources:
 - name: control-tower-release
   type: github-release
   icon: github
+  check_every: 30m
   source:
     user: engineerbetter
     repository: control-tower
