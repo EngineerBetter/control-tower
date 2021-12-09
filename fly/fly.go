@@ -14,9 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/EngineerBetter/control-tower/iaas"
-
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/util"
 )
 
