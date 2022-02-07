@@ -1,8 +1,9 @@
 module github.com/EngineerBetter/control-tower
 
 require (
+	cloud.google.com/go/iam v0.1.1 // indirect
 	cloud.google.com/go/storage v1.18.2
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.27.1
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.28.1
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.42.25
@@ -27,7 +28,7 @@ require (
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/api v0.63.0
+	google.golang.org/api v0.66.0
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.4.0
 )
