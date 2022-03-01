@@ -31,24 +31,6 @@
     user: ((db_username))
 
 - type: replace
-  path: /instance_groups/name=bosh/properties/registry/db
-  value:
-    adapter: postgres
-    database: ((db_name))
-    host: ((db_host))
-    password: ((db_password))
-    port: ((db_port))
-    user: ((db_username))
-
-- type: replace
-  path: /instance_groups/name=bosh/properties/registry/http/user
-  value: admin
-
-- type: replace
-  path: /instance_groups/name=bosh/properties/registry/username
-  value: admin
-
-- type: replace
   path: /resource_pools/name=vms/cloud_properties/instance_type
   value: t3.small
 
