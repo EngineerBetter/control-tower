@@ -8,7 +8,7 @@ All flags are optional
 
 ### Rotating Director NATS Certificate
 
-> Note if the NATS certificate is already expired you will need to [do a manual process](docs/troubleshooting.md#nats-certificate-is-expired) instead of using this command.
+> Note if the NATS certificate is already expired you will need to [do a manual process](troubleshooting.md#nats-certificate-is-expired) instead of using this command.
 
 |**Flag**|**Description**
 |:-|:-|
