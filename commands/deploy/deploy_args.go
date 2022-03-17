@@ -65,7 +65,7 @@ type Args struct {
 	NoMetrics          bool
 	NoMetricsIsSet     bool
 	Tags               cli.StringSlice
-	// TagsIsSet is true if the user has specified tags using --tags
+	// TagsIsSet is true if the user has specified tags using --add-tag
 	TagsIsSet        bool
 	Spot             bool
 	SpotIsSet        bool
@@ -302,7 +302,7 @@ func (a Args) validateTags() error {
 	return nil
 }
 
-// FlagSetChecker allows us to find out if flags were set, adn what the names of all flags are
+// FlagSetChecker allows us to find out if flags were set, and what the names of all flags are
 type FlagSetChecker interface {
 	IsSet(name string) bool
 	FlagNames() (names []string)
