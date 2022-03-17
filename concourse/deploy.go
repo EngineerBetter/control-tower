@@ -134,21 +134,6 @@ func (client *Client) deployBoshAndPipeline(c config.ConfigView, tfOutputs terra
 	// When we are deploying for the first time rather than updating
 	// ensure that the pipeline is set _after_ the concourse is deployed
 
-	// TODO: Surely this can be removed as it is overriden on line 153 anyway?
-	bp := BoshParams{
-		CredhubPassword:          c.GetCredhubPassword(),
-		CredhubAdminClientSecret: c.GetCredhubAdminClientSecret(),
-		CredhubCACert:            c.GetCredhubCACert(),
-		CredhubURL:               c.GetCredhubURL(),
-		CredhubUsername:          c.GetCredhubUsername(),
-		ConcourseUsername:        c.GetConcourseUsername(),
-		ConcoursePassword:        c.GetConcoursePassword(),
-		GrafanaPassword:          c.GetGrafanaPassword(),
-		DirectorUsername:         c.GetDirectorUsername(),
-		DirectorPassword:         c.GetDirectorPassword(),
-		DirectorCACert:           c.GetDirectorCACert(),
-	}
-
 	bp, err := client.deployBosh(c, tfOutputs, false)
 	if err != nil {
 		return bp, err
