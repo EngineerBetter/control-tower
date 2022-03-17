@@ -165,7 +165,7 @@ Credhub credentials:
 	CA Cert:
 		{{ .Config.CredhubCACert | replace "\n" "\n\t\t"}}
 
-Grafana credentials:
+Grafana credentials (if metrics are enabled):
 	username: {{.Config.ConcourseUsername}}
 	password: {{.Config.ConcoursePassword}}
 	URL:      https://{{.Config.Domain}}:3000

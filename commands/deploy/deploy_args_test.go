@@ -22,6 +22,7 @@ func TestDeployArgs_Validate(t *testing.T) {
 		MicrosoftAuthClientID:     "",
 		MicrosoftAuthClientSecret: "",
 		MicrosoftAuthTenant:       "",
+		NoMetricsIsSet:            false,
 		IAAS:                      "AWS",
 		IAASIsSet:                 true,
 		SelfUpdate:                false,
@@ -222,6 +223,18 @@ func TestDeployArgs_Validate(t *testing.T) {
 			},
 			wantErr:     true,
 			expectedErr: "worker-type is only defined on AWS",
+		},
+		{
+			name: "Setting --no-metrics and --influxdb-retention-period together is an error",
+			modification: func() Args {
+				args := defaultFields
+				args.NoMetricsIsSet = true
+				args.InfluxDbRetentionIsSet = true
+				args.InfluxDbRetention = "3d"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "no-metrics is invalid when used with influxdb-retention-period",
 		},
 	}
 	for _, tt := range tests {

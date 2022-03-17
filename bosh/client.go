@@ -137,6 +137,7 @@ func saveFilesToWorkingDir(workingdir workingdir.IClient, provider iaas.Provider
 		concourseGitHubAuthFilename:       concourseGitHubAuth,
 		concourseMicrosoftAuthFilename:    concourseMicrosoftAuth,
 		concourseEphemeralWorkersFilename: concourseEphemeralWorkers,
+		concourseNoMetricsFilename:        concourseNoMetrics,
 		credsFilename:                     creds,
 		extraTagsFilename:                 extraTags,
 	}

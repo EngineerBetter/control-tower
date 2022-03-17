@@ -576,7 +576,7 @@ func (client *Client) setHostedZone(c config.ConfigView, domain string) (HostedZ
 const deployMsg = `DEPLOY SUCCESSFUL. Log in with:
 fly --target {{.Project}} login{{if not .ConcourseUserProvidedCert}} --insecure{{end}} --concourse-url https://{{.Domain}} --username {{.ConcourseUsername}} --password {{.ConcoursePassword}}
 
-Metrics available at https://{{.Domain}}:3000 using the same username and password
+Metrics available at https://{{.Domain}}:3000 using the same username and password (unless you have disabled metrics with --no-metrics)
 
 Log into credhub with:
 eval "$(control-tower info --region {{.Region}} {{ if ne .Namespace .Region }} --namespace {{ .Namespace }} {{ end }} --iaas {{ .IAAS }} --env {{.Project}})"

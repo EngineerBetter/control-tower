@@ -6,6 +6,14 @@ function assertGrafanaPresent() {
     echo "Grafana is running on Port 3000"
 }
 
+# Check that grafana isn't there
+function assertGrafanaAbsent() {
+    if curl -ksLo/dev/null --connect-timeout 5 --fail https://"$domain":3000; then
+        echo "Grafana exists when it shouldn't"
+        exit 1
+    fi
+}
+
 # Check that the expected dashboard is present
 function assertConcourseDashboardPresent() {
     uid=$(curl -ks --fail "https://${username}:${password}@${domain}:3000/api/search?query=concourse" | jq -r '.[0].uid')

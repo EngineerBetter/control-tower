@@ -162,3 +162,8 @@ assertConcourseDashboardPresent
 configureWhitelist
 
 ./cup info "$deployment" > /dev/null
+
+./cup deploy "$deployment" \
+  --no-metrics
+
+assertGrafanaAbsent

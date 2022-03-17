@@ -227,6 +227,12 @@ var deployFlags = []cli.Flag{
 		EnvVar:      "RDS_SUBNET_RANGE2",
 		Destination: &initialDeployArgs.RDS2CIDR,
 	},
+	cli.BoolFlag{
+		Name:        "no-metrics",
+		Usage:       "(optional) Don't deploy the metrics stack colocated on the web VM (default: true)",
+		EnvVar:      "NO_METRICS",
+		Destination: &initialDeployArgs.NoMetrics,
+	},
 }
 
 func deployAction(c *cli.Context, deployArgs deploy.Args, provider iaas.Provider) error {

@@ -1,0 +1,41 @@
+- type: remove
+  path: /variables/name=influxdb_password
+
+- type: remove
+  path: /releases/name=grafana
+
+- type: remove
+  path: /releases/name=influxdb
+
+- type: remove
+  path: /releases/name=telegraf
+
+- type: remove
+  path: /releases/name=telegraf-agent
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=web/properties/influxdb
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=influxdb
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=telegraf
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=telegraf-agent
+
+- type: remove
+  path: /instance_groups/name=web/jobs/name=grafana
+
+- type: remove
+  path: /instance_groups/name=worker/jobs/name=telegraf
+
+- type: remove
+  path: /instance_groups/name=worker/jobs/name=telegraf-agent
+
+- type: remove
+  path: /influx_db
+
+- type: remove
+  path: /telegraf

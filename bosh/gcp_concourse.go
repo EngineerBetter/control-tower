@@ -117,6 +117,10 @@ func (client *GCPClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseEphemeralWorkersFilename))
 	}
 
+	if client.config.MetricsIsDisabled() {
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseNoMetricsFilename))
+	}
+
 	t, err1 := client.buildTagsYaml(vmap["project"], "concourse")
 	if err1 != nil {
 		return nil, err

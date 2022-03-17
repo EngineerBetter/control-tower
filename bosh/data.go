@@ -18,6 +18,7 @@ const (
 	concourseGitHubAuthFilename       = "github-auth.yml"
 	concourseMicrosoftAuthFilename    = "microsoft-auth.yml"
 	concourseEphemeralWorkersFilename = "ephemeral_workers.yml"
+	concourseNoMetricsFilename        = "no_metrics.yml"
 	extraTagsFilename                 = "extra_tags.yml"
 	uaaCertFilename                   = "uaa-cert.yml"
 )
@@ -37,6 +38,9 @@ var (
 
 	//go:embed assets/ops/ephemeral_workers.yml
 	concourseEphemeralWorkers []byte
+
+	//go:embed assets/ops/no_metrics.yml
+	concourseNoMetrics []byte
 
 	//go:embed assets/ops/extra_tags.yml
 	extraTags []byte

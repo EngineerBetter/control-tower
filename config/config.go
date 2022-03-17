@@ -59,6 +59,7 @@ type Config struct {
 	MicrosoftTenant          string `json:"microsoft_tenant"`
 	Namespace                string `json:"namespace"`
 	NetworkCIDR              string `json:"network_cidr"`
+	NoMetrics                bool   `json:"no_metrics"`
 	PrivateCIDR              string `json:"private_cidr"`
 	PrivateKey               string `json:"private_key"`
 	Project                  string `json:"project"`
@@ -149,6 +150,7 @@ type ConfigView interface {
 	IsGithubAuthSet() bool
 	IsMicrosoftAuthSet() bool
 	IsSpot() bool
+	MetricsIsDisabled() bool
 }
 
 func (c Config) GetAllowIPs() string {
@@ -417,4 +419,8 @@ func (c Config) IsMicrosoftAuthSet() bool {
 
 func (c Config) IsSpot() bool {
 	return c.VMProvisioningType == SPOT
+}
+
+func (c Config) MetricsIsDisabled() bool {
+	return c.NoMetrics
 }

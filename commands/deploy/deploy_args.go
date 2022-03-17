@@ -62,6 +62,8 @@ type Args struct {
 	MicrosoftAuthTenantIsSet       bool
 	// MicrosoftAuthIsSet is true if the user has specified both the --microsoft-auth-client-secret and --microsoft-auth-client-id flags
 	MicrosoftAuthIsSet bool
+	NoMetrics          bool
+	NoMetricsIsSet     bool
 	Tags               cli.StringSlice
 	// TagsIsSet is true if the user has specified tags using --tags
 	TagsIsSet        bool
@@ -150,6 +152,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.RDS1CIDRIsSet = true
 			case "rds-subnet-range2":
 				a.RDS2CIDRIsSet = true
+			case "no-metrics":
+				a.NoMetricsIsSet = true
 			default:
 				return fmt.Errorf("flag %q is not supported by deployment flags", f)
 			}
@@ -246,6 +250,10 @@ func (a Args) validateWorkerFields() error {
 }
 
 func (a Args) validateWebFields() error {
+	if a.NoMetricsIsSet && a.InfluxDbRetentionIsSet {
+		return fmt.Errorf("no-metrics is invalid when used with influxdb-retention-period")
+	}
+
 	for _, size := range WebSizes {
 		if size == a.WebSize {
 			return nil

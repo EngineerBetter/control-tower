@@ -179,3 +179,13 @@ If any of the following 5 flags is set, all the required ones from this group ne
 |`--rds-subnet-range2 value`|Customise second rds network CIDR (must be within --vpc-network-range)<br>(required for AWS)|`RDS_SUBNET_RANGE2`|
 
 > All the ranges above should be in the CIDR format of IPv4/Mask. The sizes can vary as long as `vpc-network-range` is big enough to contain all others (in case IAAS is AWS). The smallest CIDR for `public` and `private` subnets is a /28. The smallest CIDR for `rds1` and `rds2` subnets is a /29
+
+## Disable Colocated Metrics Stack
+
+By default Control Tower colocates Grafana, Telegraf, and InfluxDB into the Concourse VMs. This can cause uneccessary resource usage if you don't use these features. It can be disabled with:
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--no-metrics`|Don't deploy the metrics stack colocated on the web VM (default: true)|`NO_METRICS`|
+
+> In order to re-enable metrics after using this flag you need to deploy with `--no-metrics=false`.

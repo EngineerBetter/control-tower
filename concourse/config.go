@@ -103,6 +103,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.IAAS = provider.IAAS().String()
 	conf.PrivateKey = strings.TrimSpace(string(privateKey))
 	conf.PublicKey = strings.TrimSpace(string(publicKey))
+	conf.NoMetrics = false
 	conf.RDSInstanceClass = provider.DBType("small")
 	conf.RDSPassword = passwordGenerator(defaultPasswordLength)
 	conf.RDSUsername = "admin" + passwordGenerator(7)
@@ -161,6 +162,9 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.MicrosoftClientID = deployArgs.MicrosoftAuthClientID
 		conf.MicrosoftClientSecret = deployArgs.MicrosoftAuthClientSecret
 		conf.MicrosoftTenant = deployArgs.MicrosoftAuthTenant
+	}
+	if deployArgs.NoMetricsIsSet {
+		conf.NoMetrics = deployArgs.NoMetrics
 	}
 	if deployArgs.TagsIsSet {
 		conf.Tags = deployArgs.Tags
