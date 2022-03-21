@@ -26,7 +26,7 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 ## explicit
 github.com/asaskevich/govalidator
-# github.com/aws/aws-sdk-go v1.42.25
+# github.com/aws/aws-sdk-go v1.43.18
 ## explicit
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/arn
