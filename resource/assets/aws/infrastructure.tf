@@ -485,6 +485,7 @@ resource "aws_security_group" "atc" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  // HTTP
   ingress {
     from_port   = 80
     to_port     = 80
@@ -493,6 +494,7 @@ resource "aws_security_group" "atc" {
     cidr_blocks = ["${aws_eip.nat.public_ip}/32", "${aws_eip.atc.public_ip}/32", {{ .AllowIPs }}]
   }
 
+  // HTTPS
   ingress {
     from_port   = 443
     to_port     = 443
@@ -500,13 +502,7 @@ resource "aws_security_group" "atc" {
     cidr_blocks = ["${aws_eip.nat.public_ip}/32", "${aws_eip.atc.public_ip}/32", {{ .AllowIPs }}]
   }
 
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["${aws_eip.nat.public_ip}/32", {{ .AllowIPs }}]
-  }
-
+  // Credhub
   ingress {
     from_port   = 8844
     to_port     = 8844
@@ -514,6 +510,7 @@ resource "aws_security_group" "atc" {
     cidr_blocks = ["${aws_eip.nat.public_ip}/32", "${aws_eip.atc.public_ip}/32", {{ .AllowIPs }}]
   }
 
+  // UAA
   ingress {
     from_port   = 8443
     to_port     = 8443
@@ -521,12 +518,23 @@ resource "aws_security_group" "atc" {
     cidr_blocks = ["${aws_eip.nat.public_ip}/32", "${aws_eip.atc.public_ip}/32", {{ .AllowIPs }}]
   }
 
+{{if .MetricsEnabled}}
+  // Grafana
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_eip.nat.public_ip}/32", {{ .AllowIPs }}]
+  }
+
+  // Telegraf/InfluxDB
   ingress {
     from_port   = 8086
     to_port     = 8086
     protocol    = "tcp"
     cidr_blocks = ["${var.private_cidr}"]
   }
+{{ end }}
 }
 
 resource "aws_route_table" "rds" {

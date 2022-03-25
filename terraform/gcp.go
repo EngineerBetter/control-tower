@@ -23,6 +23,7 @@ type GCPInputVars struct {
 	DNSRecordSetPrefix string
 	ExternalIP         string
 	GCPCredentialsJSON string
+	MetricsEnabled     bool
 	Namespace          string
 	PrivateCIDR        string
 	Project            string

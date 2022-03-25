@@ -18,6 +18,7 @@ type AWSInputVars struct {
 	Deployment             string
 	HostedZoneID           string
 	HostedZoneRecordPrefix string
+	MetricsEnabled         bool
 	Namespace              string
 	NetworkCIDR            string
 	PrivateCIDR            string

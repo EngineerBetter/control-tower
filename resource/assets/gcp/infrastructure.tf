@@ -227,9 +227,15 @@ resource "google_compute_firewall" "from-private" {
     // "25250", "25777", "4222", "22" == BOSH
     // https://github.com/cloudfoundry/bosh-deployment#security-groups
     // 2222 == worker registration
-    // 8086 == telegraf
-    ports = ["25250", "25777", "4222", "22", "2222","8086"]
+    ports = ["25250", "25777", "4222", "22", "2222"]
   }
+{{if .MetricsEnabled}}
+  allow {
+    protocol = "tcp"
+    // Telegraf/InfluxDB
+    ports = ["8086"]
+  }
+{{ end }}
   allow {
     protocol = "udp"
     ports = ["53"]
@@ -247,8 +253,15 @@ resource "google_compute_firewall" "atc-services" {
   source_ranges = ["${google_compute_address.nat_ip.address}/32", "${google_compute_address.atc_ip.address}/32", {{ .AllowIPs }}]
   allow {
     protocol = "tcp"
-    ports = ["3000", "8844"]
+    ports = ["8844"]
   }
+{{if .MetricsEnabled}}
+  allow {
+    protocol = "tcp"
+    // Grafana
+    ports = ["3000"]
+  }
+{{ end }}
 }
 
 resource "google_compute_firewall" "internal" {

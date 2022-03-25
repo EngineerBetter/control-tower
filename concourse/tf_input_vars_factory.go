@@ -43,6 +43,7 @@ func NewTFInputVarsFactory(provider iaas.Provider) (TFInputVarsFactory, error) {
 type AWSInputVarsFactory struct{}
 
 func (f *AWSInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputVars {
+	metricsEnabled := !c.MetricsIsDisabled()
 	return &terraform.AWSInputVars{
 		NetworkCIDR:            c.GetNetworkCIDR(),
 		PublicCIDR:             c.GetPublicCIDR(),
@@ -53,6 +54,7 @@ func (f *AWSInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputV
 		Deployment:             c.GetDeployment(),
 		HostedZoneID:           c.GetHostedZoneID(),
 		HostedZoneRecordPrefix: c.GetHostedZoneRecordPrefix(),
+		MetricsEnabled:         metricsEnabled,
 		Namespace:              c.GetNamespace(),
 		Project:                c.GetProject(),
 		PublicKey:              c.GetPublicKey(),
@@ -76,6 +78,7 @@ type GCPInputVarsFactory struct {
 }
 
 func (f *GCPInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputVars {
+	metricsEnabled := !c.MetricsIsDisabled()
 	return &terraform.GCPInputVars{
 		AllowIPs:           c.GetAllowIPs(),
 		ConfigBucket:       c.GetConfigBucket(),
@@ -88,6 +91,7 @@ func (f *GCPInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputV
 		DNSRecordSetPrefix: c.GetHostedZoneRecordPrefix(),
 		ExternalIP:         c.GetSourceAccessIP(),
 		GCPCredentialsJSON: f.credentialsPath,
+		MetricsEnabled:     metricsEnabled,
 		Namespace:          c.GetNamespace(),
 		Project:            f.project,
 		Region:             f.region,
