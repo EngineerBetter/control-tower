@@ -163,6 +163,7 @@ var _ = Describe("client", func() {
 			DirectorUsername:         "admin",
 			EncryptionKey:            "123456789a123456789b123456789c",
 			IAAS:                     "AWS",
+			NoMetrics:                false,
 			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA2spClkDkFfy2c91Z7N3AImPf0v3o5OoqXUS6nE2NbV2bP/o7
 Oa3KnpzeQ5DBmW3EW7tuvA4bAHxPuk25T9tM8jiItg0TNtMlxzFYVxFq8jMmokEi
@@ -313,6 +314,7 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 						Deployment:             configAfterLoad.Deployment,
 						HostedZoneID:           configAfterLoad.HostedZoneID,
 						HostedZoneRecordPrefix: configAfterLoad.HostedZoneRecordPrefix,
+						MetricsEnabled:         !configAfterLoad.NoMetrics,
 						Namespace:              configAfterLoad.Namespace,
 						NetworkCIDR:            configAfterLoad.NetworkCIDR,
 						PrivateCIDR:            configAfterLoad.PrivateCIDR,
@@ -537,6 +539,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 						Deployment:             configAfterLoad.Deployment,
 						HostedZoneID:           configAfterLoad.HostedZoneID,
 						HostedZoneRecordPrefix: configAfterLoad.HostedZoneRecordPrefix,
+						MetricsEnabled:         !configAfterLoad.NoMetrics,
 						Namespace:              configAfterLoad.Namespace,
 						NetworkCIDR:            configAfterLoad.NetworkCIDR,
 						PrivateCIDR:            configAfterLoad.PrivateCIDR,
@@ -631,6 +634,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					EncryptionKey:            "generatedPassword32",
 					IAAS:                     "AWS",
 					NetworkCIDR:              "10.0.0.0/16",
+					NoMetrics:                false,
 					PrivateCIDR:              "10.0.1.0/24",
 					PrivateKey:               "private",
 					Project:                  "initial-deployment",
@@ -728,6 +732,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					Deployment:             defaultGeneratedConfig.Deployment,
 					HostedZoneID:           defaultGeneratedConfig.HostedZoneID,
 					HostedZoneRecordPrefix: defaultGeneratedConfig.HostedZoneRecordPrefix,
+					MetricsEnabled:         !configAfterLoad.NoMetrics,
 					Namespace:              defaultGeneratedConfig.Namespace,
 					Project:                defaultGeneratedConfig.Project,
 					PublicKey:              defaultGeneratedConfig.PublicKey,
