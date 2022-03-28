@@ -19,13 +19,13 @@ require (
 	github.com/lib/pq v1.10.4
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.17.0
+	github.com/onsi/gomega v1.19.0
 	github.com/square/certstrap v1.2.0
 	github.com/stretchr/testify v1.7.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/mod v0.5.0 // indirect
-	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	google.golang.org/api v0.70.0
 	gopkg.in/urfave/cli.v1 v1.20.0
