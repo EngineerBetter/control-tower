@@ -93,6 +93,13 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubAuthFilename))
 	}
 
+	if client.config.IsMainGithubAuthSet() {
+		vmap["main_github_users"] = client.config.GetMainGithubUsers()
+		vmap["main_github_teams"] = client.config.GetMainGithubTeams()
+		vmap["main_github_orgs"] = client.config.GetMainGithubOrgs()
+		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseMainGitHubAuthFilename))
+	}
+
 	if client.config.IsMicrosoftAuthSet() {
 		vmap["microsoft_client_id"] = client.config.GetMicrosoftClientID()
 		vmap["microsoft_client_secret"] = client.config.GetMicrosoftClientSecret()

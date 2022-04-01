@@ -54,6 +54,9 @@ type Config struct {
 	HostedZoneID             string `json:"hosted_zone_id"`
 	HostedZoneRecordPrefix   string `json:"hosted_zone_record_prefix"`
 	IAAS                     string `json:"iaas"`
+	MainGithubUsers          string `json:"main_github_users"`
+	MainGithubTeams          string `json:"main_github_teams"`
+	MainGithubOrgs           string `json:"main_github_orgs"`
 	MicrosoftClientID        string `json:"microsoft_client_id"`
 	MicrosoftClientSecret    string `json:"microsoft_client_secret"`
 	MicrosoftTenant          string `json:"microsoft_tenant"`
@@ -124,6 +127,9 @@ type ConfigView interface {
 	GetHostedZoneID() string
 	GetHostedZoneRecordPrefix() string
 	GetIAAS() string
+	GetMainGithubUsers() string
+	GetMainGithubTeams() string
+	GetMainGithubOrgs() string
 	GetMicrosoftClientID() string
 	GetMicrosoftClientSecret() string
 	GetMicrosoftTenant() string
@@ -148,6 +154,7 @@ type ConfigView interface {
 	GetWorkerType() string
 	IsBitbucketAuthSet() bool
 	IsGithubAuthSet() bool
+	IsMainGithubAuthSet() bool
 	IsMicrosoftAuthSet() bool
 	IsSpot() bool
 	MetricsIsDisabled() bool
@@ -317,6 +324,18 @@ func (c Config) GetIAAS() string {
 	return c.IAAS
 }
 
+func (c Config) GetMainGithubUsers() string {
+	return c.MainGithubUsers
+}
+
+func (c Config) GetMainGithubTeams() string {
+	return c.MainGithubTeams
+}
+
+func (c Config) GetMainGithubOrgs() string {
+	return c.MainGithubOrgs
+}
+
 func (c Config) GetMicrosoftClientID() string {
 	return c.MicrosoftClientID
 }
@@ -411,6 +430,10 @@ func (c Config) IsBitbucketAuthSet() bool {
 
 func (c Config) IsGithubAuthSet() bool {
 	return c.GithubClientID != "" && c.GithubClientSecret != ""
+}
+
+func (c Config) IsMainGithubAuthSet() bool {
+	return c.MainGithubUsers != "" || c.MainGithubTeams != "" || c.MainGithubOrgs != ""
 }
 
 func (c Config) IsMicrosoftAuthSet() bool {

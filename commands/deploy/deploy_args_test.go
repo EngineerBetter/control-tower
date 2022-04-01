@@ -236,6 +236,108 @@ func TestDeployArgs_Validate(t *testing.T) {
 			wantErr:     true,
 			expectedErr: "no-metrics is invalid when used with influxdb-retention-period",
 		},
+		{
+			name: "-invalid is not a valid GitHub user for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubUsers = "-invalid"
+				args.MainGithubUsersIsSet = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "Invalid user \"-invalid\" provided to --main-team-github-users",
+		},
+		{
+			name: "valid users not passed as comma separated are not valid for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubUsers = "a-user other-user"
+				args.MainGithubUsersIsSet = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "Invalid user \"a-user other-user\" provided to --main-team-github-users",
+		},
+		{
+			name: "valid users passed as comma serparated with spaces are valid for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubUsers = "a-user, other-user"
+				args.MainGithubUsersIsSet = true
+				return args
+			},
+			wantErr: false,
+		},
+		{
+			name: "not-an-@rg is not a valid GitHub org for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubOrgs = "not-an-@rg"
+				args.MainGithubOrgsIsSet = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "Invalid org \"not-an-@rg\" provided to --main-team-github-orgs",
+		},
+		{
+			name: "teams without orgs are not a valid for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubTeams = "a-team"
+				args.MainGithubTeamsIsSet = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "Invalid team \"a-team\" does not contain org",
+		},
+		{
+			name: "not-a-tea^ is not a valid GitHub team for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubTeams = "valid-org:not-a-te@m"
+				args.MainGithubTeamsIsSet = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "Invalid team \"valid-org:not-a-te@m\" provided to --main-team-github-teams",
+		},
+		{
+			name: "invalid-*rg is not a valid GitHub org for a GitHub team in main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubTeams = "valid-org:valid-team, invalid-*rg:other-team"
+				args.MainGithubTeamsIsSet = true
+				return args
+			},
+			wantErr:     true,
+			expectedErr: "Invalid org \"invalid-*rg\" provided for team \"other-team\" in --main-team-github-teams",
+		},
+		{
+			name: "comma separated valid org:team combos without spaces are valid for main auth",
+			modification: func() Args {
+				args := defaultFields
+				args.GithubAuthIsSet = true
+				args.MainGithubAuthIsSet = true
+				args.MainGithubTeams = "valid-org:valid-team,other-org:other-team"
+				args.MainGithubTeamsIsSet = true
+				return args
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

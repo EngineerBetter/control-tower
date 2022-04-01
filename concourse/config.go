@@ -2,6 +2,7 @@ package concourse
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -132,6 +133,13 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		return config.Config{}, false, fmt.Errorf("error updating IP addresses to allow access from: [%v]", err)
 	}
 
+	// Moved validation here from deploy_args to support checking for github auth in config as well as in deployargs
+	if deployArgs.MainGithubAuthIsSet {
+		if !deployArgs.GithubAuthIsSet && conf.GithubClientID == "" || conf.GithubClientSecret == "" {
+			return config.Config{}, false, errors.New("Main team github auth flags can only be used when github auth is also configured")
+		}
+	}
+
 	conf.AllowIPs = allowedIPs
 	conf.AllowIPsUnformatted = deployArgs.AllowIPs
 
@@ -157,6 +165,11 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	if deployArgs.GithubAuthIsSet {
 		conf.GithubClientID = deployArgs.GithubAuthClientID
 		conf.GithubClientSecret = deployArgs.GithubAuthClientSecret
+	}
+	if deployArgs.MainGithubAuthIsSet {
+		conf.MainGithubUsers = deployArgs.MainGithubUsers
+		conf.MainGithubTeams = deployArgs.MainGithubTeams
+		conf.MainGithubOrgs = deployArgs.MainGithubOrgs
 	}
 	if deployArgs.MicrosoftAuthIsSet {
 		conf.MicrosoftClientID = deployArgs.MicrosoftAuthClientID

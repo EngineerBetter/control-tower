@@ -163,6 +163,24 @@ var deployFlags = []cli.Flag{
 		Destination: &initialDeployArgs.GithubAuthClientSecret,
 	},
 	cli.StringFlag{
+		Name:        "main-team-github-users",
+		Usage:       "(optional) Comma separated list of github users that are authorised for the main team",
+		EnvVar:      "MAIN_TEAM_GITHUB_USERS",
+		Destination: &initialDeployArgs.MainGithubUsers,
+	},
+	cli.StringFlag{
+		Name:        "main-team-github-teams",
+		Usage:       "(optional) Comma separated list of github teams that are authorised for the main team",
+		EnvVar:      "MAIN_TEAM_GITHUB_TEAMS",
+		Destination: &initialDeployArgs.MainGithubTeams,
+	},
+	cli.StringFlag{
+		Name:        "main-team-github-orgs",
+		Usage:       "(optional) Comma separated list of github orgs that are authorised for the main team",
+		EnvVar:      "MAIN_TEAM_GITHUB_ORGS",
+		Destination: &initialDeployArgs.MainGithubOrgs,
+	},
+	cli.StringFlag{
 		Name:        "microsoft-auth-client-id",
 		Usage:       "(optional) Client ID for a microsoft OAuth application - Used for Microsoft Auth",
 		EnvVar:      "MICROSOFT_AUTH_CLIENT_ID",

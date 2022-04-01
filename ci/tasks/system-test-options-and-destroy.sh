@@ -58,6 +58,7 @@ trapCustomCleanup
 
 addBitBucketFlagsToArgs
 addGitHubFlagsToArgs
+addMainTeamGitHubAuthFlags
 addMicrosoftFlagsToArgs
 addTagsFlagsToArgs
 args+=(--region "$region")
@@ -69,6 +70,7 @@ updateFly "${domain}"
 assertTagsSet
 assertBitBucketAuthConfigured
 assertGitHubAuthConfigured
+assertMainTeamGitHubConfigured
 assertMicrosoftAuthConfigured
 
 # Check Concourse global resources & pipeline instances are disabled (as it should be by default) & influxdb standard retention is 28d

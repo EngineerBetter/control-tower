@@ -122,6 +122,39 @@ control-tower deploy \
 |`--github-auth-client-id value`|Client ID for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_ID`|
 |`--github-auth-client-secret value`|Client Secret for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_SECRET`|
 
+## Main Team GitHub Auth
+
+It is an error to use any of these flags witout also setting GitHub Auth (or having set it on a previous deploy)
+
+|**Flag**|**Description**|**Environment Variable**|
+|:-|:-|:-|
+|`--main-team-github-users value`|Comma separated list of github users that are authorised for the main team|`MAIN_TEAM_GITHUB_USERS`|
+|`--main-team-github-teams value`|Comma separated list of github teams that are authorised for the main team|`MAIN_TEAM_GITHUB_TEAMS`|
+|`--main-team-github-orgs value`|Comma separated list of github orgs that are authorised for the main team|`MAIN_TEAM_GITHUB_ORGS`|
+
+Example:
+
+```sh
+control-tower deploy \
+  --iaas aws \
+  --domain my-ci.engineerbetter.com \
+  --github-auth-client-id some-id \
+  --github-auth-client-secret some-secret \
+  --main-team-github-users "a-user,b-user" \
+  --main-team-github-teams foo:bar \
+  --main-team-github-orgs EngineerBetter \
+  my-ci
+```
+
+Results in:
+
+```sh
+fly -t my-ci teams -d
+
+name/role   users                                       groups
+main/owner  github:a-user,github:b-user,local:admin     github:engineerbetter,github:foo:bar
+```
+
 ## Microsoft Auth
 
 |**Flag**|**Description**|**Environment Variable**|

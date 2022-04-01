@@ -53,7 +53,15 @@ type Args struct {
 	GithubAuthClientSecret      string
 	GithubAuthClientSecretIsSet bool
 	// GithubAuthIsSet is true if the user has specified both the --github-auth-client-secret and --github-auth-client-id flags
-	GithubAuthIsSet                bool
+	GithubAuthIsSet      bool
+	MainGithubUsers      string
+	MainGithubUsersIsSet bool
+	MainGithubTeams      string
+	MainGithubTeamsIsSet bool
+	MainGithubOrgs       string
+	MainGithubOrgsIsSet  bool
+	// MainGithubAuthIsSet is true if any main team github auth flags have been used
+	MainGithubAuthIsSet            bool
 	MicrosoftAuthClientID          string
 	MicrosoftAuthClientIDIsSet     bool
 	MicrosoftAuthClientSecret      string
@@ -128,6 +136,12 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
 				a.GithubAuthClientSecretIsSet = true
+			case "main-team-github-users":
+				a.MainGithubUsersIsSet = true
+			case "main-team-github-teams":
+				a.MainGithubTeamsIsSet = true
+			case "main-team-github-orgs":
+				a.MainGithubOrgsIsSet = true
 			case "microsoft-auth-client-id":
 				a.MicrosoftAuthClientIDIsSet = true
 			case "microsoft-auth-client-secret":
@@ -162,6 +176,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 	a.BitbucketAuthIsSet = c.IsSet("bitbucket-auth-client-id") && c.IsSet("bitbucket-auth-client-secret")
 	a.GithubAuthIsSet = c.IsSet("github-auth-client-id") && c.IsSet("github-auth-client-secret")
 	a.MicrosoftAuthIsSet = c.IsSet("microsoft-auth-client-id") && c.IsSet("microsoft-auth-client-secret")
+	a.MainGithubAuthIsSet = c.IsSet("main-team-github-users") || c.IsSet("main-team-github-teams") || c.IsSet("main-team-github-orgs")
 
 	return nil
 }
@@ -207,6 +222,12 @@ func (a Args) Validate() error {
 
 	if err := a.validateTags(); err != nil {
 		return err
+	}
+
+	if a.MainGithubAuthIsSet {
+		if err := a.validateMainAuth(); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -297,6 +318,58 @@ func (a Args) validateTags() error {
 	for _, tag := range a.Tags {
 		if !pattern.MatchString(tag) {
 			return fmt.Errorf("`%v` is not in the format `key=value`", tag)
+		}
+	}
+	return nil
+}
+
+func (a Args) validateMainAuth() error {
+	if err := a.validateMainAuthFlags(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This is a partial validation check based on the format expected by Concourse:
+// https://concourse-ci.org/github-auth.html#configuring-main-team-authorization
+// as well as some of the validation rules imposed by GitHub:
+// https://github.com/dead-claudia/github-limits
+// We don't check all rules (such as reserved names) as we're just trying to save
+// users from typos rather than from creating invalid entities in GitHub
+func (a Args) validateMainAuthFlags() error {
+	userAndOrgRe := regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9-]*$`)
+	teamRe := regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
+
+	if a.MainGithubUsersIsSet {
+		for _, user := range strings.Split(a.MainGithubUsers, ",") {
+			if userAndOrgRe.FindString(strings.TrimSpace(user)) == "" {
+				return fmt.Errorf("Invalid user %q provided to --main-team-github-users", user)
+			}
+		}
+	}
+
+	if a.MainGithubOrgsIsSet {
+		for _, org := range strings.Split(a.MainGithubOrgs, ",") {
+			if userAndOrgRe.FindString(strings.TrimSpace(org)) == "" {
+				return fmt.Errorf("Invalid org %q provided to --main-team-github-orgs", org)
+			}
+		}
+	}
+
+	if a.MainGithubTeamsIsSet {
+		for _, orgTeam := range strings.Split(a.MainGithubTeams, ",") {
+			parts := strings.Split(orgTeam, ":")
+			org := strings.TrimSpace(parts[0])
+			if len(parts) != 2 {
+				return fmt.Errorf("Invalid team %q does not contain org", org)
+			}
+			team := strings.TrimSpace(parts[1])
+			if userAndOrgRe.FindString(org) == "" {
+				return fmt.Errorf("Invalid org %q provided for team %q in --main-team-github-teams", org, team)
+			}
+			if teamRe.FindString(team) == "" {
+				return fmt.Errorf("Invalid team %q provided to --main-team-github-teams", orgTeam)
+			}
 		}
 	}
 	return nil

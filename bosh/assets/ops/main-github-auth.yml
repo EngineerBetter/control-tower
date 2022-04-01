@@ -1,0 +1,6 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/main_team/auth/github?
+  value:
+    users: [((main_github_users))]
+    teams: [((main_github_teams))]
+    orgs: [((main_github_orgs))]
