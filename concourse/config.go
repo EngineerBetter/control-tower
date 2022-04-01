@@ -135,7 +135,7 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 
 	// Moved validation here from deploy_args to support checking for github auth in config as well as in deployargs
 	if deployArgs.MainGithubAuthIsSet {
-		if !deployArgs.GithubAuthIsSet && conf.GithubClientID == "" || conf.GithubClientSecret == "" {
+		if !deployArgs.GithubAuthIsSet && (conf.GithubClientID == "" || conf.GithubClientSecret == "") {
 			return config.Config{}, false, errors.New("Main team github auth flags can only be used when github auth is also configured")
 		}
 	}
