@@ -324,7 +324,7 @@ resource "google_compute_address" "nat_ip" {
 
 resource "google_sql_database_instance" "director" {
   name = "${var.db_name}"
-  database_version = "POSTGRES_13"
+  database_version = "POSTGRES_9_6"
   region       = "${var.region}"
 
   settings {
