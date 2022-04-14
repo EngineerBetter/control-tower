@@ -16,6 +16,7 @@ import (
 	"github.com/EngineerBetter/control-tower/commands/deploy"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/credhub"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
@@ -482,6 +483,7 @@ func buildClient(name, version string, deployArgs deploy.Args, provider iaas.Pro
 		util.GenerateSSHKeyPair,
 		version,
 		versionFile,
+		credhub.NewClient,
 	)
 
 	return client, nil

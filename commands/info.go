@@ -13,6 +13,7 @@ import (
 	"github.com/EngineerBetter/control-tower/commands/info"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/credhub"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
@@ -141,6 +142,7 @@ func buildInfoClient(name, version string, infoArgs info.Args, provider iaas.Pro
 		util.GenerateSSHKeyPair,
 		version,
 		versionFile,
+		credhub.NewClient,
 	)
 
 	return client, nil

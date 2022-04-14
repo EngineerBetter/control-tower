@@ -15,6 +15,8 @@ import (
 	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/config/configfakes"
+	"github.com/EngineerBetter/control-tower/credhub"
+	"github.com/EngineerBetter/control-tower/credhub/credhubfakes"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/fly/flyfakes"
 	"github.com/EngineerBetter/control-tower/iaas"
@@ -46,6 +48,8 @@ var _ = Describe("client", func() {
 	var terraformCLI *terraformfakes.FakeCLIInterface
 	var configClient *configfakes.FakeIClient
 	var boshClient *boshfakes.FakeIClient
+	var credhubClient *credhubfakes.FakeIClient
+	var awsClient iaas.Provider
 
 	var setupFakeAwsProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
@@ -219,10 +223,11 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 		}
 
 		flyClient = &flyfakes.FakeIClient{}
-		awsClient := setupFakeAwsProvider()
+		awsClient = setupFakeAwsProvider()
 		otherRegionClient := setupFakeOtherRegionProvider()
 		tfInputVarsFactory = setupFakeTfInputVarsFactory()
 		configClient = &configfakes.FakeIClient{}
+		credhubClient = &credhubfakes.FakeIClient{}
 		terraformCLI = setupFakeTerraformCLI(terraformOutputs)
 
 		boshClientFactory := func(config config.ConfigView, outputs terraform.Outputs, stdout, stderr io.Writer, provider iaas.Provider, versionFile []byte) (bosh.IClient, error) {
@@ -261,6 +266,9 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
 				"some version",
 				versionFile,
+				func(server, id, secret, cert string) (credhub.IClient, error) {
+					return credhubClient, nil
+				},
 			)
 		}
 
@@ -285,6 +293,9 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
 				"some version",
 				versionFile,
+				func(server, id, secret, cert string) (credhub.IClient, error) {
+					return credhubClient, nil
+				},
 			)
 		}
 	})
@@ -416,6 +427,9 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					Expect(configClient).To(HaveReceived("StoreAsset").With("director-state.json", directorStateFixture))
 					Expect(configClient).To(HaveReceived("StoreAsset").With("director-creds.yml", directorCredsFixture))
 					Expect(boshClient).To(HaveReceived("Cleanup"))
+
+					Expect(credhubClient).To(HaveReceived("SetSelfUpdateCreds").With(awsClient, &terraformOutputs))
+
 					Expect(flyClient).To(HaveReceived("SetDefaultPipeline").With(configAfterCreateEnv, false))
 					Expect(configClient).To(HaveReceived("Update").With(configAfterConcourseDeploy))
 				})

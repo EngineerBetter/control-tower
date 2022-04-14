@@ -180,6 +180,54 @@ resource "aws_iam_user_policy" "bosh" {
 EOF
 }
 
+resource "aws_iam_user" "self_update" {
+  name = "${var.deployment}-${var.region}-self-update"
+}
+
+resource "aws_iam_access_key" "self_update" {
+  user = "${var.deployment}-${var.region}-self-update"
+  depends_on = ["aws_iam_user.self_update"]
+}
+
+resource "aws_iam_user_policy" "self_update" {
+  name = "${var.deployment}-${var.region}-self-update"
+  user = "${aws_iam_user.self_update.name}"
+
+  // TODO figure out exactly which ec2 and s3 permissions are needed
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:*"
+                "iam:CreateAccessKey",
+                "iam:CreateUser",
+                "iam:DeleteAccessKey",
+                "iam:DeleteUser",
+                "iam:DeleteUserPolicy",
+                "iam:GetUser",
+                "iam:GetUserPolicy",
+                "iam:ListAccessKeys",
+                "iam:ListGroupsForUser",
+                "iam:PutUserPolicy",
+                "rds:*",
+                "route53:*",
+                "s3:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": "${aws_nat_gateway.default.public_ip}/32"
+                }
+            }
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_vpc" "default" {
   cidr_block = "${var.network_cidr}"
 
@@ -687,6 +735,15 @@ output "bosh_user_access_key_id" {
 
 output "bosh_user_secret_access_key" {
   value     = "${aws_iam_access_key.bosh.secret}"
+  sensitive = true
+}
+
+output "self_update_user_access_key_id" {
+  value = "${aws_iam_access_key.self_update.id}"
+}
+
+output "self_update_user_secret_access_key" {
+  value     = "${aws_iam_access_key.self_update.secret}"
   sensitive = true
 }
 

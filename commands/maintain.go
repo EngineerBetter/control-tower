@@ -12,6 +12,7 @@ import (
 	"github.com/EngineerBetter/control-tower/commands/maintain"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/credhub"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
@@ -120,6 +121,7 @@ func buildMaintainClient(name, version string, maintainArgs maintain.Args, provi
 		util.GenerateSSHKeyPair,
 		version,
 		versionFile,
+		credhub.NewClient,
 	)
 
 	return client, nil

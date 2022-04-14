@@ -52,24 +52,26 @@ type MetadataStringValue struct {
 
 // Metadata represents output from terraform on AWS or GCP
 type AWSOutputs struct {
-	ATCPublicIP              MetadataStringValue `json:"atc_public_ip" valid:"required"`
-	ATCSecurityGroupID       MetadataStringValue `json:"atc_security_group_id" valid:"required"`
-	BlobstoreBucket          MetadataStringValue `json:"blobstore_bucket" valid:"required"`
-	BlobstoreSecretAccessKey MetadataStringValue `json:"blobstore_user_secret_access_key" valid:"required"`
-	BlobstoreUserAccessKeyID MetadataStringValue `json:"blobstore_user_access_key_id" valid:"required"`
-	BoshDBAddress            MetadataStringValue `json:"bosh_db_address" valid:"required"`
-	BoshDBPort               MetadataStringValue `json:"bosh_db_port" valid:"required"`
-	BoshSecretAccessKey      MetadataStringValue `json:"bosh_user_secret_access_key" valid:"required"`
-	BoshUserAccessKeyID      MetadataStringValue `json:"bosh_user_access_key_id" valid:"required"`
-	DirectorKeyPair          MetadataStringValue `json:"director_key_pair" valid:"required"`
-	DirectorPublicIP         MetadataStringValue `json:"director_public_ip" valid:"required"`
-	DirectorSecurityGroupID  MetadataStringValue `json:"director_security_group_id" valid:"required"`
-	NatGatewayIP             MetadataStringValue `json:"nat_gateway_ip" valid:"required"`
-	PrivateSubnetID          MetadataStringValue `json:"private_subnet_id" valid:"required"`
-	PublicSubnetID           MetadataStringValue `json:"public_subnet_id" valid:"required"`
-	SourceAccessIP           MetadataStringValue `json:"source_access_ip"`
-	VMsSecurityGroupID       MetadataStringValue `json:"vms_security_group_id" valid:"required"`
-	VPCID                    MetadataStringValue `json:"vpc_id" valid:"required"`
+	ATCPublicIP               MetadataStringValue `json:"atc_public_ip" valid:"required"`
+	ATCSecurityGroupID        MetadataStringValue `json:"atc_security_group_id" valid:"required"`
+	BlobstoreBucket           MetadataStringValue `json:"blobstore_bucket" valid:"required"`
+	BlobstoreSecretAccessKey  MetadataStringValue `json:"blobstore_user_secret_access_key" valid:"required"`
+	BlobstoreUserAccessKeyID  MetadataStringValue `json:"blobstore_user_access_key_id" valid:"required"`
+	BoshDBAddress             MetadataStringValue `json:"bosh_db_address" valid:"required"`
+	BoshDBPort                MetadataStringValue `json:"bosh_db_port" valid:"required"`
+	BoshSecretAccessKey       MetadataStringValue `json:"bosh_user_secret_access_key" valid:"required"`
+	BoshUserAccessKeyID       MetadataStringValue `json:"bosh_user_access_key_id" valid:"required"`
+	DirectorKeyPair           MetadataStringValue `json:"director_key_pair" valid:"required"`
+	DirectorPublicIP          MetadataStringValue `json:"director_public_ip" valid:"required"`
+	DirectorSecurityGroupID   MetadataStringValue `json:"director_security_group_id" valid:"required"`
+	NatGatewayIP              MetadataStringValue `json:"nat_gateway_ip" valid:"required"`
+	PrivateSubnetID           MetadataStringValue `json:"private_subnet_id" valid:"required"`
+	PublicSubnetID            MetadataStringValue `json:"public_subnet_id" valid:"required"`
+	SelfUpdateSecretAccessKey MetadataStringValue `json:"self_update_user_secret_access_key" valid:"required"`
+	SelfUpdateUserAccessKeyID MetadataStringValue `json:"self_update_user_access_key_id" valid:"required"`
+	SourceAccessIP            MetadataStringValue `json:"source_access_ip"`
+	VMsSecurityGroupID        MetadataStringValue `json:"vms_security_group_id" valid:"required"`
+	VPCID                     MetadataStringValue `json:"vpc_id" valid:"required"`
 }
 
 // AssertValid returns an error if the struct contains any missing fields

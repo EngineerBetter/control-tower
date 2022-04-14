@@ -23,9 +23,9 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_ACCESS_KEY_ID: "access-key"
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
       AWS_REGION: "eu-west-1"
-      AWS_SECRET_ACCESS_KEY: "secret-key"
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
       DEPLOYMENT: "my-deployment"
       IAAS: "AWS"
       NAMESPACE: "prod"
@@ -59,9 +59,9 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_ACCESS_KEY_ID: "access-key"
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
       AWS_REGION: "eu-west-1"
-      AWS_SECRET_ACCESS_KEY: "secret-key"
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
       DEPLOYMENT: "my-deployment"
       IAAS: "AWS"
       NAMESPACE: "prod"

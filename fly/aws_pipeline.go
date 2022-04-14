@@ -2,46 +2,20 @@ package fly
 
 import (
 	"strings"
-
-	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 // AWSPipeline is AWS specific implementation of Pipeline interface
 type AWSPipeline struct {
 	PipelineTemplateParams
-	AWSAccessKeyID     string
-	AWSSecretAccessKey string
-	credsGetter        AWSCredsGetter
 }
 
 // NewAWSPipeline return AWSPipeline
-func NewAWSPipeline(getter AWSCredsGetter) Pipeline {
-	return AWSPipeline{credsGetter: getter}
-}
-
-type AWSCredsGetter = func() (string, string, error)
-
-var getCredsFromSession = func() (string, string, error) {
-	sess, err := session.NewSession()
-	if err != nil {
-		return "", "", err
-	}
-
-	creds, err := sess.Config.Credentials.Get()
-	if err != nil {
-		return "", "", err
-	}
-
-	return creds.AccessKeyID, creds.SecretAccessKey, nil
+func NewAWSPipeline() Pipeline {
+	return AWSPipeline{}
 }
 
 //BuildPipelineParams builds params for AWS control-tower self update pipeline
 func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain, allowIps, iaas string) (Pipeline, error) {
-	accessKeyID, secretAccessKey, err := a.credsGetter()
-	if err != nil {
-		return nil, err
-	}
-
 	return AWSPipeline{
 		PipelineTemplateParams: PipelineTemplateParams{
 			ControlTowerVersion: ControlTowerVersion,
@@ -52,8 +26,6 @@ func (a AWSPipeline) BuildPipelineParams(deployment, namespace, region, domain, 
 			Region:              region,
 			IaaS:                iaas,
 		},
-		AWSAccessKeyID:     accessKeyID,
-		AWSSecretAccessKey: secretAccessKey,
 	}, nil
 }
 
@@ -74,9 +46,9 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_ACCESS_KEY_ID: "{{ .AWSAccessKeyID }}"
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
       AWS_REGION: "{{ .Region }}"
-      AWS_SECRET_ACCESS_KEY: "{{ .AWSSecretAccessKey }}"
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
       DEPLOYMENT: "{{ .Deployment }}"
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
@@ -110,9 +82,9 @@ jobs:
     trigger: true
   - task: update
     params:
-      AWS_ACCESS_KEY_ID: "{{ .AWSAccessKeyID }}"
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
       AWS_REGION: "{{ .Region }}"
-      AWS_SECRET_ACCESS_KEY: "{{ .AWSSecretAccessKey }}"
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
       DEPLOYMENT: "{{ .Deployment }}"
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"

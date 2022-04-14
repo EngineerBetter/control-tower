@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"github.com/EngineerBetter/control-tower/commands/maintain"
+	"github.com/EngineerBetter/control-tower/credhub"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/certs"
@@ -35,6 +36,7 @@ type Client struct {
 	tfInputVarsFactory    TFInputVarsFactory
 	version               string
 	versionFile           []byte
+	credhubClientFactory  func(server, id, secret, cert string) (credhub.IClient, error)
 }
 
 // IClient represents a control-tower client
@@ -62,7 +64,8 @@ func NewClient(
 	eightRandomLetters func() string,
 	sshGenerator func() ([]byte, []byte, string, error),
 	version string,
-	versionFile []byte) *Client {
+	versionFile []byte,
+	credhubClientFactory func(server, id, secret, cert string) (credhub.IClient, error)) *Client {
 	return &Client{
 		acmeClientConstructor: acmeClientConstructor,
 		boshClientFactory:     boshClientFactory,
@@ -81,6 +84,7 @@ func NewClient(
 		tfInputVarsFactory:    tfInputVarsFactory,
 		version:               version,
 		versionFile:           versionFile,
+		credhubClientFactory:  credhubClientFactory,
 	}
 }
 

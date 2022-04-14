@@ -10,6 +10,7 @@ import (
 	"github.com/EngineerBetter/control-tower/commands/destroy"
 	"github.com/EngineerBetter/control-tower/concourse"
 	"github.com/EngineerBetter/control-tower/config"
+	"github.com/EngineerBetter/control-tower/credhub"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/iaas"
 	"github.com/EngineerBetter/control-tower/resource"
@@ -117,6 +118,7 @@ func buildDestroyClient(name, version string, destroyArgs destroy.Args, provider
 		util.GenerateSSHKeyPair,
 		version,
 		versionFile,
+		credhub.NewClient,
 	)
 
 	return client, nil

@@ -139,6 +139,15 @@ func (client *Client) deployBoshAndPipeline(c config.ConfigView, tfOutputs terra
 		return bp, err
 	}
 
+	credhubClient, err := client.credhubClientFactory(bp.CredhubURL, "credhub_admin", bp.CredhubAdminClientSecret, bp.CredhubCACert)
+	if err != nil {
+		return bp, err
+	}
+
+	if err = credhubClient.SetSelfUpdateCreds(client.provider, tfOutputs); err != nil {
+		return bp, err
+	}
+
 	flyClient, err := client.flyClientFactory(client.provider, fly.Credentials{
 		Target:   c.GetDeployment(),
 		API:      fmt.Sprintf("https://%s", c.GetDomain()),
