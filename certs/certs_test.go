@@ -1,3 +1,4 @@
+//go:build integration
 // +build integration
 
 package certs_test
@@ -7,7 +8,7 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 	"github.com/EngineerBetter/control-tower/util"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
