@@ -3,7 +3,7 @@ package fly_test
 import (
 	_ "embed"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	. "github.com/EngineerBetter/control-tower/fly"
