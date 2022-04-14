@@ -12,7 +12,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-acme/lego/v4 v4.6.0
 	github.com/imdario/mergo v0.3.12
-	github.com/lib/pq v1.10.4
+	github.com/lib/pq v1.10.5
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
 	github.com/onsi/ginkgo/v2 v2.1.3
 	github.com/onsi/gomega v1.19.0
