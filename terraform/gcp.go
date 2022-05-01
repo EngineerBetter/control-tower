@@ -56,6 +56,7 @@ type GCPOutputs struct {
 	PrivateSubnetworkName       MetadataStringValue `json:"private_subnetwork_name" valid:"required"`
 	PublicSubnetworkInternalGw  MetadataStringValue `json:"public_subnetwork_internal_gw" valid:"required"`
 	PublicSubnetworkName        MetadataStringValue `json:"public_subnetwork_name" valid:"required"`
+	SelfUpdateAccountCreds      MetadataStringValue `json:"self_update_account_creds" valid:"required"`
 	SQLServerCert               MetadataStringValue `json:"server_ca_cert" valid:"required"`
 }
 

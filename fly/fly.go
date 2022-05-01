@@ -96,17 +96,9 @@ func New(provider iaas.Provider, creds Credentials, stdout, stderr io.Writer, ve
 	case iaas.AWS:
 		pipeline = NewAWSPipeline()
 	case iaas.GCP:
-		GCPCreds, err := provider.Attr("credentials_path")
-		if err != nil {
-			return nil, err
-		}
-		pipeline, err = NewGCPPipeline(GCPCreds)
-		if err != nil {
-			return nil, errors.New("fly.go: failed to read credentials file")
-		}
+		pipeline = NewGCPPipeline()
 	default:
 		return nil, errors.New("fly.go: IAAS not recognised")
-
 	}
 	return &Client{
 		pipeline,

@@ -1,7 +1,6 @@
 package fly
 
 import (
-	"io/ioutil"
 	"strings"
 )
 
@@ -12,14 +11,8 @@ type GCPPipeline struct {
 }
 
 // NewGCPPipeline return GCPPipeline
-func NewGCPPipeline(credsPath string) (Pipeline, error) {
-	creds, err := readFileContents(credsPath)
-	if err != nil {
-		return nil, err
-	}
-	return GCPPipeline{
-		GCPCreds: creds,
-	}, nil
+func NewGCPPipeline() Pipeline {
+	return GCPPipeline{}
 }
 
 //BuildPipelineParams builds params for AWS control-tower self update pipeline
@@ -34,7 +27,6 @@ func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain, 
 			Region:              region,
 			IaaS:                iaas,
 		},
-		GCPCreds: a.GCPCreds,
 	}, nil
 }
 
@@ -42,14 +34,6 @@ func (a GCPPipeline) BuildPipelineParams(deployment, namespace, region, domain, 
 func (a GCPPipeline) GetConfigTemplate() string {
 	return gcpPipelineTemplate
 
-}
-
-func readFileContents(path string) (string, error) {
-	content, err := ioutil.ReadFile(path)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
 }
 
 const gcpPipelineTemplate = `
@@ -65,7 +49,7 @@ jobs:
     params:
       AWS_REGION: "{{ .Region }}"
       DEPLOYMENT: "{{ .Deployment }}"
-      GCPCreds: '{{ .GCPCreds }}'
+      GCPCreds: ((google_self_update_credentials))
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
       ALLOW_IPS: "{{ .AllowIPs }}"
@@ -101,7 +85,7 @@ jobs:
     params:
       AWS_REGION: "{{ .Region }}"
       DEPLOYMENT: "{{ .Deployment }}"
-      GCPCreds: '{{ .GCPCreds }}'
+      GCPCreds: ((google_self_update_credentials))
       IAAS: "{{ .IaaS }}"
       NAMESPACE: "{{ .Namespace }}"
       ALLOW_IPS: "{{ .AllowIPs }}"

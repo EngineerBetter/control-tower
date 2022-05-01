@@ -14,6 +14,8 @@ import (
 	"github.com/EngineerBetter/control-tower/concourse/concoursefakes"
 	"github.com/EngineerBetter/control-tower/config"
 	"github.com/EngineerBetter/control-tower/config/configfakes"
+	"github.com/EngineerBetter/control-tower/credhub"
+	"github.com/EngineerBetter/control-tower/credhub/credhubfakes"
 	"github.com/EngineerBetter/control-tower/fly"
 	"github.com/EngineerBetter/control-tower/fly/flyfakes"
 	"github.com/EngineerBetter/control-tower/iaas"
@@ -41,6 +43,7 @@ var _ = Describe("client", func() {
 	var terraformCLI *terraformfakes.FakeCLIInterface
 	var configClient *configfakes.FakeIClient
 	var boshClient *boshfakes.FakeIClient
+	var credhubClient *credhubfakes.FakeIClient
 
 	var setupFakeGcpProvider = func() *iaasfakes.FakeProvider {
 		provider := &iaasfakes.FakeProvider{}
@@ -148,6 +151,7 @@ var _ = Describe("client", func() {
 			actions = append(actions, "setting default pipeline")
 			return nil
 		}
+		credhubClient = &credhubfakes.FakeIClient{}
 
 		args = &deploy.Args{
 			AllowIPs:    "0.0.0.0/0",
@@ -335,6 +339,9 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 				func() ([]byte, []byte, string, error) { return []byte("private"), []byte("public"), "fingerprint", nil },
 				"some version",
 				versionFile,
+				func(server, id, secret, cert string) (credhub.IClient, error) {
+					return credhubClient, nil
+				},
 			)
 		}
 	})

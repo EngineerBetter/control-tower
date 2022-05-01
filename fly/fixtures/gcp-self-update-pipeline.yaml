@@ -25,7 +25,7 @@ jobs:
     params:
       AWS_REGION: "europe-west1"
       DEPLOYMENT: "my-deployment"
-      GCPCreds: 'creds-content'
+      GCPCreds: ((google_self_update_credentials))
       IAAS: "GCP"
       NAMESPACE: "prod"
       ALLOW_IPS: "10.0.0.0"
@@ -61,7 +61,7 @@ jobs:
     params:
       AWS_REGION: "europe-west1"
       DEPLOYMENT: "my-deployment"
-      GCPCreds: 'creds-content'
+      GCPCreds: ((google_self_update_credentials))
       IAAS: "GCP"
       NAMESPACE: "prod"
       ALLOW_IPS: "10.0.0.0"

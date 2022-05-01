@@ -56,7 +56,14 @@ func (client *Client) SetSelfUpdateCreds(provider iaas.Provider, tfOutputs terra
 			return err
 		}
 	case iaas.GCP:
-		// TODO
+		googleCreds, err := tfOutputs.Get("SelfUpdateAccountCreds")
+		if err != nil {
+			return err
+		}
+		_, err = client.credHub.SetValue("/concourse/main/control-tower-self-update/google_self_update_credentials", values.Value(googleCreds))
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

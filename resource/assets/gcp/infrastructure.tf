@@ -310,6 +310,22 @@ resource "google_project_iam_member" "bosh" {
   role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.bosh.email}"
 }
+
+resource "google_service_account" "self_update" {
+  account_id   = "${var.deployment}-su"
+  display_name = "self_update"
+}
+resource "google_service_account_key" "self_update" {
+  service_account_id = "${google_service_account.self_update.name}"
+  public_key_type = "TYPE_X509_PEM_FILE"
+}
+
+resource "google_project_iam_member" "self_update" {
+  project = "${var.project}"
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.self_update.email}"
+}
+
 resource "google_compute_address" "atc_ip" {
   name = "${var.deployment}-atc-ip"
 }
@@ -395,6 +411,10 @@ value = "${google_compute_address.atc_ip.address}"
 
 output "director_account_creds" {
   value = "${base64decode(google_service_account_key.bosh.private_key)}"
+}
+
+output "self_update_account_creds" {
+  value = "${base64decode(google_service_account_key.self_update.private_key)}"
 }
 
 output "director_public_ip" {
