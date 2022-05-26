@@ -5,7 +5,7 @@ cloud.google.com/go/internal
 cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
-# cloud.google.com/go/compute v1.5.0
+# cloud.google.com/go/compute v1.6.1
 ## explicit; go 1.15
 cloud.google.com/go/compute/metadata
 # cloud.google.com/go/iam v0.3.0
@@ -27,8 +27,8 @@ code.cloudfoundry.org/credhub-cli/credhub/credentials/values
 code.cloudfoundry.org/credhub-cli/credhub/permissions
 code.cloudfoundry.org/credhub-cli/credhub/server
 code.cloudfoundry.org/credhub-cli/errors
-# github.com/GoogleCloudPlatform/cloudsql-proxy v1.30.0
-## explicit; go 1.13
+# github.com/GoogleCloudPlatform/cloudsql-proxy v1.30.1
+## explicit; go 1.16
 github.com/GoogleCloudPlatform/cloudsql-proxy/logging
 github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/certs
 github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres
@@ -323,7 +323,7 @@ golang.org/x/oauth2/google/internal/externalaccount
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
+# golang.org/x/sys v0.0.0-20220429121018-84afa8d3f7b3
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
@@ -379,7 +379,7 @@ golang.org/x/tools/internal/typesinternal
 ## explicit; go 1.11
 golang.org/x/xerrors
 golang.org/x/xerrors/internal
-# google.golang.org/api v0.74.0
+# google.golang.org/api v0.77.0
 ## explicit; go 1.15
 google.golang.org/api/compute/v1
 google.golang.org/api/dns/v1
@@ -415,7 +415,7 @@ google.golang.org/appengine/internal/socket
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/socket
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20220413183235-5e96e2839df9
+# google.golang.org/genproto v0.0.0-20220421151946-72621c1f0bd3
 ## explicit; go 1.15
 google.golang.org/genproto/googleapis/api/annotations
 google.golang.org/genproto/googleapis/iam/v1
