@@ -201,7 +201,7 @@ resource "aws_iam_user_policy" "self_update" {
         {
             "Effect": "Allow",
             "Action": [
-                "ec2:*"
+                "ec2:*",
                 "iam:CreateAccessKey",
                 "iam:CreateUser",
                 "iam:DeleteAccessKey",
