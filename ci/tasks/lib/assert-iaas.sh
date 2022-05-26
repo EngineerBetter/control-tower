@@ -5,6 +5,8 @@ if [ "$IAAS" = "AWS" ]; then
     [[ -n "$AWS_SECRET_ACCESS_KEY" ]]
     # shellcheck disable=SC2034
     region=eu-west-1
+    # https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html#cli-usage-pagination-clientside
+    export AWS_PAGER=""
 elif [ "$IAAS" = "GCP" ]; then
     [[ -n "$GOOGLE_APPLICATION_CREDENTIALS_CONTENTS" ]]
     # shellcheck disable=SC1091
