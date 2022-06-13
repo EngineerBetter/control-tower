@@ -323,6 +323,9 @@ type ApiWarning struct {
 	// type from Cloud SQL API.
 	//   "REGION_UNREACHABLE" - Warning when one or more regions are not
 	// reachable. The returned result set may be incomplete.
+	//   "MAX_RESULTS_EXCEEDS_LIMIT" - Warning when user provided maxResults
+	// parameter exceeds the limit. The returned result set may be
+	// incomplete.
 	Code string `json:"code,omitempty"`
 
 	// Message: The warning message.
@@ -788,6 +791,8 @@ type ConnectSettings struct {
 	// minor version is 27.
 	//   "MYSQL_8_0_28" - The database major version is MySQL 8.0 and the
 	// minor version is 28.
+	//   "MYSQL_8_0_29" - The database major version is MySQL 8.0 and the
+	// minor version is 29.
 	//   "POSTGRES_13" - The database version is PostgreSQL 13.
 	//   "POSTGRES_14" - The database version is PostgreSQL 14.
 	//   "SQLSERVER_2019_STANDARD" - The database version is SQL Server 2019
@@ -1007,6 +1012,8 @@ type DatabaseInstance struct {
 	// minor version is 27.
 	//   "MYSQL_8_0_28" - The database major version is MySQL 8.0 and the
 	// minor version is 28.
+	//   "MYSQL_8_0_29" - The database major version is MySQL 8.0 and the
+	// minor version is 29.
 	//   "POSTGRES_13" - The database version is PostgreSQL 13.
 	//   "POSTGRES_14" - The database version is PostgreSQL 14.
 	//   "SQLSERVER_2019_STANDARD" - The database version is SQL Server 2019
@@ -1779,6 +1786,8 @@ type Flag struct {
 	// minor version is 27.
 	//   "MYSQL_8_0_28" - The database major version is MySQL 8.0 and the
 	// minor version is 28.
+	//   "MYSQL_8_0_29" - The database major version is MySQL 8.0 and the
+	// minor version is 29.
 	//   "POSTGRES_13" - The database version is PostgreSQL 13.
 	//   "POSTGRES_14" - The database version is PostgreSQL 14.
 	//   "SQLSERVER_2019_STANDARD" - The database version is SQL Server 2019
@@ -2990,6 +2999,7 @@ type Operation struct {
 	//   "RESCHEDULE_MAINTENANCE" - Reschedule maintenance to another time.
 	//   "START_EXTERNAL_SYNC" - Starts external sync of a Cloud SQL EM
 	// replica to an external primary instance.
+	//   "LOG_CLEANUP" - Recovers logs from an instance's old data disk.
 	OperationType string `json:"operationType,omitempty"`
 
 	// SelfLink: The URI of this resource.
@@ -3672,6 +3682,8 @@ type SqlExternalSyncSettingError struct {
 	// retention setting.
 	//   "UNSUPPORTED_STORAGE_ENGINE" - The primary instance has tables with
 	// unsupported storage engine.
+	//   "LIMITED_SUPPORT_TABLES" - Source has tables with limited support
+	// eg: PostgreSQL tables without primary keys
 	Type string `json:"type,omitempty"`
 
 	// ForceSendFields is a list of field names (e.g. "Detail") to
@@ -3899,8 +3911,7 @@ func (s *SqlOutOfDiskReport) MarshalJSON() ([]byte, error) {
 	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
 }
 
-// SqlScheduledMaintenance: Any scheduled maintenancce for this
-// instance.
+// SqlScheduledMaintenance: Any scheduled maintenance for this instance.
 type SqlScheduledMaintenance struct {
 	CanDefer bool `json:"canDefer,omitempty"`
 
@@ -8110,7 +8121,9 @@ func (c *InstancesListCall) Filter(filter string) *InstancesListCall {
 }
 
 // MaxResults sets the optional parameter "maxResults": The maximum
-// number of results to return per response.
+// number of instances to return. The service may return fewer than this
+// value. The maximum value is 1000; values above 1000 are coerced to
+// 1000.
 func (c *InstancesListCall) MaxResults(maxResults int64) *InstancesListCall {
 	c.urlParams_.Set("maxResults", fmt.Sprint(maxResults))
 	return c
@@ -8237,7 +8250,7 @@ func (c *InstancesListCall) Do(opts ...googleapi.CallOption) (*InstancesListResp
 	//       "type": "string"
 	//     },
 	//     "maxResults": {
-	//       "description": "The maximum number of results to return per response.",
+	//       "description": "The maximum number of instances to return. The service may return fewer than this value. The maximum value is 1000; values above 1000 are coerced to 1000.",
 	//       "format": "uint32",
 	//       "location": "query",
 	//       "type": "integer"
