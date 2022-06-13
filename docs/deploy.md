@@ -122,9 +122,15 @@ control-tower deploy \
 |`--github-auth-client-id value`|Client ID for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_ID`|
 |`--github-auth-client-secret value`|Client Secret for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_SECRET`|
 
-## Main Team GitHub Auth
+See here for [instructions](https://github.com/settings/applications/new) on creating the necessary OAuth app on github.com. As per [Concourse docs](https://concourse-ci.org/github-auth.html#github-authentication):
 
-It is an error to use any of these flags witout also setting GitHub Auth (or having set it on a previous deploy)
+> Note that the client must be created under an organization if you want to authorize users based on organization/team membership. In addition, the GitHub application must have at least read access on the organization's members. If the client is created under a personal account, only individual users can be authorized.
+
+Note that if you configure GitHub Auth authenticated users will not be authorized to access pipelines in the `main` team unless one or more of the flags below is also provided.
+
+### Main Team GitHub Auth
+
+Using any of the flags below without also setting GitHub Auth (above), or having done so on a previous deploy, will result in an error.
 
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
