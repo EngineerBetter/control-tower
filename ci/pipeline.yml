@@ -388,6 +388,8 @@ jobs:
           OUTPUT_FILE: ((binary-name))-linux-amd64
         file: control-tower/ci/tasks/build.yml
       - put: binary-linux
+        inputs:
+          - build
         params:
           file: build/((binary-name))-linux-amd64
     - do:
@@ -399,6 +401,8 @@ jobs:
           OUTPUT_FILE: ((binary-name))-darwin-amd64
         file: control-tower/ci/tasks/build.yml
       - put: binary-darwin-amd64
+        inputs:
+          - build
         params:
           file: build/((binary-name))-darwin-amd64
     - do:
@@ -410,6 +414,8 @@ jobs:
           OUTPUT_FILE: ((binary-name))-darwin-arm64
         file: control-tower/ci/tasks/build.yml
       - put: binary-darwin-arm64
+        inputs:
+          - build
         params:
           file: build/((binary-name))-darwin-arm64
 
