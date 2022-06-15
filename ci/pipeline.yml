@@ -393,7 +393,7 @@ jobs:
         inputs:
           - build-linux
         params:
-          file: -linuxbuild/((binary-name))-linux-amd64
+          file: build-linux/((binary-name))-linux-amd64
     - do:
       - task: build-darwin-amd64
         image: pcf-ops
