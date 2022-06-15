@@ -27,13 +27,17 @@ meta:
         params:
           GOARCH: amd64
           OUTPUT_FILE: control-tower-darwin-amd64
-        file: control-tower/ci/tasks/build_darwin_from_version_file.yml
+        file: control-tower/ci/tasks/build_from_version_file.yml
+        output_mapping:
+          build: build
       - task: build-darwin-arm64
         image: pcf-ops
         params:
           GOARCH: arm64
           OUTPUT_FILE: control-tower-darwin-arm64
-        file: control-tower/ci/tasks/build_darwin_from_version_file.yml
+        file: control-tower/ci/tasks/build_from_version_file.yml
+        output_mapping:
+          build: build
     - task: get-ops-version
       image: pcf-ops
       file: control-tower/ci/tasks/get-ops-version.yml
@@ -382,7 +386,9 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           OUTPUT_FILE: ((binary-name))-linux-amd64
-        file: control-tower/ci/tasks/build_linux.yml
+        file: control-tower/ci/tasks/build.yml
+        output_mapping:
+          build: build-linux
       - put: binary-linux
         params:
           file: build-linux/((binary-name))-linux-amd64
@@ -393,7 +399,9 @@ jobs:
           GOOS: darwin
           GOARCH: amd64
           OUTPUT_FILE: ((binary-name))-darwin-amd64
-        file: control-tower/ci/tasks/build_darwin.yml
+        file: control-tower/ci/tasks/build.yml
+        output_mapping:
+          build: build-darwin-amd64
       - put: binary-darwin-amd64
         params:
           file: build-darwin-amd64/((binary-name))-darwin-amd64
@@ -404,7 +412,9 @@ jobs:
           GOOS: darwin
           GOARCH: arm64
           OUTPUT_FILE: ((binary-name))-darwin-arm64
-        file: control-tower/ci/tasks/build_darwin.yml
+        file: control-tower/ci/tasks/build.yml
+        output_mapping:
+          build: build-darwin-arm64
       - put: binary-darwin-arm64
         params:
           file: build-darwin-arm64/((binary-name))-darwin-arm64

@@ -2,7 +2,7 @@
 platform: linux
 
 params:
-  GOOS: darwin
+  GOOS:
   GOARCH:
   OUTPUT_FILE:
 
@@ -11,7 +11,7 @@ inputs:
 - name: control-tower-ops
 
 outputs:
-- name: build-darwin-amd64
+- name: build
 
 run:
   path: control-tower/ci/tasks/build.sh
