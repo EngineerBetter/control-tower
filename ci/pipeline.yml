@@ -249,12 +249,22 @@ resources:
     secret_access_key: ((concourse_ci_s3_secret_key))
     region_name: eu-west-1
 
-- name: binary-darwin
+- name: binary-darwin-amd64
   type: s3
   icon: file-move
   source:
     bucket: control-tower-ci-artifacts
     versioned_file: ((binary-name))-darwin-amd64
+    access_key_id: ((concourse_ci_s3_access_key))
+    secret_access_key: ((concourse_ci_s3_secret_key))
+    region_name: eu-west-1
+
+- name: binary-darwin-arm64
+  type: s3
+  icon: file-move
+  source:
+    bucket: control-tower-ci-artifacts
+    versioned_file: ((binary-name))-darwin-arm64
     access_key_id: ((concourse_ci_s3_access_key))
     secret_access_key: ((concourse_ci_s3_secret_key))
     region_name: eu-west-1
@@ -408,7 +418,10 @@ jobs:
     - get: binary-linux
       trigger: true
       passed: [build]
-    - get: binary-darwin
+    - get: binary-darwin-amd64
+      trigger: true
+      passed: [build]
+    - get: binary-darwin-arm64
       trigger: true
       passed: [build]
     - get: control-tower
@@ -460,7 +473,10 @@ jobs:
     - get: binary-linux
       trigger: true
       passed: [smoke-test]
-    - get: binary-darwin
+    - get: binary-darwin-amd64
+      trigger: true
+      passed: [smoke-test]
+    - get: binary-darwin-arm64
       trigger: true
       passed: [smoke-test]
     - get: control-tower
@@ -494,7 +510,10 @@ jobs:
     - get: binary-linux
       trigger: true
       passed: [smoke-test-gcp]
-    - get: binary-darwin
+    - get: binary-darwin-amd64
+      trigger: true
+      passed: [smoke-test-gcp]
+    - get: binary-darwin-arm64
       trigger: true
       passed: [smoke-test-gcp]
     - get: control-tower
