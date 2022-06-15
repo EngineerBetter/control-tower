@@ -22,11 +22,17 @@ meta:
           GOARCH: amd64
           OUTPUT_FILE: control-tower-linux-amd64
         file: control-tower/ci/tasks/build_linux_from_version_file.yml
-      - task: build-darwin
+      - task: build-darwin-amd64
         image: pcf-ops
         params:
           GOARCH: amd64
           OUTPUT_FILE: control-tower-darwin-amd64
+        file: control-tower/ci/tasks/build_darwin_from_version_file.yml
+      - task: build-darwin-arm64
+        image: pcf-ops
+        params:
+          GOARCH: arm64
+          OUTPUT_FILE: control-tower-darwin-arm64
         file: control-tower/ci/tasks/build_darwin_from_version_file.yml
     - task: get-ops-version
       image: pcf-ops
@@ -51,7 +57,8 @@ meta:
         tag: version/version
         globs:
         - build-linux/control-tower-linux-amd64
-        - build-darwin/control-tower-darwin-amd64
+        - build-darwin-amd64/control-tower-darwin-amd64
+        - build-darwin-arm64/control-tower-darwin-arm64
     - in_parallel:
       - put: release-versions
         params:
@@ -71,7 +78,8 @@ meta:
         tag: version/version
         globs:
         - build-linux/control-tower-linux-amd64
-        - build-darwin/control-tower-darwin-amd64
+        - build-darwin-amd64/control-tower-darwin-amd64
+        - build-darwin-arm64/control-tower-darwin-arm64
     - in_parallel:
       - put: release-versions
         params:
@@ -369,16 +377,27 @@ jobs:
         params:
           file: build-linux/((binary-name))-linux-amd64
     - do:
-      - task: build-darwin
+      - task: build-darwin-amd64
         image: pcf-ops
         params:
           GOOS: darwin
           GOARCH: amd64
           OUTPUT_FILE: ((binary-name))-darwin-amd64
         file: control-tower/ci/tasks/build_darwin.yml
-      - put: binary-darwin
+      - put: binary-darwin-amd64
         params:
-          file: build-darwin/((binary-name))-darwin-amd64
+          file: build-darwin-amd64/((binary-name))-darwin-amd64
+    - do:
+      - task: build-darwin-arm64
+        image: pcf-ops
+        params:
+          GOOS: darwin
+          GOARCH: arm64
+          OUTPUT_FILE: ((binary-name))-darwin-arm64
+        file: control-tower/ci/tasks/build_darwin.yml
+      - put: binary-darwin-arm64
+        params:
+          file: build-darwin-arm64/((binary-name))-darwin-arm64
 
 - name: smoke-test
   serial_groups:

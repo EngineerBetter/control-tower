@@ -11,7 +11,7 @@ inputs:
 - name: control-tower-ops
 
 outputs:
-- name: build-darwin
+- name: build-darwin-amd64
 
 run:
   path: control-tower/ci/tasks/build.sh
