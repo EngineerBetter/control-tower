@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-build_dir=$PWD/build-$GOOS
-mkdir -p build_dir
+build_dir=$PWD/build
+mkdir -p "$build_dir"
 
 if [ -e "version/version" ]; then
   version=$(cat version/version)
