@@ -8,9 +8,10 @@ darwin_cli_arm64_sha256=$(openssl dgst -sha256 release/control-tower-darwin-arm6
 linux_cli_amd64_sha256=$(openssl dgst -sha256 release/control-tower-linux-amd64 | cut -d ' ' -f 2)
 
 pushd homebrew-tap
-  sed -i -e "s/darwin_cli_arm64_sha256/$darwin_cli_arm64_sha256/g" control-tower.rb
-  sed -i -e "s/darwin_cli_amd64_sha256/$darwin_cli_amd64_sha256/g" control-tower.rb
-  sed -i -e "s/linux_cli_amd64_sha256/$linux_cli_amd64_sha256/g" control-tower.rb
+  sed -i -e "s/__darwin_cli_arm64_sha256__/$darwin_cli_arm64_sha256/g" control-tower.rb
+  sed -i -e "s/__darwin_cli_amd64_sha256__/$darwin_cli_amd64_sha256/g" control-tower.rb
+  sed -i -e "s/__linux_cli_amd64_sha256__/$linux_cli_amd64_sha256/g" control-tower.rb
+  sed -i -e "s/__version__/$version/g" control-tower.rb
 
   git add control-tower.rb
 
