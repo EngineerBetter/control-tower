@@ -12,7 +12,7 @@ inputs:
 - name: version
 
 outputs:
-- name: build-linux-amd64
+- name: build
 
 run:
   path: control-tower/ci/tasks/build.sh
