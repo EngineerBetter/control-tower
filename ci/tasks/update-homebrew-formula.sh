@@ -12,12 +12,12 @@ pushd homebrew-tap
 class ControlTower < Formula
   desc "Deploy and operate Concourse CI in a single command"
   homepage "https://www.engineerbetter.com"
-  license "Apache-2.0"
   version "${version}"
+  license "Apache-2.0"
 
-  is_arm64 = RUBY_PLATFORM.match(/arm64/)
+  is_arm64 = RUBY_PLATFORM.include("arm64")
 
-  if OS.mac?
+  on_macos do
     if is_arm64
       url "https://github.com/EngineerBetter/control-tower/releases/download/#{version}/control-tower-darwin-arm64"
       sha256 "${darwin_cli_arm64_sha256}"
@@ -25,7 +25,8 @@ class ControlTower < Formula
       url "https://github.com/EngineerBetter/control-tower/releases/download/#{version}/control-tower-darwin-amd64"
       sha256 "${darwin_cli_amd64_sha256}"
     end
-  elsif OS.linux?
+  end
+  on_linux do
     url "https://github.com/EngineerBetter/control-tower/releases/download/#{version}/control-tower-linux-amd64"
     sha256 "${linux_cli_amd64_sha256}"
   end
@@ -44,7 +45,7 @@ class ControlTower < Formula
   end
 
   test do
-    system "#{bin}/control-tower --help"
+    system "#{bin}/control-tower", "--help"
   end
 end
 EOF
