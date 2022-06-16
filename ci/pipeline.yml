@@ -16,28 +16,33 @@ meta:
       - get: release-versions
     - *generate-versions-file
     - in_parallel: &build_binaries
-      - task: build-linux
+      - task: build-linux-amd64
         image: pcf-ops
         params:
+          GOOS: linux
           GOARCH: amd64
           OUTPUT_FILE: control-tower-linux-amd64
-        file: control-tower/ci/tasks/build_linux_from_version_file.yml
+        file: control-tower/ci/tasks/build_from_version_file.yml
+        output_mapping:
+          build: build-linux-amd64
       - task: build-darwin-amd64
         image: pcf-ops
         params:
+          GOOS: darwin
           GOARCH: amd64
           OUTPUT_FILE: control-tower-darwin-amd64
         file: control-tower/ci/tasks/build_from_version_file.yml
         output_mapping:
-          build: build
+          build: build-darwin-amd64
       - task: build-darwin-arm64
         image: pcf-ops
         params:
+          GOOS: darwin
           GOARCH: arm64
           OUTPUT_FILE: control-tower-darwin-arm64
         file: control-tower/ci/tasks/build_from_version_file.yml
         output_mapping:
-          build: build
+          build: build-darwin-arm64
     - task: get-ops-version
       image: pcf-ops
       file: control-tower/ci/tasks/get-ops-version.yml
@@ -54,13 +59,17 @@ meta:
   publish-release: &publish-release
     do:
     - put: release
+      inputs:
+        - build-linux-amd64
+        - build-darwin-amd64
+        - build-darwin-arm64
       params:
         name: release-vars/name
         commitish: release-vars/commit
         body: release-vars/body
         tag: version/version
         globs:
-        - build-linux/control-tower-linux-amd64
+        - build-linux-amd64/control-tower-linux-amd64
         - build-darwin-amd64/control-tower-darwin-amd64
         - build-darwin-arm64/control-tower-darwin-arm64
     - in_parallel:
@@ -75,13 +84,17 @@ meta:
   publish-draft-release: &publish-draft-release
     do:
     - put: release-drafts
+      inputs:
+        - build-linux-amd64
+        - build-darwin-amd64
+        - build-darwin-arm64
       params:
         name: release-vars/name
         commitish: release-vars/commit
         body: release-vars/body
         tag: version/version
         globs:
-        - build-linux/control-tower-linux-amd64
+        - build-linux-amd64/control-tower-linux-amd64
         - build-darwin-amd64/control-tower-darwin-amd64
         - build-darwin-arm64/control-tower-darwin-arm64
     - in_parallel:
@@ -243,7 +256,7 @@ resources:
     secret_access_key: ((concourse_ci_s3_secret_key))
     region_name: eu-west-1
 
-- name: binary-linux
+- name: binary-linux-amd64
   type: s3
   icon: file-move
   source:
@@ -380,20 +393,20 @@ jobs:
       passed: [unit-tests]
   - in_parallel:
     - do:
-      - task: build-linux
+      - task: build-linux-amd64
         image: pcf-ops
         output_mapping:
-          build: build-linux
+          build: build-linux-amd64
         params:
           GOOS: linux
           GOARCH: amd64
           OUTPUT_FILE: ((binary-name))-linux-amd64
         file: control-tower/ci/tasks/build.yml
-      - put: binary-linux
+      - put: binary-linux-amd64
         inputs:
-          - build-linux
+          - build-linux-amd64
         params:
-          file: build-linux/((binary-name))-linux-amd64
+          file: build-linux-amd64/((binary-name))-linux-amd64
     - do:
       - task: build-darwin-amd64
         image: pcf-ops
@@ -431,7 +444,7 @@ jobs:
   serial: true
   plan:
   - in_parallel: &smoke-test-gets
-    - get: binary-linux
+    - get: binary-linux-amd64
       trigger: true
       passed: [build]
     - get: binary-darwin-amd64
@@ -453,7 +466,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
@@ -470,7 +483,7 @@ jobs:
   - task: smoke-test
     file: control-tower/ci/tasks/smoke-test.yml
     params:
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
     on_failure:
@@ -486,7 +499,7 @@ jobs:
   serial: true
   plan:
   - in_parallel: &system-test-gets
-    - get: binary-linux
+    - get: binary-linux-amd64
       trigger: true
       passed: [smoke-test]
     - get: binary-darwin-amd64
@@ -508,7 +521,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       IAAS: AWS
     on_failure:
       put: slack-alert
@@ -523,7 +536,7 @@ jobs:
   serial: true
   plan:
   - in_parallel: &system-test-gets-gcp
-    - get: binary-linux
+    - get: binary-linux-amd64
       trigger: true
       passed: [smoke-test-gcp]
     - get: binary-darwin-amd64
@@ -545,7 +558,7 @@ jobs:
     params:
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
@@ -564,7 +577,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       IAAS: AWS
     on_failure:
       put: slack-alert
@@ -585,7 +598,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       IAAS: AWS
     on_failure:
       put: slack-alert
@@ -604,7 +617,7 @@ jobs:
   - task: run-system-test-update
     file: control-tower/ci/tasks/system-test-update.yml
     params:
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
     on_failure:
@@ -625,7 +638,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
@@ -645,7 +658,7 @@ jobs:
       IAAS: AWS
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
@@ -664,7 +677,7 @@ jobs:
     params:
       IAAS: GCP
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
     on_failure:
       put: slack-alert
       params:
@@ -684,7 +697,7 @@ jobs:
       IAAS: AWS
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
       BITBUCKET_AUTH_CLIENT_ID: placeholder
@@ -711,7 +724,7 @@ jobs:
     params:
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
       BITBUCKET_AUTH_CLIENT_ID: placeholder
@@ -740,7 +753,7 @@ jobs:
       IAAS: AWS
       AWS_ACCESS_KEY_ID: ((control_tower_test_access_key_id))
       AWS_SECRET_ACCESS_KEY: ((control_tower_test_secret_key))
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id))
@@ -762,7 +775,7 @@ jobs:
     params:
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
-      BINARY_PATH: binary-linux/((binary-name))-linux-amd64
+      BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       EB_WILDCARD_CERT: ((eb_wildcard.certificate))
       EB_WILDCARD_KEY: ((eb_wildcard.private_key))
       GITHUB_AUTH_CLIENT_ID: ((github_auth_client_id_gcp))
@@ -893,7 +906,7 @@ jobs:
     - get: control-tower
     - get: once-daily
       trigger: true
-    - get: binary-linux
+    - get: binary-linux-amd64
   - task: cleanup
     file: control-tower/ci/tasks/cleanup-tests.yml
     params:
@@ -921,7 +934,7 @@ jobs:
     - get: control-tower
     - get: once-daily
       trigger: true
-    - get: binary-linux
+    - get: binary-linux-amd64
     - get: pcf-ops
   - do:
     - task: cleanup

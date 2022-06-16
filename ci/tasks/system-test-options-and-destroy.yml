@@ -7,7 +7,7 @@ image_resource:
     tag: latest
 inputs:
 - name: control-tower
-- name: binary-linux
+- name: binary-linux-amd64
 
 run:
   path: control-tower/ci/tasks/system-test-options-and-destroy.sh

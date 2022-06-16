@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative("ruby-lib/#{ENV.fetch('IAAS').downcase}.rb")
+require_relative("ruby-lib/#{ENV.fetch("IAAS").downcase}.rb")
 
 class Orphan
   attr_reader :bucket, :deployment, :project, :region
@@ -15,6 +15,7 @@ end
 
 class Cleaner
   private
+
   attr_reader :iaas
 
   public
@@ -34,7 +35,7 @@ class Cleaner
     buckets = iaas.bucket_names
 
     if buckets.empty?
-      puts 'No residual systest buckets found'
+      puts "No residual systest buckets found"
       exit(0)
     end
 
@@ -77,8 +78,8 @@ class Cleaner
   end
 end
 
-`cp binary-linux/control-tower-linux-amd64 ./cup`
+`cp binary-linux-amd64/control-tower-linux-amd64 ./cup`
 `chmod +x ./cup`
 
-cleaner = Cleaner.new(IAAS.new('control-tower-ts'))
+cleaner = Cleaner.new(IAAS.new("control-tower-ts"))
 cleaner.clean

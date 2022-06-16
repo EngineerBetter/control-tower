@@ -2,7 +2,7 @@
 platform: linux
 
 params:
-  GOOS: linux
+  GOOS:
   GOARCH:
   OUTPUT_FILE:
 
@@ -12,7 +12,7 @@ inputs:
 - name: version
 
 outputs:
-- name: build-linux
+- name: build-linux-amd64
 
 run:
   path: control-tower/ci/tasks/build.sh

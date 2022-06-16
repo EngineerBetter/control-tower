@@ -9,7 +9,7 @@ image_resource:
 
 inputs:
 - name: control-tower
-- name: binary-linux
+- name: binary-linux-amd64
 
 run:
   path: control-tower/ci/tasks/cleanup-tests.rb
