@@ -63,6 +63,9 @@ meta:
         - build-linux-amd64
         - build-darwin-amd64
         - build-darwin-arm64
+        - release-vars
+        - version
+        - versions-file
       params:
         name: release-vars/name
         commitish: release-vars/commit
@@ -88,6 +91,9 @@ meta:
         - build-linux-amd64
         - build-darwin-amd64
         - build-darwin-arm64
+        - release-vars
+        - version
+        - versions-file
       params:
         name: release-vars/name
         commitish: release-vars/commit
