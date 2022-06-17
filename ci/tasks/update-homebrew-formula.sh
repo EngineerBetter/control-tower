@@ -9,22 +9,13 @@ linux_cli_amd64_sha256=$(openssl dgst -sha256 release/control-tower-linux-amd64 
 
 cp ./control-tower/ci/tasks/control-tower.rb ./homebrew-tap/
 
-echo "contents of repo formula..."
-cat ./control-tower/ci/tasks/control-tower.rb
-
 pushd homebrew-tap
-  echo "contents of non-updated formula..."
-  cat control-tower.rb
-
   sed -i -e "s/__darwin_cli_arm64_sha256__/$darwin_cli_arm64_sha256/g" control-tower.rb
   sed -i -e "s/__darwin_cli_amd64_sha256__/$darwin_cli_amd64_sha256/g" control-tower.rb
   sed -i -e "s/__linux_cli_amd64_sha256__/$linux_cli_amd64_sha256/g" control-tower.rb
   sed -i -e "s/__version__/$version/g" control-tower.rb
 
   git add control-tower.rb
-
-  echo "contents of updated formula..."
-  cat control-tower.rb
 
   git config --global user.email "systems@engineerbetter.com"
   git config --global user.name "CI"
