@@ -4,7 +4,7 @@ class ControlTower < Formula
   version "__version__"
   license "Apache-2.0"
 
-  is_arm64 = RUBY_PLATFORM.match("arm64")
+  is_arm64 = RUBY_PLATFORM.include?("arm64")
 
   if OS.mac?
     if is_arm64
