@@ -9,26 +9,39 @@
 To build and test you'll need:
 
 - Golang 1.16+
+- [`control-tower-ops`](https://github.com/EngineerBetter/control-tower-ops) cloned at the same level as this repository (i.e. a sibling directory). Check the latest release of `control-tower` for the appropriate tag of `control-tower-ops`.
 
 ### Building locally
 
 `control-tower` uses [golang compile-time variables](https://github.com/golang/go/wiki/GcToolchainTricks#including-build-information-in-the-executable) to set the release versions it uses. To build locally use the `build_local.sh` script, rather than running `go build`.
 
-You will also need to clone [`control-tower-ops`](https://github.com/EngineerBetter/control-tower-ops) to the same level as `control-tower` to get the manifest and ops files necessary for building. Check the latest release of `control-tower` for the appropriate tag of `control-tower-ops`
+### Linting
 
-### Tests
-
-Tests use the [Ginkgo](https://onsi.github.io/ginkgo/) Go testing framework. The tests require you to have set up AWS authentication locally.
-
-Install ginkgo and run the tests with:
+Run our linting script (requires `gometalinter` to be installed):
 
 ```sh
-go get github.com/onsi/ginkgo/ginkgo
-ginkgo -r
+./ci/tasks/lint.sh
 ```
 
+### Unit Tests
 
-Go linting, shell linting, and unit tests can be run together in the same docker image CI uses with `./run_tests_local.sh`. This should be done before committing or raising a PR.
+To Run tests from your host:
+
+```sh
+go install github.com/maxbrunsfeld/counterfeiter/v6
+
+cp ../control-tower-ops/manifest.yml opsassets/assets/
+cp -R ../control-tower-ops/ops opsassets/assets/
+cp ../control-tower-ops/createenv-dependencies-and-cli-versions-aws.json opsassets/assets/
+cp ../control-tower-ops/createenv-dependencies-and-cli-versions-gcp.json opsassets/assets/
+
+go generate ./...
+go test ./...
+```
+
+Alternatively, you can run both the tests and linting script with Docker using the same container image that we use in our [CI pipeline](https://github.com/EngineerBetter/control-tower/blob/master/ci/pipeline.yml) by running `./run_tests_local.sh`
+
+This should be done before committing or raising a PR.
 
 ### Bumping Manifest/Ops File versions
 
