@@ -91,6 +91,11 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		vmap["github_client_id"] = client.config.GetGithubClientID()
 		vmap["github_client_secret"] = client.config.GetGithubClientSecret()
 		flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubAuthFilename))
+		if client.config.IsGithubEnterpriseAuthSet() {
+			vmap["github_auth_host"] = client.config.GetGithubHost()
+			vmap["github_auth_ca_cert"] = client.config.GetGithubCaCert()
+			flagFiles = append(flagFiles, "--ops-file", client.workingdir.PathInWorkingDir(concourseGitHubEnterpriseAuthFilename))
+		}
 	}
 
 	if client.config.IsMainGithubAuthSet() {

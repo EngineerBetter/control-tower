@@ -164,6 +164,18 @@ var deployFlags = []cli.Flag{
 		Destination: &initialDeployArgs.GithubAuthClientSecret,
 	},
 	cli.StringFlag{
+		Name:        "github-auth-host",
+		Usage:       "(optional) Host name (excluding protocol) for a GitHub Enterprise server to use instead of github.com - Used for Github Auth",
+		EnvVar:      "GITHUB_AUTH_HOST",
+		Destination: &initialDeployArgs.GithubAuthHost,
+	},
+	cli.StringFlag{
+		Name:        "github-auth-ca-cert",
+		Usage:       "(optional) Contents of a CA certificate for a GitHub Enterprise server (required if providing --github-auth-host) - Used for Github Auth",
+		EnvVar:      "GITHUB_AUTH_CA_CERT",
+		Destination: &initialDeployArgs.GithubAuthCaCert,
+	},
+	cli.StringFlag{
 		Name:        "main-team-github-users",
 		Usage:       "(optional) Comma separated list of github users that are authorised for the main team",
 		EnvVar:      "MAIN_TEAM_GITHUB_USERS",

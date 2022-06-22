@@ -1,11 +1,13 @@
 package deploy
 
 import (
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 
+	"github.com/asaskevich/govalidator"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -53,7 +55,13 @@ type Args struct {
 	GithubAuthClientSecret      string
 	GithubAuthClientSecretIsSet bool
 	// GithubAuthIsSet is true if the user has specified both the --github-auth-client-secret and --github-auth-client-id flags
-	GithubAuthIsSet      bool
+	GithubAuthIsSet           bool
+	GithubAuthHost            string
+	GithubAuthHostIsSet       bool
+	GithubAuthCaCert          string
+	GithubAuthCaCertIsSet     bool
+	GithubEnterpriseAuthIsSet bool
+	// GithubEnterpriseAuthIsSet is true if the user has specified both the --github-auth-host and --github-auth-ca-cert flags
 	MainGithubUsers      string
 	MainGithubUsersIsSet bool
 	MainGithubTeams      string
@@ -136,6 +144,10 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.GithubAuthClientIDIsSet = true
 			case "github-auth-client-secret":
 				a.GithubAuthClientSecretIsSet = true
+			case "github-auth-host":
+				a.GithubAuthHostIsSet = true
+			case "github-auth-ca-cert":
+				a.GithubAuthCaCertIsSet = true
 			case "main-team-github-users":
 				a.MainGithubUsersIsSet = true
 			case "main-team-github-teams":
@@ -175,6 +187,7 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 	}
 	a.BitbucketAuthIsSet = c.IsSet("bitbucket-auth-client-id") && c.IsSet("bitbucket-auth-client-secret")
 	a.GithubAuthIsSet = c.IsSet("github-auth-client-id") && c.IsSet("github-auth-client-secret")
+	a.GithubEnterpriseAuthIsSet = c.IsSet("github-auth-host") && c.IsSet("github-auth-ca-cert")
 	a.MicrosoftAuthIsSet = c.IsSet("microsoft-auth-client-id") && c.IsSet("microsoft-auth-client-secret")
 	a.MainGithubAuthIsSet = c.IsSet("main-team-github-users") || c.IsSet("main-team-github-teams") || c.IsSet("main-team-github-orgs")
 
@@ -299,8 +312,24 @@ func (a Args) validateGithubFields() error {
 	if a.GithubAuthClientID == "" && a.GithubAuthClientSecret != "" {
 		return errors.New("--github-auth-client-secret requires --github-auth-client-id to also be provided")
 	}
-
+	if a.GithubAuthHost != "" && (!a.GithubAuthIsSet || a.GithubAuthCaCert == "") {
+		return errors.New("--github-auth-host requires --github-auth-ca-cert, --github-auth-client-id, --github-auth-client-secret to also be provided")
+	}
+	if a.GithubAuthCaCert != "" && (!a.GithubAuthIsSet || a.GithubAuthHost == "") {
+		return errors.New("--github-auth-ca-cert requires --github-auth-host, --github-auth-client-id, --github-auth-client-secret to also be provided")
+	}
+	if a.GithubEnterpriseAuthIsSet && !a.certParseable() {
+		return errors.New("unable to decode value passed to --github-auth-ca-cert. Provide a CA certificate in PEM format")
+	}
+	if a.GithubEnterpriseAuthIsSet && !govalidator.IsDNSName(a.GithubAuthHost) {
+		return errors.New("--github-auth-host must be a valid DNS address (omitting protocol)")
+	}
 	return nil
+}
+
+func (a Args) certParseable() bool {
+	decodedCert, _ := pem.Decode([]byte(a.GithubAuthCaCert))
+	return decodedCert != nil
 }
 
 func (a Args) validateNetworkRanges() error {

@@ -8,20 +8,21 @@ import (
 )
 
 const (
-	credsFilename                     = "concourse-creds.yml"
-	concourseManifestFilename         = "concourse.yml"
-	concourseDeploymentName           = "concourse"
-	concourseVersionsFilename         = "versions.json"
-	concourseSHAsFilename             = "shas.json"
-	concourseGrafanaFilename          = "grafana_dashboard.yml"
-	concourseBitBucketAuthFilename    = "bitbucket-auth.yml"
-	concourseGitHubAuthFilename       = "github-auth.yml"
-	concourseMainGitHubAuthFilename   = "main-github-auth.yml"
-	concourseMicrosoftAuthFilename    = "microsoft-auth.yml"
-	concourseEphemeralWorkersFilename = "ephemeral_workers.yml"
-	concourseNoMetricsFilename        = "no_metrics.yml"
-	extraTagsFilename                 = "extra_tags.yml"
-	uaaCertFilename                   = "uaa-cert.yml"
+	credsFilename                         = "concourse-creds.yml"
+	concourseManifestFilename             = "concourse.yml"
+	concourseDeploymentName               = "concourse"
+	concourseVersionsFilename             = "versions.json"
+	concourseSHAsFilename                 = "shas.json"
+	concourseGrafanaFilename              = "grafana_dashboard.yml"
+	concourseBitBucketAuthFilename        = "bitbucket-auth.yml"
+	concourseGitHubAuthFilename           = "github-auth.yml"
+	concourseGitHubEnterpriseAuthFilename = "github-enterprise-auth.yml"
+	concourseMainGitHubAuthFilename       = "main-github-auth.yml"
+	concourseMicrosoftAuthFilename        = "microsoft-auth.yml"
+	concourseEphemeralWorkersFilename     = "ephemeral_workers.yml"
+	concourseNoMetricsFilename            = "no_metrics.yml"
+	extraTagsFilename                     = "extra_tags.yml"
+	uaaCertFilename                       = "uaa-cert.yml"
 )
 
 var (
@@ -33,6 +34,9 @@ var (
 
 	//go:embed assets/ops/github-auth.yml
 	concourseGitHubAuth []byte
+
+	//go:embed assets/ops/github-enterprise-auth.yml
+	concourseGithubEnterpriseAuth []byte
 
 	//go:embed assets/ops/main-github-auth.yml
 	concourseMainGitHubAuth []byte

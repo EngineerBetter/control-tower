@@ -129,18 +129,19 @@ func saveFilesToWorkingDir(workingdir workingdir.IClient, provider iaas.Provider
 	}).([]byte)
 
 	filesToSave := map[string][]byte{
-		concourseVersionsFilename:         concourseVersionsContents,
-		concourseSHAsFilename:             concourseSHAsContents,
-		concourseManifestFilename:         concourseManifestContents,
-		concourseGrafanaFilename:          concourseGrafana,
-		concourseBitBucketAuthFilename:    concourseBitBucketAuth,
-		concourseGitHubAuthFilename:       concourseGitHubAuth,
-		concourseMainGitHubAuthFilename:   concourseMainGitHubAuth,
-		concourseMicrosoftAuthFilename:    concourseMicrosoftAuth,
-		concourseEphemeralWorkersFilename: concourseEphemeralWorkers,
-		concourseNoMetricsFilename:        concourseNoMetrics,
-		credsFilename:                     creds,
-		extraTagsFilename:                 extraTags,
+		concourseVersionsFilename:             concourseVersionsContents,
+		concourseSHAsFilename:                 concourseSHAsContents,
+		concourseManifestFilename:             concourseManifestContents,
+		concourseGrafanaFilename:              concourseGrafana,
+		concourseBitBucketAuthFilename:        concourseBitBucketAuth,
+		concourseGitHubAuthFilename:           concourseGitHubAuth,
+		concourseGitHubEnterpriseAuthFilename: concourseGithubEnterpriseAuth,
+		concourseMainGitHubAuthFilename:       concourseMainGitHubAuth,
+		concourseMicrosoftAuthFilename:        concourseMicrosoftAuth,
+		concourseEphemeralWorkersFilename:     concourseEphemeralWorkers,
+		concourseNoMetricsFilename:            concourseNoMetrics,
+		credsFilename:                         creds,
+		extraTagsFilename:                     extraTags,
 	}
 
 	for filename, contents := range filesToSave {

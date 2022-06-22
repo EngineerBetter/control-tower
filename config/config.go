@@ -50,6 +50,8 @@ type Config struct {
 	EncryptionKey            string `json:"encryption_key"`
 	GithubClientID           string `json:"github_client_id"`
 	GithubClientSecret       string `json:"github_client_secret"`
+	GithubHost               string `json:"github_host"`
+	GithubCaCert             string `json:"github_ca_cert"`
 	GrafanaPassword          string `json:"grafana_password"`
 	HostedZoneID             string `json:"hosted_zone_id"`
 	HostedZoneRecordPrefix   string `json:"hosted_zone_record_prefix"`
@@ -123,6 +125,8 @@ type ConfigView interface {
 	GetEncryptionKey() string
 	GetGithubClientID() string
 	GetGithubClientSecret() string
+	GetGithubHost() string
+	GetGithubCaCert() string
 	GetGrafanaPassword() string
 	GetHostedZoneID() string
 	GetHostedZoneRecordPrefix() string
@@ -154,6 +158,7 @@ type ConfigView interface {
 	GetWorkerType() string
 	IsBitbucketAuthSet() bool
 	IsGithubAuthSet() bool
+	IsGithubEnterpriseAuthSet() bool
 	IsMainGithubAuthSet() bool
 	IsMicrosoftAuthSet() bool
 	IsSpot() bool
@@ -308,6 +313,14 @@ func (c Config) GetGithubClientSecret() string {
 	return c.GithubClientSecret
 }
 
+func (c Config) GetGithubHost() string {
+	return c.GithubHost
+}
+
+func (c Config) GetGithubCaCert() string {
+	return c.GithubCaCert
+}
+
 func (c Config) GetGrafanaPassword() string {
 	return c.GrafanaPassword
 }
@@ -434,6 +447,10 @@ func (c Config) IsGithubAuthSet() bool {
 
 func (c Config) IsMainGithubAuthSet() bool {
 	return c.MainGithubUsers != "" || c.MainGithubTeams != "" || c.MainGithubOrgs != ""
+}
+
+func (c Config) IsGithubEnterpriseAuthSet() bool {
+	return c.GithubHost != "" && c.GithubCaCert != ""
 }
 
 func (c Config) IsMicrosoftAuthSet() bool {

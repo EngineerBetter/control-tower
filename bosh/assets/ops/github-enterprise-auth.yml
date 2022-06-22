@@ -1,0 +1,7 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/github_auth?/host?
+  value: ((github_auth_host))
+
+- type: replace
+  path: /instance_groups/name=web/jobs/name=web/properties/github_auth?/ca_cert?/certificate?
+  value: ((github_auth_ca_cert))

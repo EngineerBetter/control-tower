@@ -171,6 +171,10 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 		conf.MainGithubTeams = deployArgs.MainGithubTeams
 		conf.MainGithubOrgs = deployArgs.MainGithubOrgs
 	}
+	if deployArgs.GithubEnterpriseAuthIsSet {
+		conf.GithubHost = deployArgs.GithubAuthHost
+		conf.GithubCaCert = deployArgs.GithubAuthCaCert
+	}
 	if deployArgs.MicrosoftAuthIsSet {
 		conf.MicrosoftClientID = deployArgs.MicrosoftAuthClientID
 		conf.MicrosoftClientSecret = deployArgs.MicrosoftAuthClientSecret
