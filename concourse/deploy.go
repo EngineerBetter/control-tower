@@ -572,7 +572,7 @@ fly --target {{.Project}} login{{if not .ConcourseUserProvidedCert}} --insecure{
 
 Metrics available at https://{{.Domain}}:3000 using the same username and password (unless you have disabled metrics with --no-metrics)
 
-Log into credhub with:
+Run the following to authenticate with both CredHub and your BOSH director:
 eval "$(control-tower info --region {{.Region}} {{ if ne .Namespace .Region }} --namespace {{ .Namespace }} {{ end }} --iaas {{ .IAAS }} --env {{.Project}})"
 
 Please complete our quick 7-question survey so that we can learn how & why you use Control Tower! http://bit.ly/eb-ctower
