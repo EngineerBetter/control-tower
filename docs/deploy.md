@@ -122,7 +122,7 @@ control-tower deploy \
 |`--github-auth-client-id value`|Client ID for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_ID`|
 |`--github-auth-client-secret value`|Client Secret for a github OAuth application - Used for Github Auth|`GITHUB_AUTH_CLIENT_SECRET`|
 |`--github-auth-host`|Host name (excluding protocol) for a GitHub Enterprise server to use instead of github.com - Used for Github Auth|`GITHUB_AUTH_HOST`|
-|`--github-auth-host`|Contents of a CA certificate for a GitHub Enterprise server (required if providing --github-auth-host) - Used for Github Auth|`GITHUB_AUTH_CA_CERT`|
+|`--github-auth-ca-cert`|Contents of a CA certificate for a GitHub Enterprise server (required if providing --github-auth-host) - Used for Github Auth|`GITHUB_AUTH_CA_CERT`|
 
 See here for [instructions](https://github.com/settings/applications/new) on creating the necessary OAuth app on github.com. As per [Concourse docs](https://concourse-ci.org/github-auth.html#github-authentication):
 
