@@ -23,7 +23,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/net v0.0.0-20220617184016-355a448f1bc9
 	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb
-	google.golang.org/api v0.84.0
+	google.golang.org/api v0.85.0
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.4.0
 )
