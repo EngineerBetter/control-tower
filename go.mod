@@ -1,7 +1,7 @@
 module github.com/EngineerBetter/control-tower
 
 require (
-	cloud.google.com/go/storage v1.23.0
+	cloud.google.com/go/storage v1.24.0
 	code.cloudfoundry.org/credhub-cli v0.0.0-20220620130410-645eee56ecdb
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.0
 	github.com/apparentlymart/go-cidr v1.1.0
@@ -45,7 +45,6 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
-	github.com/googleapis/go-type-adapters v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.5.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
