@@ -17,7 +17,7 @@ require (
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
 	github.com/onsi/ginkgo/v2 v2.1.4
 	github.com/onsi/gomega v1.20.0
-	github.com/square/certstrap v1.3.0
+	github.com/square/certstrap v1.2.0
 	github.com/stretchr/testify v1.8.0
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
@@ -32,7 +32,6 @@ require (
 	cloud.google.com/go v0.102.1 // indirect
 	cloud.google.com/go/compute v1.7.0 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
-	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/charlievieth/fs v0.0.2 // indirect
@@ -52,10 +51,8 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/miekg/dns v1.1.49 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	go.step.sm/crypto v0.16.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
