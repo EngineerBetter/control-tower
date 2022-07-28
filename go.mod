@@ -3,7 +3,7 @@ module github.com/EngineerBetter/control-tower
 require (
 	cloud.google.com/go/storage v1.23.0
 	code.cloudfoundry.org/credhub-cli v0.0.0-20220620130410-645eee56ecdb
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.0
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.1
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.44.62
@@ -22,7 +22,7 @@ require (
 	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/net v0.0.0-20220708220712-1185a9018129
-	golang.org/x/oauth2 v0.0.0-20220622183110-fd043fe589d2
+	golang.org/x/oauth2 v0.0.0-20220630143837-2104d58473e0
 	google.golang.org/api v0.87.0
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.4.0
