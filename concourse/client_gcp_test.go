@@ -5,6 +5,11 @@ import (
 	"io"
 	"io/ioutil"
 
+	"github.com/go-acme/lego/v4/lego"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/gbytes"
+
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
 	"github.com/EngineerBetter/control-tower/certs"
@@ -22,11 +27,6 @@ import (
 	"github.com/EngineerBetter/control-tower/iaas/iaasfakes"
 	"github.com/EngineerBetter/control-tower/terraform"
 	"github.com/EngineerBetter/control-tower/terraform/terraformfakes"
-	"github.com/go-acme/lego/v4/lego"
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
-	. "github.com/tjarratt/gcounterfeiter"
 )
 
 var _ = Describe("client", func() {
@@ -358,7 +358,8 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			client := buildClient()
 			err := client.Destroy()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configInBucket))
+			Expect(tfInputVarsFactory.NewInputVarsCallCount()).To(Equal(1))
+			Expect(tfInputVarsFactory.NewInputVarsArgsForCall(0)).To(Equal(configInBucket))
 		})
 		It("Deletes the vms in the vpcs", func() {
 			client := buildClient()
@@ -409,7 +410,8 @@ sWbB3FCIsym1FXB+eRnVF3Y15RwBWWKA5RfwUNpEXFxtv24tQ8jrdA==
 			client := buildClient()
 			err := client.Deploy()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configAfterLoad))
+			Expect(tfInputVarsFactory.NewInputVarsCallCount()).To(Equal(1))
+			Expect(tfInputVarsFactory.NewInputVarsArgsForCall(0)).To(Equal(configAfterLoad))
 		})
 
 		It("Loads terraform output", func() {

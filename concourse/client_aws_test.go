@@ -10,7 +10,6 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
-	. "github.com/tjarratt/gcounterfeiter"
 
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
@@ -307,7 +306,8 @@ var _ = Describe("client", func() {
 
 		It("Builds IAAS environment", func() {
 			Expect(buildClient().Destroy()).To(Succeed())
-			Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configInBucket))
+			Expect(tfInputVarsFactory.NewInputVarsCallCount()).To(Equal(1))
+			Expect(tfInputVarsFactory.NewInputVarsArgsForCall(0)).To(Equal(configInBucket))
 		})
 
 		It("Loads terraform output", func() {
@@ -350,7 +350,8 @@ var _ = Describe("client", func() {
 
 		It("calls TFInputVarsFactory, having populated AllowIPs and SourceAccessIPs", func() {
 			Expect(buildClient().Deploy()).To(Succeed())
-			Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configAfterLoad))
+			Expect(tfInputVarsFactory.NewInputVarsCallCount()).To(Equal(1))
+			Expect(tfInputVarsFactory.NewInputVarsArgsForCall(0)).To(Equal(configAfterLoad))
 		})
 
 		It("Loads terraform output", func() {
