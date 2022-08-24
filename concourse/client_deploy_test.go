@@ -11,8 +11,6 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 
-	. "github.com/tjarratt/gcounterfeiter"
-
 	"github.com/EngineerBetter/control-tower/bosh"
 	"github.com/EngineerBetter/control-tower/bosh/boshfakes"
 	"github.com/EngineerBetter/control-tower/certs"
@@ -405,35 +403,60 @@ wEW5QkylaPEkbVDhJWeR1I8=
 
 					tfInputVarsFactory.NewInputVarsReturns(terraformInputVars)
 
-					Expect(configClient).To(HaveReceived("EnsureBucketExists"))
-					Expect(configClient).To(HaveReceived("ConfigExists"))
-					Expect(configClient).To(HaveReceived("Load"))
-					Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configAfterLoad))
-					Expect(terraformCLI).To(HaveReceived("Apply").With(terraformInputVars))
-					Expect(terraformCLI).To(HaveReceived("BuildOutput").With(terraformInputVars))
-					Expect(configClient).To(HaveReceived("Update").With(configAfterLoad))
+					Expect(configClient.EnsureBucketExistsCallCount()).To(Equal(1))
+					Expect(configClient.ConfigExistsCallCount()).To(Equal(1))
+					Expect(configClient.LoadCallCount()).To(Equal(1))
+
+					Expect(tfInputVarsFactory.NewInputVarsCallCount()).To(Equal(1))
+					Expect(tfInputVarsFactory.NewInputVarsArgsForCall(0)).To(Equal(configAfterLoad))
+
+					Expect(terraformCLI.ApplyCallCount()).To(Equal(1))
+					Expect(terraformCLI.ApplyArgsForCall(0)).To(Equal(terraformInputVars))
+
+					Expect(terraformCLI.BuildOutputCallCount()).To(Equal(1))
+					Expect(terraformCLI.BuildOutputArgsForCall(0)).To(Equal(terraformInputVars))
+
+					Expect(configClient.UpdateCallCount()).To(Equal(2))
+					Expect(configClient.UpdateArgsForCall(0)).To(Equal(configAfterLoad))
 
 					Expect(certGenerationActions[0]).To(Equal("generating cert ca: control-tower-happymeal, cn: [99.99.99.99 10.0.0.6]"))
 					Expect(certGenerationActions[1]).To(Equal("generating cert ca: control-tower-happymeal, cn: [77.77.77.77]"))
 
-					Expect(configClient).To(HaveReceived("HasAsset").With("director-state.json"))
+					Expect(configClient.HasAssetCallCount()).To(Equal(2))
 					Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
-					Expect(configClient).To(HaveReceived("LoadAsset").With("director-state.json"))
-					Expect(configClient.LoadAssetArgsForCall(0)).To(Equal("director-state.json"))
-					Expect(configClient).To(HaveReceived("HasAsset").With("director-creds.yml"))
 					Expect(configClient.HasAssetArgsForCall(1)).To(Equal("director-creds.yml"))
-					Expect(configClient).To(HaveReceived("LoadAsset").With("director-creds.yml"))
+
+					Expect(configClient.LoadAssetCallCount()).To(Equal(2))
+					Expect(configClient.LoadAssetArgsForCall(0)).To(Equal("director-state.json"))
 					Expect(configClient.LoadAssetArgsForCall(1)).To(Equal("director-creds.yml"))
-					Expect(boshClient).To(HaveReceived("Deploy").With(directorStateFixture, directorCredsFixture, false))
 
-					Expect(configClient).To(HaveReceived("StoreAsset").With("director-state.json", directorStateFixture))
-					Expect(configClient).To(HaveReceived("StoreAsset").With("director-creds.yml", directorCredsFixture))
-					Expect(boshClient).To(HaveReceived("Cleanup"))
+					Expect(boshClient.DeployCallCount()).To(Equal(1))
+					state, creds, attach := boshClient.DeployArgsForCall(0)
+					Expect(state).To(Equal(directorStateFixture))
+					Expect(creds).To(Equal(directorCredsFixture))
+					Expect(attach).To(BeFalse())
 
-					Expect(credhubClient).To(HaveReceived("SetSelfUpdateCreds").With(awsClient, &terraformOutputs))
+					Expect(configClient.StoreAssetCallCount()).To(Equal(2))
+					name, content := configClient.StoreAssetArgsForCall(0)
+					Expect(name).To(Equal("director-state.json"))
+					Expect(content).To(Equal(directorStateFixture))
+					name, content = configClient.StoreAssetArgsForCall(1)
+					Expect(name).To(Equal("director-creds.yml"))
+					Expect(content).To(Equal(directorCredsFixture))
 
-					Expect(flyClient).To(HaveReceived("SetDefaultPipeline").With(configAfterCreateEnv, false))
-					Expect(configClient).To(HaveReceived("Update").With(configAfterConcourseDeploy))
+					Expect(boshClient.CleanupCallCount()).To(Equal(1))
+
+					Expect(credhubClient.SetSelfUpdateCredsCallCount()).To(Equal(1))
+					gotClient, outputs := credhubClient.SetSelfUpdateCredsArgsForCall(0)
+					Expect(gotClient).To(Equal(awsClient))
+					Expect(outputs).To(Equal(&terraformOutputs))
+
+					Expect(flyClient.SetDefaultPipelineCallCount()).To(Equal(1))
+					gotConfig, attach := flyClient.SetDefaultPipelineArgsForCall(0)
+					Expect(gotConfig).To(Equal(configAfterCreateEnv))
+					Expect(attach).To(BeFalse())
+
+					Expect(configClient.UpdateArgsForCall(1)).To(Equal(configAfterConcourseDeploy))
 				})
 
 				It("Warns about access to local machine", func() {
@@ -600,33 +623,53 @@ wEW5QkylaPEkbVDhJWeR1I8=
 				})
 
 				It("updates config and calls collaborators with the current arguments", func() {
-					client := buildClient()
-					err := client.Deploy()
-					Expect(err).ToNot(HaveOccurred())
+					Expect(buildClient().Deploy()).To(Succeed())
 
-					Expect(configClient).To(HaveReceived("ConfigExists"))
-					Expect(configClient).To(HaveReceived("Load"))
-					Expect(tfInputVarsFactory).To(HaveReceived("NewInputVars").With(configAfterLoad))
+					Expect(configClient.ConfigExistsCallCount()).To(Equal(1))
+					Expect(configClient.LoadCallCount()).To(Equal(1))
 
-					Expect(terraformCLI).To(HaveReceived("Apply").With(terraformInputVars))
-					Expect(terraformCLI).To(HaveReceived("BuildOutput").With(terraformInputVars))
-					Expect(configClient).To(HaveReceived("Update").With(configAfterLoad))
+					Expect(tfInputVarsFactory.NewInputVarsCallCount()).To(Equal(1))
+					Expect(tfInputVarsFactory.NewInputVarsArgsForCall(0)).To(Equal(configAfterLoad))
 
-					Expect(configClient).To(HaveReceived("HasAsset").With("director-state.json"))
+					Expect(terraformCLI.ApplyCallCount()).To(Equal(1))
+					Expect(terraformCLI.ApplyArgsForCall(0)).To(Equal(terraformInputVars))
+
+					Expect(terraformCLI.BuildOutputCallCount()).To(Equal(1))
+					Expect(terraformCLI.BuildOutputArgsForCall(0)).To(Equal(terraformInputVars))
+
+					Expect(configClient.UpdateCallCount()).To(Equal(2))
+					Expect(configClient.UpdateArgsForCall(0)).To(Equal(configAfterLoad))
+
+					Expect(configClient.HasAssetCallCount()).To(Equal(2))
 					Expect(configClient.HasAssetArgsForCall(0)).To(Equal("director-state.json"))
-					Expect(configClient).To(HaveReceived("LoadAsset").With("director-state.json"))
-					Expect(configClient.LoadAssetArgsForCall(0)).To(Equal("director-state.json"))
-					Expect(configClient).To(HaveReceived("HasAsset").With("director-creds.yml"))
 					Expect(configClient.HasAssetArgsForCall(1)).To(Equal("director-creds.yml"))
-					Expect(configClient).To(HaveReceived("LoadAsset").With("director-creds.yml"))
-					Expect(configClient.LoadAssetArgsForCall(1)).To(Equal("director-creds.yml"))
-					Expect(boshClient).To(HaveReceived("Deploy").With(directorStateFixture, directorCredsFixture, false))
 
-					Expect(configClient).To(HaveReceived("StoreAsset").With("director-state.json", directorStateFixture))
-					Expect(configClient).To(HaveReceived("StoreAsset").With("director-creds.yml", directorCredsFixture))
-					Expect(boshClient).To(HaveReceived("Cleanup"))
-					Expect(flyClient).To(HaveReceived("SetDefaultPipeline").With(configAfterCreateEnv, false))
-					Expect(configClient).To(HaveReceived("Update").With(configAfterConcourseDeploy))
+					Expect(configClient.LoadAssetCallCount()).To(Equal(2))
+					Expect(configClient.LoadAssetArgsForCall(0)).To(Equal("director-state.json"))
+					Expect(configClient.LoadAssetArgsForCall(1)).To(Equal("director-creds.yml"))
+
+					Expect(boshClient.DeployCallCount()).To(Equal(1))
+					state, creds, attach := boshClient.DeployArgsForCall(0)
+					Expect(state).To(Equal(directorStateFixture))
+					Expect(creds).To(Equal(directorCredsFixture))
+					Expect(attach).To(BeFalse())
+
+					Expect(configClient.StoreAssetCallCount()).To(Equal(2))
+					name, content := configClient.StoreAssetArgsForCall(0)
+					Expect(name).To(Equal("director-state.json"))
+					Expect(content).To(Equal(directorStateFixture))
+					name, content = configClient.StoreAssetArgsForCall(1)
+					Expect(name).To(Equal("director-creds.yml"))
+					Expect(content).To(Equal(directorCredsFixture))
+
+					Expect(boshClient.CleanupCallCount()).To(Equal(1))
+
+					Expect(flyClient.SetDefaultPipelineCallCount()).To(Equal(1))
+					gotConfig, attach := flyClient.SetDefaultPipelineArgsForCall(0)
+					Expect(gotConfig).To(Equal(configAfterCreateEnv))
+					Expect(attach).To(BeFalse())
+
+					Expect(configClient.UpdateArgsForCall(1)).To(Equal(configAfterConcourseDeploy))
 				})
 			})
 		})

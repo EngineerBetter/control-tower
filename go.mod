@@ -19,7 +19,6 @@ require (
 	github.com/onsi/gomega v1.20.0
 	github.com/square/certstrap v1.2.0
 	github.com/stretchr/testify v1.8.0
-	github.com/tjarratt/gcounterfeiter v0.0.0-20160901063240-8a4c307ac402
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234
 	golang.org/x/oauth2 v0.0.0-20220808172628-8227340efae7
