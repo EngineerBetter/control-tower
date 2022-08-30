@@ -7,10 +7,3 @@
 
 - type: remove
   path: /instance_groups/name=web/jobs/name=grafana/properties/grafana/ssl
-
-# this can be removed once
-# https://github.com/concourse/concourse-bosh-release/commit/20c9cad3c6de402d85a54a9941855d1fc4e70cd4
-# makes it into a final release
-- type: replace
-  path: /instance_groups/name=web/jobs/name=web/properties/lets_encrypt?/acme_url
-  value: https://acme-v02.api.letsencrypt.org/directory
