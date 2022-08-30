@@ -13,3 +13,4 @@ bindata.go
 opsassets/assets/
 .terraform/
 .envrc
+.github

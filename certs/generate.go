@@ -239,6 +239,7 @@ func generateCACert(caName string) (*pkix.Certificate, *pkix.Key, error) {
 		"",
 		"",
 		caName,
+		[]string{},
 	)
 	if err != nil {
 		return nil, nil, err
