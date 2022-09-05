@@ -15,7 +15,7 @@ require (
 	github.com/imdario/mergo v0.3.13
 	github.com/lib/pq v1.10.6
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
-	github.com/onsi/ginkgo/v2 v2.1.5
+	github.com/onsi/ginkgo/v2 v2.1.6
 	github.com/onsi/gomega v1.20.1
 	github.com/square/certstrap v1.3.0
 	github.com/stretchr/testify v1.8.0
