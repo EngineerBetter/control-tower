@@ -3,7 +3,7 @@ module github.com/EngineerBetter/control-tower
 require (
 	cloud.google.com/go/storage v1.26.0
 	code.cloudfoundry.org/credhub-cli v0.0.0-20220829130748-2db29379af6d
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.2
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.32.0
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.44.87
@@ -13,7 +13,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-acme/lego/v4 v4.8.0
 	github.com/imdario/mergo v0.3.13
-	github.com/lib/pq v1.10.6
+	github.com/lib/pq v1.10.7
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
 	github.com/onsi/ginkgo/v2 v2.2.0
 	github.com/onsi/gomega v1.21.1
@@ -22,7 +22,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	golang.org/x/net v0.0.0-20221004154528-8021a29435af
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
-	google.golang.org/api v0.94.0
+	google.golang.org/api v0.95.0
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -64,7 +64,7 @@ require (
 	golang.org/x/tools v0.1.12 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220829175752-36a9c930ecbf // indirect
+	google.golang.org/genproto v0.0.0-20220902135211-223410557253 // indirect
 	google.golang.org/grpc v1.49.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
