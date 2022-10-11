@@ -59,6 +59,7 @@ nLRbwHOoq7hHwg==
 		TLSCert:                   "",
 		TLSKey:                    "",
 		WebSize:                   "small",
+		PersistentDiskSize:        "default",
 		WorkerCount:               1,
 		WorkerSize:                "xlarge",
 		WorkerType:                "",
@@ -161,6 +162,16 @@ nLRbwHOoq7hHwg==
 			},
 			wantErr:     true,
 			expectedErr: fmt.Sprintf("unknown web node size: `bananas`. Valid sizes are: %v", WebSizes),
+		},
+		{
+			name: "Persistent disk size must be a known value",
+			modification: func() Args {
+				args := defaultFields
+				args.PersistentDiskSize = "bananas"
+				return args
+			},
+			wantErr:     true,
+			expectedErr: fmt.Sprintf("unknown persistent disk size: `bananas`. Valid sizes are: %v", PersistentDiskSizes),
 		},
 		{
 			name: "DB size must be a known value",

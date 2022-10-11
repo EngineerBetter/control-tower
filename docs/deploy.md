@@ -66,6 +66,7 @@ control-tower deploy \
 |**Flag**|**Description**|**Environment Variable**|
 |:-|:-|:-|
 |`--web-size value`|Size of Concourse web node. See table below for sizes<br>(default: "small")|`WEB_SIZE`|
+|`--persistent-disk value`|Size of Concourse web node persistent disk. See table below for sizes<br>(default: "default")|`PERSISTENT_DISK`|
 
 |--web-size|AWS Instance type|GCP Instance type|
 |:-|:-|:-|
@@ -74,6 +75,13 @@ control-tower deploy \
 |large|t3.large|n1-standard-4|
 |xlarge|t3.xlarge|n1-standard-8|
 |2xlarge|t3.2xlarge|n1-standard-16|
+
+|--persistent-disk|AWS size|GCP size|
+|:-|:-|:-|
+|small|20GB|20GB|
+|default|50GB|50GB|
+|medium|100GB|100GB|
+|large|200GB|200GB|
 
 ## Database Configuration
 

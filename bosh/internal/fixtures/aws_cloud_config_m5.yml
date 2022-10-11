@@ -137,8 +137,18 @@ vm_types:
     instance_type: m5.large  
 
 disk_types:
+- name: small
+  disk_size: 20_000
+  cloud_properties:
+    type: gp2
+    encrypted: true
 - name: default
   disk_size: 50_000
+  cloud_properties:
+    type: gp2
+    encrypted: true
+- name: medium
+  disk_size: 100_000
   cloud_properties:
     type: gp2
     encrypted: true

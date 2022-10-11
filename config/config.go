@@ -65,6 +65,7 @@ type Config struct {
 	Namespace                string `json:"namespace"`
 	NetworkCIDR              string `json:"network_cidr"`
 	NoMetrics                bool   `json:"no_metrics"`
+	PersistentDisk           string `json:"persistent_disk"`
 	PrivateCIDR              string `json:"private_cidr"`
 	PrivateKey               string `json:"private_key"`
 	Project                  string `json:"project"`
@@ -139,6 +140,7 @@ type ConfigView interface {
 	GetMicrosoftTenant() string
 	GetNamespace() string
 	GetNetworkCIDR() string
+	GetPersistentDiskSize() string
 	GetPrivateCIDR() string
 	GetPrivateKey() string
 	GetProject() string
@@ -207,6 +209,10 @@ func (c Config) GetConcourseUsername() string {
 
 func (c Config) GetConcourseWebSize() string {
 	return c.ConcourseWebSize
+}
+
+func (c Config) GetPersistentDiskSize() string {
+	return c.PersistentDisk
 }
 
 func (c Config) GetConcourseWorkerCount() int {

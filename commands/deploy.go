@@ -82,6 +82,13 @@ var deployFlags = []cli.Flag{
 		Destination: &initialDeployArgs.WebSize,
 	},
 	cli.StringFlag{
+		Name:        "persistent-disk",
+		Usage:       "(optional) Size of Concourse web node persistent disk. Can be small, default, medium, large",
+		EnvVar:      "PERSISTENT_DISK_SIZE",
+		Value:       "default",
+		Destination: &initialDeployArgs.PersistentDiskSize,
+	},
+	cli.StringFlag{
 		Name:        "iaas",
 		Usage:       "(required) IAAS, can be AWS or GCP",
 		EnvVar:      "IAAS",

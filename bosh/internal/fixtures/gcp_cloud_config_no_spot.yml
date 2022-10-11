@@ -86,8 +86,16 @@ vm_types:
     << : *common_properties
 
 disk_types:
+- name: small
+  disk_size: 20_000
+  cloud_properties:
+    type: pd-ssd
 - name: default
   disk_size: 50_000
+  cloud_properties:
+    type: pd-ssd
+- name: medium
+  disk_size: 100_000
   cloud_properties:
     type: pd-ssd
 - name: large

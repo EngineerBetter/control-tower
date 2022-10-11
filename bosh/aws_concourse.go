@@ -53,6 +53,7 @@ func (client *AWSClient) deployConcourse(creds []byte, detach bool) ([]byte, err
 		"postgres_password":          client.config.GetRDSPassword(),
 		"postgres_ca_cert":           db.RDSRootCert,
 		"web_vm_type":                "concourse-web-" + client.config.GetConcourseWebSize(),
+		"persistent_disk":            client.config.GetPersistentDiskSize(),
 		"worker_vm_type":             "concourse-" + client.config.GetConcourseWorkerSize(),
 		"worker_count":               client.config.GetConcourseWorkerCount(),
 		"atc_eip":                    atcPublicIP,

@@ -198,6 +198,7 @@ var _ = Describe("client", func() {
 			DirectorUsername:         "admin",
 			EncryptionKey:            "123456789a123456789b123456789c",
 			IAAS:                     "AWS",
+			PersistentDisk:           "default",
 			PrivateKey:               privateKeyFixture,
 			Project:                  "happymeal",
 			PublicKey:                "example-public-key",

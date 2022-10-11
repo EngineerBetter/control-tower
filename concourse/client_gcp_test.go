@@ -223,6 +223,7 @@ var _ = Describe("client", func() {
 			DirectorUsername:         "admin",
 			EncryptionKey:            "123456789a123456789b123456789c",
 			IAAS:                     "GCP",
+			PersistentDisk:           "default",
 			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA2spClkDkFfy2c91Z7N3AImPf0v3o5OoqXUS6nE2NbV2bP/o7
 Oa3KnpzeQ5DBmW3EW7tuvA4bAHxPuk25T9tM8jiItg0TNtMlxzFYVxFq8jMmokEi

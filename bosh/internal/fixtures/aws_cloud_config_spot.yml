@@ -153,8 +153,18 @@ vm_types:
     spot_ondemand_fallback: true #  
 
 disk_types:
+- name: small
+  disk_size: 20_000
+  cloud_properties:
+    type: gp2
+    encrypted: true
 - name: default
   disk_size: 50_000
+  cloud_properties:
+    type: gp2
+    encrypted: true
+- name: medium
+  disk_size: 100_000
   cloud_properties:
     type: gp2
     encrypted: true

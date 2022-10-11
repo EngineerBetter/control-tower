@@ -89,6 +89,14 @@ var _ = Describe("commands", func() {
 			})
 		})
 
+		When("an invalid persistent disk size is provided", func() {
+			It("shows a meaningful error", func() {
+				output, err := controlTowerCommand("deploy", "abc", "--persistent-disk", "tiny", "--iaas", "AWS").CombinedOutput()
+				Expect(err).To(HaveOccurred(), string(output))
+				Eventually(string(output)).Should(ContainSubstring("unknown persistent disk size"))
+			})
+		})
+
 		When("an invalid db size is provided", func() {
 			It("shows a meaningful error", func() {
 				output, err := controlTowerCommand("deploy", "abc", "--db-size", "huge", "--iaas", "AWS").CombinedOutput()

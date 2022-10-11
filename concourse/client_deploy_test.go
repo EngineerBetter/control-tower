@@ -168,6 +168,7 @@ var _ = Describe("client", func() {
 			EncryptionKey:            "123456789a123456789b123456789c",
 			IAAS:                     "AWS",
 			NoMetrics:                false,
+			PersistentDisk:           "default",
 			PrivateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA2spClkDkFfy2c91Z7N3AImPf0v3o5OoqXUS6nE2NbV2bP/o7
 Oa3KnpzeQ5DBmW3EW7tuvA4bAHxPuk25T9tM8jiItg0TNtMlxzFYVxFq8jMmokEi
@@ -699,6 +700,7 @@ wEW5QkylaPEkbVDhJWeR1I8=
 					IAAS:                     "AWS",
 					NetworkCIDR:              "10.0.0.0/16",
 					NoMetrics:                false,
+					PersistentDisk:           "default",
 					PrivateCIDR:              "10.0.1.0/24",
 					PrivateKey:               "private",
 					Project:                  "initial-deployment",

@@ -102,6 +102,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.DirectorUsername = "admin"
 	conf.EncryptionKey = passwordGenerator(32)
 	conf.IAAS = provider.IAAS().String()
+	conf.PersistentDisk = "default"
 	conf.PrivateKey = strings.TrimSpace(string(privateKey))
 	conf.PublicKey = strings.TrimSpace(string(publicKey))
 	conf.NoMetrics = false
@@ -154,6 +155,9 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	}
 	if deployArgs.WebSizeIsSet {
 		conf.ConcourseWebSize = deployArgs.WebSize
+	}
+	if deployArgs.PersistentDiskIsSet {
+		conf.PersistentDisk = deployArgs.PersistentDiskSize
 	}
 	if deployArgs.DBSizeIsSet {
 		conf.RDSInstanceClass = provider.DBType(deployArgs.DBSize)

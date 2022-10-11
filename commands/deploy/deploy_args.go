@@ -13,25 +13,27 @@ import (
 
 // Args are arguments passed to the deploy command
 type Args struct {
-	IAAS             string
-	IAASIsSet        bool
-	Region           string
-	RegionIsSet      bool
-	Domain           string
-	DomainIsSet      bool
-	TLSCert          string
-	TLSCertIsSet     bool
-	TLSKey           string
-	TLSKeyIsSet      bool
-	WorkerCount      int
-	WorkerCountIsSet bool
-	WorkerSize       string
-	WorkerSizeIsSet  bool
-	WebSize          string
-	WebSizeIsSet     bool
-	SelfUpdate       bool
-	SelfUpdateIsSet  bool
-	DBSize           string
+	IAAS                string
+	IAASIsSet           bool
+	Region              string
+	RegionIsSet         bool
+	Domain              string
+	DomainIsSet         bool
+	TLSCert             string
+	TLSCertIsSet        bool
+	TLSKey              string
+	TLSKeyIsSet         bool
+	WorkerCount         int
+	WorkerCountIsSet    bool
+	WorkerSize          string
+	WorkerSizeIsSet     bool
+	WebSize             string
+	WebSizeIsSet        bool
+	PersistentDiskSize  string
+	PersistentDiskIsSet bool
+	SelfUpdate          bool
+	SelfUpdateIsSet     bool
+	DBSize              string
 	// DBSizeIsSet is true if the user has manually specified the db-size (ie, it's not the default)
 	DBSizeIsSet                    bool
 	EnableGlobalResources          bool
@@ -126,6 +128,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.WorkerSizeIsSet = true
 			case "web-size":
 				a.WebSizeIsSet = true
+			case "persistent-disk":
+				a.PersistentDiskIsSet = true
 			case "iaas":
 				a.IAASIsSet = true
 			case "self-update":
@@ -200,6 +204,9 @@ var WorkerSizes = []string{"medium", "large", "xlarge", "2xlarge", "4xlarge", "1
 // WebSizes are the permitted concourse web sizes
 var WebSizes = []string{"small", "medium", "large", "xlarge", "2xlarge"}
 
+// PersistentDiskSizes are the permitted concourse persistent disk sizes
+var PersistentDiskSizes = []string{"small", "default", "medium", "large"}
+
 // AllowedDBSizes contains the valid values for --db-size flag
 var AllowedDBSizes = []string{"small", "medium", "large", "xlarge", "2xlarge", "4xlarge"}
 
@@ -218,6 +225,10 @@ func (a Args) Validate() error {
 	}
 
 	if err := a.validateWebFields(); err != nil {
+		return err
+	}
+
+	if err := a.validatePersistentDiskFields(); err != nil {
 		return err
 	}
 
@@ -294,6 +305,15 @@ func (a Args) validateWebFields() error {
 		}
 	}
 	return fmt.Errorf("unknown web node size: `%s`. Valid sizes are: %v", a.WebSize, WebSizes)
+}
+
+func (a Args) validatePersistentDiskFields() error {
+	for _, size := range PersistentDiskSizes {
+		if size == a.PersistentDiskSize {
+			return nil
+		}
+	}
+	return fmt.Errorf("unknown persistent disk size: `%s`. Valid sizes are: %v", a.PersistentDiskSize, PersistentDiskSizes)
 }
 
 func (a Args) validateDBFields() error {
