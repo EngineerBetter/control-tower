@@ -67,7 +67,10 @@ instance_groups:
                   ca: ((blobstore_ca.certificate))
     nats:
       address: ((internal_ip))
-      user: nats
+      director_account:
+        user: nats
+        password: ((nats_sync_password))
+        ca_cert: ((director_ssl.ca))
       password: ((nats_password))
       tls:
         ca: ((nats_server_tls.ca))
@@ -83,6 +86,7 @@ instance_groups:
         health_monitor:
           certificate: ((nats_clients_health_monitor_tls.certificate))
           private_key: ((nats_clients_health_monitor_tls.private_key))
+      user: nats
     postgres: &db
       listen_address: 127.0.0.1
       host: 127.0.0.1
@@ -130,6 +134,8 @@ instance_groups:
             password: ((admin_password))
           - name: hm
             password: ((hm_password))
+          - name: nats
+            password: ((nats_sync_password))
     hm:
       director_account:
         user: hm
@@ -162,6 +168,8 @@ variables:
 - name: mbus_bootstrap_password
   type: password
 - name: nats_password
+  type: password
+- name: nats_sync_password
   type: password
 - name: postgres_password
   type: password
