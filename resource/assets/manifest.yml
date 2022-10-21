@@ -53,7 +53,7 @@ instance_groups:
     static_ips: [((internal_ip))]
   properties:
     agent:
-      mbus: nats://nats:((nats_password))@((internal_ip)):4222
+      mbus: nats://((internal_ip)):4222
       env:
         bosh:
           blobstores:
