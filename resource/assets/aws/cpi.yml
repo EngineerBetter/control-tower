@@ -72,7 +72,3 @@
   value:
     name: registry_password
     type: password
-
-- path: /instance_groups/name=bosh/properties/agent/mbus?
-  type: replace
-  value: nats://((internal_ip)):4222
