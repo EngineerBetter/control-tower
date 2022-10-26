@@ -65,3 +65,7 @@
 - type: replace
   path: /cloud_provider/properties/ntp
   value: *ntp
+
+- path: /instance_groups/name=bosh/properties/agent/mbus?
+  type: replace
+  value: nats://((internal_ip)):4222
