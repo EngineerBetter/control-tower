@@ -142,8 +142,8 @@ github.com/fatih/color v1.13.0/go.mod h1:kLAiJbzzSOZDVNGyDpeOxJ47H46qBXwg5ILebYF
 github.com/fsnotify/fsnotify v1.5.4 h1:jRbGcIw6P2Meqdwuo0H1p6JVLbL5DHKAKlYndzMwVZI=
 github.com/ghodss/yaml v1.0.0 h1:wQHKEahhL6wmXdzwWG11gIVCkOv05bNOh+Rxn0yngAk=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
-github.com/go-acme/lego/v4 v4.8.0 h1:XienkuT6ZKHe0DE/LXeGP4ZY+ft+7ZMlqtiJ7XJs2pI=
-github.com/go-acme/lego/v4 v4.8.0/go.mod h1:MXCdgHuQh25bfi/tPpyOV/9k2p1JVu6oxXcylAwkouI=
+github.com/go-acme/lego/v4 v4.9.0 h1:8Hjj44IqRS7cigshMyFQ+0pIZvwgkG/+9A0UnNh7G8A=
+github.com/go-acme/lego/v4 v4.9.0/go.mod h1:g3JRUyWS3L/VObpp4bCxzJftKyf/Wba8QrSSnoiqjg4=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=

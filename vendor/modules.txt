@@ -134,8 +134,8 @@ github.com/fatih/color
 # github.com/ghodss/yaml v1.0.0
 ## explicit
 github.com/ghodss/yaml
-# github.com/go-acme/lego/v4 v4.8.0
-## explicit; go 1.17
+# github.com/go-acme/lego/v4 v4.9.0
+## explicit; go 1.18
 github.com/go-acme/lego/v4/acme
 github.com/go-acme/lego/v4/acme/api
 github.com/go-acme/lego/v4/acme/api/internal/nonces
