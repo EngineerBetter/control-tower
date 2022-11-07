@@ -1,7 +1,7 @@
 module github.com/EngineerBetter/control-tower
 
 require (
-	cloud.google.com/go/storage v1.27.0
+	cloud.google.com/go/storage v1.28.0
 	code.cloudfoundry.org/credhub-cli v0.0.0-20221104013302-286b40f5b40a
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.33.0
 	github.com/apparentlymart/go-cidr v1.1.0
