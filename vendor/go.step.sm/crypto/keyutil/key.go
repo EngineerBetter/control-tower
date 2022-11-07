@@ -2,7 +2,6 @@
 package keyutil
 
 import (
-	"bytes"
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/ed25519"
@@ -156,7 +155,7 @@ func VerifyPair(pubkey crypto.PublicKey, key crypto.PrivateKey) error {
 		if !ok {
 			return errors.New("private key type does not match public key type")
 		}
-		if pub.N.Cmp(priv.N) != 0 {
+		if !pub.Equal(priv.Public()) {
 			return errors.New("private key does not match public key")
 		}
 	case *ecdsa.PublicKey:
@@ -164,7 +163,7 @@ func VerifyPair(pubkey crypto.PublicKey, key crypto.PrivateKey) error {
 		if !ok {
 			return errors.New("private key type does not match public key type")
 		}
-		if pub.X.Cmp(priv.X) != 0 || pub.Y.Cmp(priv.Y) != 0 {
+		if !pub.Equal(priv.Public()) {
 			return errors.New("private key does not match public key")
 		}
 	case ed25519.PublicKey:
@@ -172,7 +171,7 @@ func VerifyPair(pubkey crypto.PublicKey, key crypto.PrivateKey) error {
 		if !ok {
 			return errors.New("private key type does not match public key type")
 		}
-		if !bytes.Equal(priv.Public().(ed25519.PublicKey), pub) {
+		if !pub.Equal(priv.Public()) {
 			return errors.New("private key does not match public key")
 		}
 	default:

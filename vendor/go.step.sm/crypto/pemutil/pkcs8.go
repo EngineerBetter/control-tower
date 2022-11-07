@@ -3,8 +3,8 @@ package pemutil
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/des"  // nolint:gosec // support for legacy keys
-	"crypto/sha1" // nolint:gosec // support for legacy keys
+	"crypto/des"  //nolint:gosec // support for legacy keys
+	"crypto/sha1" //nolint:gosec // support for legacy keys
 	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -212,7 +212,6 @@ func DecryptPKCS8PrivateKey(data, password []byte) ([]byte, error) {
 	iter := kdfParam.IterationCount
 
 	// pbkdf2 hash function
-	// nolint:gosec // support for legacy keys
 	keyHash := sha1.New
 	if kdfParam.PrfParam.Algo.Equal(oidHMACWithSHA256) {
 		keyHash = sha256.New
@@ -235,10 +234,10 @@ func DecryptPKCS8PrivateKey(data, password []byte) ([]byte, error) {
 	// DES, TripleDES
 	case encParam.EncryAlgo.Equal(oidDESCBC):
 		symkey = pbkdf2.Key(password, salt, iter, 8, keyHash)
-		block, err = des.NewCipher(symkey) // nolint:gosec // support for legacy keys
+		block, err = des.NewCipher(symkey) //nolint:gosec // support for legacy keys
 	case encParam.EncryAlgo.Equal(oidD3DESCBC):
 		symkey = pbkdf2.Key(password, salt, iter, 24, keyHash)
-		block, err = des.NewTripleDESCipher(symkey) // nolint:gosec // support for legacy keys
+		block, err = des.NewTripleDESCipher(symkey) //nolint:gosec // support for legacy keys
 	default:
 		return nil, errors.Errorf("unsupported encrypted PEM: unknown algorithm %v", encParam.EncryAlgo)
 	}

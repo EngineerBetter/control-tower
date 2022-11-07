@@ -51,11 +51,11 @@ func GenerateKey(rand io.Reader) (PublicKey, PrivateKey, error) {
 //
 // (x, y) = (sqrt(-486664)*u/v, (u-1)/(u+1))
 func (p PublicKey) ToEd25519() (ed25519.PublicKey, error) {
-	A, err := convertMont(p)
+	a, err := convertMont(p)
 	if err != nil {
 		return nil, err
 	}
-	return A.Bytes(), nil
+	return a.Bytes(), nil
 }
 
 // Public returns the public key using scalar multiplication (scalar * point)
@@ -157,7 +157,7 @@ func Sign(rand io.Reader, p PrivateKey, message []byte) (signature []byte, err e
 		return nil, err
 	}
 
-	R := (&edwards25519.Point{}).ScalarBaseMult(r)
+	R := (&edwards25519.Point{}).ScalarBaseMult(r) //nolint:gocritic // variable names match crypto formulae docs
 
 	hh := sha512.New()
 	hh.Write(R.Bytes())
@@ -212,14 +212,15 @@ func Verify(publicKey PublicKey, message, sig []byte) bool {
 		return false
 	}
 
-	A, err := convertMont(publicKey)
+	a, err := convertMont(publicKey)
+
 	if err != nil {
 		return false
 	}
 
 	hh := sha512.New()
 	hh.Write(sig[:32])
-	hh.Write(A.Bytes())
+	hh.Write(a.Bytes())
 	hh.Write(message)
 	hDigest := make([]byte, 0, sha512.Size)
 	hDigest = hh.Sum(hDigest)
@@ -233,9 +234,9 @@ func Verify(publicKey PublicKey, message, sig []byte) bool {
 		return false
 	}
 
-	minusA := (&edwards25519.Point{}).Negate(A)
-	R := (&edwards25519.Point{}).VarTimeDoubleScalarBaseMult(h, minusA, s)
-	return subtle.ConstantTimeCompare(sig[:32], R.Bytes()) == 1
+	minusA := (&edwards25519.Point{}).Negate(a)
+	r := (&edwards25519.Point{}).VarTimeDoubleScalarBaseMult(h, minusA, s)
+	return subtle.ConstantTimeCompare(sig[:32], r.Bytes()) == 1
 }
 
 // calculateKeyPair converts a Montgomery private key k to a twisted Edwards
