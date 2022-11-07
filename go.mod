@@ -16,7 +16,7 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
 	github.com/onsi/ginkgo/v2 v2.4.0
-	github.com/onsi/gomega v1.23.0
+	github.com/onsi/gomega v1.24.0
 	github.com/square/certstrap v1.3.0
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/crypto v0.1.0
