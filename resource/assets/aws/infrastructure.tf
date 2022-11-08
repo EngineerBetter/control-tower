@@ -254,7 +254,13 @@ resource "aws_route" "internet_access" {
   gateway_id             = "${aws_internet_gateway.default.id}"
 }
 
- resource "aws_nat_gateway" "default" {
+resource "aws_ec2_subnet_cidr_reservation" "director_reservation" {
+  cidr_block = "10.0.0.6/32"
+  reservation_type = "prefix"
+  subnet_id     = "${aws_subnet.private.id}"
+}
+
+resource "aws_nat_gateway" "default" {
   allocation_id = "${aws_eip.nat.id}"
   subnet_id     = "${aws_subnet.public.id}"
 
