@@ -28,7 +28,7 @@ domain=$(echo "$config" | jq -r '.config.domain')
 
 echo "Changing to new cert"
 aws --region "$region" s3 cp "s3://control-tower-$deployment-$region-config/terraform.tfstate" terraform.tfstate
-db_identifier="$(jq -r '.modules[0].resources."aws_db_instance.default".primary.id' < terraform.tfstate)"
+db_identifier="$(jq -r '.resources[] | select( .type == "aws_db_instance") | .instances[0].attributes.id' < terraform.tfstate)"
 aws --region "$region" rds modify-db-instance --db-instance-identifier "$db_identifier" --ca-certificate-identifier rds-ca-2019 --apply-immediately
 
 echo "Waiting for CA cert to change"
