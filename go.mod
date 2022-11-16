@@ -2,11 +2,11 @@ module github.com/EngineerBetter/control-tower
 
 require (
 	cloud.google.com/go/storage v1.28.0
-	code.cloudfoundry.org/credhub-cli v0.0.0-20221104013302-286b40f5b40a
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.33.0
+	code.cloudfoundry.org/credhub-cli v0.0.0-20221114141012-622af7c9eb0a
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.33.1
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
-	github.com/aws/aws-sdk-go v1.44.136
+	github.com/aws/aws-sdk-go v1.44.138
 	github.com/cloudfoundry/bosh-cli v6.4.1+incompatible
 	github.com/cppforlife/go-patch v0.2.0
 	github.com/fatih/color v1.13.0
@@ -66,7 +66,7 @@ require (
 	golang.org/x/tools v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20221111202108-142d8a6fa32e // indirect
+	google.golang.org/genproto v0.0.0-20221114212237-e4508ebdbee1 // indirect
 	google.golang.org/grpc v1.50.1 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
