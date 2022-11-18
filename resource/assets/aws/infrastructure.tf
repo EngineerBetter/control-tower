@@ -98,7 +98,8 @@ variable "hosted_zone_record_prefix" {
 
 terraform {
   required_providers {
-    "hashicorp/aws" = {
+    aws = {
+      source = "hashicorp/aws"
       version = "~> 4.39"
     }
   }
