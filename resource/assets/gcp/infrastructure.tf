@@ -83,7 +83,6 @@ provider "google" {
     credentials = "{{ .GCPCredentialsJSON }}"
     project = "{{ .Project }}"
     region = var.region
-    version = "~> 3.49.0"
 }
 
 
@@ -91,6 +90,13 @@ terraform {
 	backend "gcs" {
 		bucket = "{{ .ConfigBucket }}"
 	}
+
+    required_providers {
+      google = {
+        source = "hashicorp/google"
+        version = "~> 3.49.0"
+      }
+    }
 }
 
 {{if .DNSManagedZoneName }}
