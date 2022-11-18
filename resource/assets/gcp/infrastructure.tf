@@ -88,7 +88,7 @@ provider "google" {
 
 
 terraform {
-	backend "gcs" {
+	backend "hashicorp/gcs" {
 		bucket = "{{ .ConfigBucket }}"
 	}
 }
