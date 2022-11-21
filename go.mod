@@ -19,7 +19,7 @@ require (
 	github.com/onsi/gomega v1.24.1
 	github.com/square/certstrap v1.3.0
 	github.com/stretchr/testify v1.8.1
-	golang.org/x/crypto v0.2.0
+	golang.org/x/crypto v0.3.0
 	golang.org/x/net v0.2.0
 	golang.org/x/oauth2 v0.2.0
 	google.golang.org/api v0.103.0
