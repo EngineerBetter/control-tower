@@ -351,12 +351,18 @@ resource "aws_eip" "atc" {
 
 resource "aws_eip" "nat" {
   vpc = true
-  depends_on = [aws_internet_gateway.default]
+  depends_on = [time_sleep.wait_30_seconds]
 
   tags = {
     Name = "${var.deployment}-nat"
     control-tower-project = var.project
   }
+}
+
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [aws_internet_gateway.default]
+
+  destroy_duration = "30s"
 }
 
 resource "aws_security_group" "director" {
