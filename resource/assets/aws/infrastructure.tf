@@ -343,7 +343,7 @@ resource "aws_eip" "atc" {
   vpc = true
   depends_on = [aws_internet_gateway.default]
 
-    tags = {
+  tags = {
     Name = "${var.deployment}-atc"
     control-tower-project = var.project
   }
@@ -352,9 +352,8 @@ resource "aws_eip" "atc" {
 resource "aws_eip" "nat" {
   vpc = true
   depends_on = [aws_internet_gateway.default]
-  associate_with_private_ip = aws_nat_gateway.default.private_ip
 
-    tags = {
+  tags = {
     Name = "${var.deployment}-nat"
     control-tower-project = var.project
   }
