@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/route53"
@@ -299,7 +300,7 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 	filterName := "vpc-id"
 	ec2Client := ec2.New(a.sess)
 
-	instancesDescriptor := ec2.DescribeInstancesInput{
+	resp, err := ec2Client.DescribeInstances(&ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
 				Name: &filterName,
@@ -308,9 +309,7 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 				},
 			},
 		},
-	}
-
-	resp, err := ec2Client.DescribeInstances(&instancesDescriptor)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -331,18 +330,22 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 		return nil, nil
 	}
 
-	_, err = ec2Client.TerminateInstances(&ec2.TerminateInstancesInput{
+	if _, err = ec2Client.TerminateInstances(&ec2.TerminateInstancesInput{
 		InstanceIds: instancesToTerminate,
-	})
-	if err != nil {
-		return nil, err
+	}); err != nil {
+		return nil, fmt.Errorf("terminate instances %v: %w", instancesToTerminate, err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*20)
-	defer cancel()
-
-	if err = ec2Client.WaitUntilInstanceTerminatedWithContext(ctx, &instancesDescriptor); err != nil {
-		return nil, err
+	if err = ec2Client.WaitUntilInstanceTerminatedWithContext(
+		context.Background(),
+		&ec2.DescribeInstancesInput{InstanceIds: instancesToTerminate},
+		func(w *request.Waiter) {
+			// Wait 20 minutes, checking every 30 seconds
+			w.MaxAttempts = 40
+			w.Delay = func(_ int) time.Duration { return time.Second * 30 }
+		},
+	); err != nil {
+		return nil, fmt.Errorf("wait for instance termination: %w", err)
 	}
 
 	return volumesToDelete, nil
