@@ -339,11 +339,6 @@ resource "aws_eip" "director" {
   }
 }
 
-resource "aws_eip_association" "director_eip_assoc" {
-  allocation_id       = aws_eip.director.id
-  allow_reassociation = false
-}
-
 resource "aws_eip" "atc" {
   vpc = true
   depends_on = [aws_internet_gateway.default]
