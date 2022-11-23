@@ -1,6 +1,7 @@
 package iaas
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"strings"
@@ -298,7 +299,7 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 	filterName := "vpc-id"
 	ec2Client := ec2.New(a.sess)
 
-	resp, err := ec2Client.DescribeInstances(&ec2.DescribeInstancesInput{
+	instancesDescriptor := ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
 				Name: &filterName,
@@ -307,7 +308,9 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 				},
 			},
 		},
-	})
+	}
+
+	resp, err := ec2Client.DescribeInstances(&instancesDescriptor)
 	if err != nil {
 		return nil, err
 	}
@@ -332,6 +335,13 @@ func (a *AWSProvider) DeleteVMsInVPC(vpcID string) ([]string, error) {
 		InstanceIds: instancesToTerminate,
 	})
 	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*20)
+	defer cancel()
+
+	if err = ec2Client.WaitUntilInstanceTerminatedWithContext(ctx, &instancesDescriptor); err != nil {
 		return nil, err
 	}
 
