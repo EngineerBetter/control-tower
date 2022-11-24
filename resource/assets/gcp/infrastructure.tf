@@ -417,10 +417,12 @@ value = google_compute_address.atc_ip.address
 
 output "director_account_creds" {
   value = base64decode(google_service_account_key.bosh.private_key)
+  sensitive = true
 }
 
 output "self_update_account_creds" {
   value = base64decode(google_service_account_key.self_update.private_key)
+  sensitive = true
 }
 
 output "director_public_ip" {
