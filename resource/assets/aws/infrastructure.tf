@@ -261,11 +261,11 @@ resource "aws_route" "internet_access" {
   gateway_id             = aws_internet_gateway.default.id
 }
 
- resource "aws_nat_gateway" "default" {
+resource "aws_nat_gateway" "default" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public.id
 
-  depends_on = [aws_internet_gateway.default]
+  depends_on = [aws_internet_gateway.default, aws_ec2_subnet_cidr_reservation.director]
 
     tags = {
     Name = var.deployment
@@ -369,6 +369,12 @@ resource "aws_security_group" "director" {
     control-tower-project = var.project
     control-tower-component = "bosh"
   }
+
+resource "aws_ec2_subnet_cidr_reservation" "director" {
+  cidr_block       = "${cidrhost(var.private_cidr, 6)}/32"
+  reservation_type = "explicit"
+  subnet_id        = aws_subnet.private.id
+}
 
   ingress {
     from_port   = 6868
