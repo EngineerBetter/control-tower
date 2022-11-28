@@ -359,6 +359,12 @@ resource "aws_eip" "nat" {
   }
 }
 
+resource "aws_ec2_subnet_cidr_reservation" "director" {
+  cidr_block       = "${cidrhost(var.private_cidr, 6)}/32"
+  reservation_type = "explicit"
+  subnet_id        = aws_subnet.private.id
+}
+
 resource "aws_security_group" "director" {
   name        = "${var.deployment}-director"
   description = "Control-Tower Default BOSH security group"
@@ -369,12 +375,6 @@ resource "aws_security_group" "director" {
     control-tower-project = var.project
     control-tower-component = "bosh"
   }
-
-resource "aws_ec2_subnet_cidr_reservation" "director" {
-  cidr_block       = "${cidrhost(var.private_cidr, 6)}/32"
-  reservation_type = "explicit"
-  subnet_id        = aws_subnet.private.id
-}
 
   ingress {
     from_port   = 6868
