@@ -360,7 +360,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_ec2_subnet_cidr_reservation" "director" {
-  cidr_block       = "${cidrhost(var.private_cidr, 6)}/32"
+  cidr_block       = "${cidrhost(var.public_cidr, 6)}/32"
   reservation_type = "explicit"
   subnet_id        = aws_subnet.public.id
 }
