@@ -47,7 +47,7 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 ## explicit; go 1.13
 github.com/asaskevich/govalidator
-# github.com/aws/aws-sdk-go v1.44.144
+# github.com/aws/aws-sdk-go v1.44.146
 ## explicit; go 1.11
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/arn
@@ -136,7 +136,7 @@ github.com/fatih/color
 # github.com/ghodss/yaml v1.0.0
 ## explicit
 github.com/ghodss/yaml
-# github.com/go-acme/lego/v4 v4.9.0
+# github.com/go-acme/lego/v4 v4.9.1
 ## explicit; go 1.18
 github.com/go-acme/lego/v4/acme
 github.com/go-acme/lego/v4/acme/api
