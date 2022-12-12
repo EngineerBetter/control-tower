@@ -221,7 +221,7 @@ github.com/maxbrunsfeld/counterfeiter/v6/generator
 # github.com/miekg/dns v1.1.50
 ## explicit; go 1.14
 github.com/miekg/dns
-# github.com/onsi/ginkgo/v2 v2.5.1
+# github.com/onsi/ginkgo/v2 v2.6.0
 ## explicit; go 1.18
 github.com/onsi/ginkgo/v2
 github.com/onsi/ginkgo/v2/config
