@@ -489,7 +489,6 @@ jobs:
   - task: smoke-test
     file: control-tower/ci/tasks/smoke-test.yml
     params:
-      SKIP_TEARDOWN: true
       BINARY_PATH: binary-linux-amd64/((binary-name))-linux-amd64
       GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
       IAAS: GCP
@@ -499,33 +498,6 @@ jobs:
         channel: "#integrations"
         text: |
           Control-Tower *((branch))* branch *smoke-test-gcp* failure!
-    on_success:
-      task: cleanup
-      config:
-        platform: linux
-        image_resource:
-          type: registry-image
-          source:
-            repository: homebrew/brew
-        params:
-          GOOGLE_APPLICATION_CREDENTIALS_CONTENTS: ((system_test_google_application_credentials))
-          IAAS: GCP
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              sudo apt-get update
-              sudo apt-get install -y build-essential zlib1g-dev ruby ruby-dev openssl libxslt1-dev libxml2-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3
-              brew install engineerbetter/tap/control-tower
-              gcp_creds=$(mktemp)
-              echo "$GOOGLE_APPLICATION_CREDENTIALS_CONTENTS" > $gcp_creds
-              export GOOGLE_APPLICATION_CREDENTIALS=$gcp_creds
-                status=$?
-                set +e
-                ./cup --non-interactive destroy "$deployment"
-                set -e
-                exit $status
 
 - name: system-test
   serial_groups:
