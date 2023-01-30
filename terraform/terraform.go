@@ -57,7 +57,7 @@ func outputsFor(name iaas.Name) (Outputs, error) {
 	return &NullOutputs{}, errors.New("terraform: " + name.String() + " not a valid iaas provider")
 }
 
-// Option defines the arbitary element of Options for New
+// Option defines the arbitrary element of Options for New
 type Option func(*CLI) error
 
 // Path returns the path of the terraform-cli as an Option
@@ -68,7 +68,7 @@ func Path(path string) Option {
 	}
 }
 
-// DownloadTerraform returns the dowloaded CLI path Option
+// DownloadTerraform returns the downloaded CLI path Option
 func DownloadTerraform(versionFile []byte) Option {
 	return func(c *CLI) error {
 		var binaries map[string]util.BinaryPaths
