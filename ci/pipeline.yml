@@ -373,7 +373,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *lint* failure!
   - task: unit-test
@@ -382,7 +382,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *unit-test* failure!
 
@@ -476,7 +476,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *smoke-test* failure!
 
@@ -495,7 +495,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *smoke-test-gcp* failure!
 
@@ -532,7 +532,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test* failure!
 
@@ -568,7 +568,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-gcp* failure!
 
@@ -588,7 +588,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-rds-ca* failure!
 
@@ -609,7 +609,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-update* failure!
 
@@ -629,7 +629,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-update-gcp* failure!
 
@@ -648,7 +648,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-m5* failure!
 
@@ -668,7 +668,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-letsencrypt* failure!
 
@@ -687,7 +687,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-letsencrypt-gcp* failure!
 
@@ -716,7 +716,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-options-and-destroy* failure!
 - name: system-test-options-and-destroy-gcp
@@ -743,7 +743,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-options-and-destroy-gcp* failure!
 
@@ -767,7 +767,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-zone-delegation* failure!
 - name: system-test-zone-delegation-gcp
@@ -789,7 +789,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower *((branch))* branch *system-test-zone-delegation-gcp* failure!
 
@@ -827,7 +827,7 @@ jobs:
       new-versions: versions-file
   - put: slack-alert
     params:
-      channel: "#integrations"
+      channel: "#control-tower-integration"
       text_file: slack-message/text
 
 - name: auto
@@ -922,7 +922,7 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower AWS cleanup failure!
 
@@ -956,6 +956,6 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        channel: "#integrations"
+        channel: "#control-tower-integration"
         text: |
           Control-Tower GCP cleanup failure!
