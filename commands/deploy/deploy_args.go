@@ -36,6 +36,8 @@ type Args struct {
 	DBSize              string
 	// DBSizeIsSet is true if the user has manually specified the db-size (ie, it's not the default)
 	DBSizeIsSet                    bool
+	RDSDiskEncryption              bool
+	RDSDiskEncryptionIsSet         bool
 	EnableGlobalResources          bool
 	EnableGlobalResourcesIsSet     bool
 	EnablePipelineInstances        bool
@@ -136,6 +138,8 @@ func (a *Args) MarkSetFlags(c FlagSetChecker) error {
 				a.SelfUpdateIsSet = true
 			case "db-size":
 				a.DBSizeIsSet = true
+			case "rds-disk-encryption":
+				a.RDSDiskEncryptionIsSet = true
 			case "spot", "preemptible":
 				a.SpotIsSet = true
 			case "allow-ips":

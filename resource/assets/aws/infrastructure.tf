@@ -79,6 +79,11 @@ variable "rds1_cidr" {
   default = "{{ .RDS1CIDR }}"
 }
 
+variable "rds_disk_encryption" {
+  type = string
+  default = "{{ .RDSDiskEncryption }}"
+}
+
 variable "rds2_cidr" {
   type = string
   default = "{{ .RDS2CIDR }}"
@@ -221,7 +226,8 @@ resource "aws_iam_user_policy" "self_update" {
                 "iam:PutUserPolicy",
                 "rds:*",
                 "route53:*",
-                "s3:*"
+                "s3:*",
+                "kms:*"
             ],
             "Resource": "*",
             "Condition": {
@@ -653,6 +659,19 @@ resource "aws_db_subnet_group" "default" {
   }
 }
 
+resource "aws_kms_key" "default_key" {
+  count                   = var.rds_disk_encryption == "true" ? 1 : 0
+  description             = "${var.rds_default_database_name}-key"
+  deletion_window_in_days = 10
+  enable_key_rotation     = true
+}
+
+resource "aws_kms_alias" "default_key_alias" {
+  count         = var.rds_disk_encryption == "true" ? 1 : 0
+  name          = "alias/${var.rds_default_database_name}-key"
+  target_key_id = aws_kms_key.default_key[0].key_id
+}
+
 resource "aws_db_instance" "default" {
   allocated_storage           = 10
   apply_immediately           = true
@@ -671,6 +690,8 @@ resource "aws_db_instance" "default" {
   db_subnet_group_name        = aws_db_subnet_group.default.name
   skip_final_snapshot         = true
   storage_type                = "gp2"
+  storage_encrypted           = var.rds_disk_encryption
+  kms_key_id                  = var.rds_disk_encryption == "true" ? aws_kms_key.default_key[0].arn : ""
   lifecycle {
     ignore_changes = [allocated_storage]
   }

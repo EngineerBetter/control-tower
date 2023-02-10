@@ -79,6 +79,10 @@ func assertImmutableFieldsNotChanging(deployArgs *deploy.Args, conf config.Confi
 		return fmt.Errorf("Existing deployment uses zone %s and cannot change to zone %s", conf.GetAvailabilityZone(), deployArgs.Zone)
 	}
 
+	if deployArgs.RDSDiskEncryption != conf.GetRDSDiskEncryption() {
+		return fmt.Errorf("The disk encryption cannot be changed after inital deploy!")
+	}
+
 	return nil
 }
 
@@ -109,6 +113,7 @@ func populateConfigWithDefaults(conf config.Config, provider iaas.Provider, pass
 	conf.RDSInstanceClass = provider.DBType("small")
 	conf.RDSPassword = passwordGenerator(defaultPasswordLength)
 	conf.RDSUsername = "admin" + passwordGenerator(7)
+	conf.RDSDiskEncryption = false
 	conf.VMProvisioningType = config.SPOT
 	conf.WorkerType = "m4"
 	conf = populateConfigWithDefaultCIDRs(conf, provider)
@@ -161,6 +166,9 @@ func applyArgumentsToConfig(conf config.Config, deployArgs *deploy.Args, provide
 	}
 	if deployArgs.DBSizeIsSet {
 		conf.RDSInstanceClass = provider.DBType(deployArgs.DBSize)
+	}
+	if deployArgs.RDSDiskEncryptionIsSet {
+		conf.RDSDiskEncryption = deployArgs.RDSDiskEncryption
 	}
 	if deployArgs.BitbucketAuthIsSet {
 		conf.BitbucketClientID = deployArgs.BitbucketAuthClientID

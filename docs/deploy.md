@@ -123,6 +123,15 @@ control-tower deploy \
 
 > This flag overwrites the allowed IPs on every deploy. This means deploying with `allow-ips` then deploying again without it will reset the allow list to `0.0.0.0/0`. The self-update pipeline will maintain the `allow-ips` of the most recent deploy.
 
+## RDS Disk encryption
+
+On GCP the database disk encryption is enabled by default. On AWS we added the option to enable the disk encryption too. By default it's disabled.
+> Note that you can only change this value during the inital deploy. It's not possible to change this for a running instance.
+
+| **Flag**                | **Description**                                                                      | **Environment Variable** |
+| :-----------------------| :----------------------------------------------------------------------------------- | :----------------------- |
+| `--rds-disk-encryption` | Optional configuration to use an encrypted rds disk for AWS. Not enabled by default! | `RDSDiskEncryption`      |
+
 ## BitBucket Auth
 
 | **Flag**                               | **Description**                                                           | **Environment Variable**       |

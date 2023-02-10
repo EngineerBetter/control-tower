@@ -62,6 +62,7 @@ func (f *AWSInputVarsFactory) NewInputVars(c config.ConfigView) terraform.InputV
 		RDSInstanceClass:       c.GetRDSInstanceClass(),
 		RDSPassword:            c.GetRDSPassword(),
 		RDSUsername:            c.GetRDSUsername(),
+		RDSDiskEncryption:      c.GetRDSDiskEncryption(),
 		RDS1CIDR:               c.GetRDS1CIDR(),
 		RDS2CIDR:               c.GetRDS2CIDR(),
 		Region:                 c.GetRegion(),
