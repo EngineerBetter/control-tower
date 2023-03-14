@@ -1921,7 +1921,7 @@
       }
     }
   },
-  "revision": "20221116",
+  "revision": "20230226",
   "rootUrl": "https://sqladmin.googleapis.com/",
   "schemas": {
     "AclEntry": {
@@ -2312,6 +2312,8 @@
             "MYSQL_8_0_28",
             "MYSQL_8_0_29",
             "MYSQL_8_0_30",
+            "MYSQL_8_0_31",
+            "MYSQL_8_0_32",
             "SQLSERVER_2019_STANDARD",
             "SQLSERVER_2019_ENTERPRISE",
             "SQLSERVER_2019_EXPRESS",
@@ -2340,6 +2342,8 @@
             "The database major version is MySQL 8.0 and the minor version is 28.",
             "The database major version is MySQL 8.0 and the minor version is 29.",
             "The database major version is MySQL 8.0 and the minor version is 30.",
+            "The database major version is MySQL 8.0 and the minor version is 31.",
+            "The database major version is MySQL 8.0 and the minor version is 32.",
             "The database version is SQL Server 2019 Standard.",
             "The database version is SQL Server 2019 Enterprise.",
             "The database version is SQL Server 2019 Express.",
@@ -2498,6 +2502,8 @@
             "MYSQL_8_0_28",
             "MYSQL_8_0_29",
             "MYSQL_8_0_30",
+            "MYSQL_8_0_31",
+            "MYSQL_8_0_32",
             "SQLSERVER_2019_STANDARD",
             "SQLSERVER_2019_ENTERPRISE",
             "SQLSERVER_2019_EXPRESS",
@@ -2526,6 +2532,8 @@
             "The database major version is MySQL 8.0 and the minor version is 28.",
             "The database major version is MySQL 8.0 and the minor version is 29.",
             "The database major version is MySQL 8.0 and the minor version is 30.",
+            "The database major version is MySQL 8.0 and the minor version is 31.",
+            "The database major version is MySQL 8.0 and the minor version is 32.",
             "The database version is SQL Server 2019 Standard.",
             "The database version is SQL Server 2019 Enterprise.",
             "The database version is SQL Server 2019 Express.",
@@ -3030,6 +3038,8 @@
               "MYSQL_8_0_28",
               "MYSQL_8_0_29",
               "MYSQL_8_0_30",
+              "MYSQL_8_0_31",
+              "MYSQL_8_0_32",
               "SQLSERVER_2019_STANDARD",
               "SQLSERVER_2019_ENTERPRISE",
               "SQLSERVER_2019_EXPRESS",
@@ -3058,6 +3068,8 @@
               "The database major version is MySQL 8.0 and the minor version is 28.",
               "The database major version is MySQL 8.0 and the minor version is 29.",
               "The database major version is MySQL 8.0 and the minor version is 30.",
+              "The database major version is MySQL 8.0 and the minor version is 31.",
+              "The database major version is MySQL 8.0 and the minor version is 32.",
               "The database version is SQL Server 2019 Standard.",
               "The database version is SQL Server 2019 Enterprise.",
               "The database version is SQL Server 2019 Express.",
@@ -3890,6 +3902,50 @@
         },
         "kind": {
           "description": "This is always `sql#operationErrors`.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "OperationMetadata": {
+      "description": "Represents the metadata of the long-running operation.",
+      "id": "OperationMetadata",
+      "properties": {
+        "apiVersion": {
+          "description": "Output only. API version used to start the operation.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "cancelRequested": {
+          "description": "Output only. Identifies whether the user has requested cancellation of the operation. Operations that have been cancelled successfully have Operation.error value with a google.rpc.Status.code of 1, corresponding to `Code.CANCELLED`.",
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "createTime": {
+          "description": "Output only. The time the operation was created.",
+          "format": "google-datetime",
+          "readOnly": true,
+          "type": "string"
+        },
+        "endTime": {
+          "description": "Output only. The time the operation finished running.",
+          "format": "google-datetime",
+          "readOnly": true,
+          "type": "string"
+        },
+        "statusDetail": {
+          "description": "Output only. Human-readable status of the operation, if any.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "target": {
+          "description": "Output only. Server-defined resource path for the target of the operation.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "verb": {
+          "description": "Output only. Name of the verb executed by the operation.",
+          "readOnly": true,
           "type": "string"
         }
       },
@@ -4886,7 +4942,7 @@
           "type": "string"
         },
         "nextPageToken": {
-          "description": "An identifier that uniquely identifies the operation. You can use this identifier to retrieve the Operations resource that has information about the operation.",
+          "description": "Unused.",
           "type": "string"
         }
       },
@@ -4894,6 +4950,6 @@
     }
   },
   "servicePath": "",
-  "title": "Cloud SQL Admin API",
+  "title": "sqladmin API (prod)",
   "version": "v1beta4"
 }
