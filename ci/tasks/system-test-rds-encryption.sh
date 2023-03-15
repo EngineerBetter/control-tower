@@ -50,10 +50,10 @@ db_identifier="$(jq -r '.resources[] | select( .type == "aws_db_instance") | .in
 
 storageEncypted="$(aws rds describe-db-instances --region eu-west-1 --db-instance-identifier "$db_identifier" --output json | jq -r ".DBInstances[0].StorageEncrypted")"
 if [ "$storageEncypted" != "true" ]; then
-  echo "RDS Disk ${db_identifier} not encrypted, StorageEncrypted is set to"
+  echo "RDS Disk ${db_identifier} not encrypted, StorageEncrypted is set to ${db_identifier}"
   exit 1
 fi
 
-echo "RDS Disk ${db_identifier} encrypted, StorageEncrypted is set to"
+echo "RDS Disk ${db_identifier} encrypted, StorageEncrypted is set to ${db_identifier}"
 
 assertPipelineIsSettableAndRunnable
