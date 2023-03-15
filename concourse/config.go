@@ -80,7 +80,7 @@ func assertImmutableFieldsNotChanging(deployArgs *deploy.Args, conf config.Confi
 	}
 
 	if deployArgs.RDSDiskEncryption != conf.GetRDSDiskEncryption() {
-		return fmt.Errorf("The disk encryption cannot be changed after inital deploy!")
+		return fmt.Errorf("The disk encryption cannot be changed after initial deploy!")
 	}
 
 	return nil

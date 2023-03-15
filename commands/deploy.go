@@ -129,7 +129,7 @@ var deployFlags = []cli.Flag{
 	},
 	cli.BoolFlag{
 		Name:        "rds-disk-encryption",
-		Usage:       "(optional) Use a aws rds database with an encrypted disk. The KMS key is created automatically.",
+		Usage:       "(optional) Use an aws rds database with an encrypted disk. The KMS key is created automatically.",
 		EnvVar:      "RDSDiskEncryption",
 		Hidden:      true,
 		Destination: &initialDeployArgs.RDSDiskEncryption,

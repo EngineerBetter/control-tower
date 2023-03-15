@@ -126,10 +126,10 @@ control-tower deploy \
 ## RDS Disk encryption
 
 On GCP the database disk encryption is enabled by default. On AWS we added the option to enable the disk encryption too. By default it's disabled.
-> Note that you can only change this value during the inital deploy. It's not possible to change this for a running instance.
+> Note that you can only change this value during the initial deploy. It's not possible to change this for a running instance.
 
 | **Flag**                | **Description**                                                                      | **Environment Variable** |
-| :-----------------------| :----------------------------------------------------------------------------------- | :----------------------- |
+| :---------------------- | :----------------------------------------------------------------------------------- | :----------------------- |
 | `--rds-disk-encryption` | Optional configuration to use an encrypted rds disk for AWS. Not enabled by default! | `RDSDiskEncryption`      |
 
 ## BitBucket Auth
