@@ -48,7 +48,7 @@ sleep 30
 aws --region "$region" s3 cp "s3://control-tower-$deployment-$region-config/terraform.tfstate" terraform.tfstate
 db_identifier="$(jq -r '.resources[] | select( .type == "aws_db_instance") | .instances[0].attributes.id' < terraform.tfstate)"
 
-storageEncypted="$(aws rds describe-db-instances --region eu-west-1 --db-instance-identifier $db_identifier --output json | jq -r ".DBInstances[0].StorageEncrypted")"
+storageEncypted="$(aws rds describe-db-instances --region eu-west-1 --db-instance-identifier "$db_identifier" --output json | jq -r ".DBInstances[0].StorageEncrypted")"
 if [ "$storageEncypted" != "true" ]; then
   echo "RDS Disk ${db_identifier} not encrypted, StorageEncrypted is set to"
   exit 1
