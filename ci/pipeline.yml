@@ -123,6 +123,7 @@ groups:
   - system-test
   - system-test-update
   - system-test-rds-ca
+  - system-test-rds-encryption
   - system-test-m5
   - system-test-letsencrypt
   - system-test-options-and-destroy
@@ -149,6 +150,7 @@ groups:
   - system-test
   - system-test-update
   - system-test-rds-ca
+  - system-test-rds-encryption
   - system-test-m5
   - system-test-letsencrypt
   - system-test-options-and-destroy
