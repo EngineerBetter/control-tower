@@ -77,6 +77,7 @@ type Config struct {
 	RDSInstanceClass         string `json:"rds_instance_class"`
 	RDSPassword              string `json:"rds_password"`
 	RDSUsername              string `json:"rds_username"`
+	RDSDiskEncryption        bool   `json:"rds_disk_encryption"`
 	Region                   string `json:"region"`
 	SourceAccessIP           string `json:"source_access_ip"`
 	//Spot is deprecated, exists only as we need to migrate old configs to VMProvisioningType
@@ -152,6 +153,7 @@ type ConfigView interface {
 	GetRDSInstanceClass() string
 	GetRDSPassword() string
 	GetRDSUsername() string
+	GetRDSDiskEncryption() bool
 	GetRegion() string
 	GetSourceAccessIP() string
 	GetTags() []string
@@ -417,6 +419,10 @@ func (c Config) GetRDSPassword() string {
 
 func (c Config) GetRDSUsername() string {
 	return c.RDSUsername
+}
+
+func (c Config) GetRDSDiskEncryption() bool {
+	return c.RDSDiskEncryption
 }
 
 func (c Config) GetRegion() string {

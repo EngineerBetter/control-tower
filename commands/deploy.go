@@ -127,6 +127,13 @@ var deployFlags = []cli.Flag{
 		Value:       "small",
 		Destination: &initialDeployArgs.DBSize,
 	},
+	cli.BoolFlag{
+		Name:        "rds-disk-encryption",
+		Usage:       "(optional) Use a aws rds database with an encrypted disk. The KMS key is created automatically.",
+		EnvVar:      "RDSDiskEncryption",
+		Hidden:      true,
+		Destination: &initialDeployArgs.RDSDiskEncryption,
+	},
 	cli.BoolTFlag{
 		Name:        "spot",
 		Usage:       "(optional) Use spot instances for workers. Can be true/false (default: true)",
