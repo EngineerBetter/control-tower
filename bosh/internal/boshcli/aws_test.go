@@ -195,7 +195,7 @@ func TestAWSEnvironment_ConfigureConcourseStemcell(t *testing.T) {
 	}{
 		{
 			name:    "parse versions and provide a valid stemcell url",
-			want:    "https://storage.googleapis.com/bosh-aws-light-stemcells/5/light-bosh-stemcell-5-aws-xen-hvm-ubuntu-bionic-go_agent.tgz",
+			want:    "https://storage.googleapis.com/bosh-aws-light-stemcells/1.260/light-bosh-stemcell-1.260-aws-xen-hvm-ubuntu-jammy-go_agent.tgz",
 			wantErr: false,
 			fixture: "stemcell_version",
 		},

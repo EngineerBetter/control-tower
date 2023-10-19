@@ -48,8 +48,8 @@ Deploys:
 
 **AWS**
 
-- Concourse VM stemcell bosh-aws-xen-hvm-ubuntu-bionic-go_agent $stemcell_version
-- Director stemcell bosh-aws-xen-hvm-ubuntu-bionic-go_agent $director_stemcell_version
+- Concourse VM stemcell bosh-aws-xen-hvm-ubuntu-jammy-go_agent $stemcell_version
+- Director stemcell bosh-aws-xen-hvm-ubuntu-jammy-go_agent $director_stemcell_version
 - Concourse [$concourse_release_version]($concourse_release_url)
 - BOSH [$director_bosh_release_version]($director_bosh_release_url)
 - BOSH AWS CPI [$director_bosh_cpi_release_version]($director_bosh_cpi_release_url)
@@ -63,8 +63,8 @@ Deploys:
 
 **GCP**
 
-- Concourse VM stemcell bosh-google-kvm-ubuntu-bionic-go_agent $stemcell_version_gcp
-- Director stemcell bosh-google-kvm-ubuntu-bionic-go_agent $director_stemcell_version_gcp
+- Concourse VM stemcell bosh-google-kvm-ubuntu-jammy-go_agent $stemcell_version_gcp
+- Director stemcell bosh-google-kvm-ubuntu-jammy-go_agent $director_stemcell_version_gcp
 - Concourse [$concourse_release_version_gcp]($concourse_release_url_gcp)
 - BOSH [$director_bosh_release_version_gcp]($director_bosh_release_url_gcp)
 - BOSH GCP CPI [$director_bosh_cpi_release_version_gcp]($director_bosh_cpi_release_url_gcp)

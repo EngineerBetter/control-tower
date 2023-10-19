@@ -1,7 +1,7 @@
 [
     {
         "type": "replace",
-        "path": "/stemcells/alias=bionic/version",
+        "path": "/stemcells/alias=jammy/version",
         "value": "5"
     }
 ]

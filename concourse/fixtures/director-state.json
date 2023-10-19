@@ -23,7 +23,7 @@
     "stemcells": [
         {
             "id": "b6b63aec-89f6-4ea8-a4fb-cfb70423ff87",
-            "name": "bosh-aws-xen-hvm-ubuntu-bionic-go_agent",
+            "name": "bosh-aws-xen-hvm-ubuntu-jammy-go_agent",
             "version": "170.9",
             "cid": "ami-0cd3ce643104b027d light"
         }
