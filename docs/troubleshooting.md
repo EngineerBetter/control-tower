@@ -28,9 +28,9 @@ Control Tower uses [BOSH](https://bosh.io/docs/) to deploy and manage VMs. When 
     Deployment 'concourse'
 
     Instance                                     Process State  AZ  IPs          VM CID               VM Type               Active  Stemcell
-    web/95589e21-09af-412d-abef-a2065fa828fe     running        z1  1.2.3.4      i-00000000000000000  concourse-web-xlarge  true    bosh-aws-xen-hvm-ubuntu-bionic-go_agent/1.67
+    web/95589e21-09af-412d-abef-a2065fa828fe     running        z1  1.2.3.4      i-00000000000000000  concourse-web-xlarge  true    bosh-aws-xen-hvm-ubuntu-jammy-go_agent/1.67
                                                                     10.0.0.8
-    worker/17cedb77-a924-4e09-bb1a-952b7e8b3fc6  failing        z1  10.0.1.7     i-00000000000000000  concourse-2xlarge     true    bosh-aws-xen-hvm-ubuntu-bionic-go_agent/1.67
+    worker/17cedb77-a924-4e09-bb1a-952b7e8b3fc6  failing        z1  10.0.1.7     i-00000000000000000  concourse-2xlarge     true    bosh-aws-xen-hvm-ubuntu-jammy-go_agent/1.67
 
     2 vms
 
