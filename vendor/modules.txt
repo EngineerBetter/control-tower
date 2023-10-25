@@ -131,8 +131,8 @@ github.com/cppforlife/go-patch/patch
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/fatih/color v1.13.0
-## explicit; go 1.13
+# github.com/fatih/color v1.15.0
+## explicit; go 1.17
 github.com/fatih/color
 # github.com/ghodss/yaml v1.0.0
 ## explicit
@@ -216,7 +216,7 @@ github.com/lib/pq/scram
 # github.com/mattn/go-colorable v0.1.13
 ## explicit; go 1.15
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.16
+# github.com/mattn/go-isatty v0.0.17
 ## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
