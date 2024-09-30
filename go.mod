@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.215
 	github.com/cloudfoundry/bosh-cli v6.4.1+incompatible
 	github.com/cppforlife/go-patch v0.2.0
-	github.com/fatih/color v1.13.0
+	github.com/fatih/color v1.15.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-acme/lego/v4 v4.9.1
 	github.com/imdario/mergo v0.3.13
@@ -52,7 +52,7 @@ require (
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/miekg/dns v1.1.50 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
