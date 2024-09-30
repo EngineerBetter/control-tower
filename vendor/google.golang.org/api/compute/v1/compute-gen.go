@@ -13800,8 +13800,8 @@ type GuestOsFeature struct {
 	// commas to separate values. Set to one or more of the following
 	// values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET -
 	// UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE -
-	// SEV_SNP_CAPABLE For more information, see Enabling guest operating
-	// system features.
+	// SEV_SNP_CAPABLE - TDX_CAPABLE For more information, see Enabling
+	// guest operating system features.
 	//
 	// Possible values:
 	//   "FEATURE_TYPE_UNSPECIFIED"
@@ -15793,6 +15793,7 @@ type HttpHealthCheck struct {
 
 	// RequestPath: The request path of the HTTP health check request. The
 	// default value is /. This field does not support query parameters.
+	// Must comply with RFC3986.
 	RequestPath string `json:"requestPath,omitempty"`
 
 	// SelfLink: [Output Only] Server-defined URL for the resource.
@@ -16543,7 +16544,7 @@ type HttpsHealthCheck struct {
 	Port int64 `json:"port,omitempty"`
 
 	// RequestPath: The request path of the HTTPS health check request. The
-	// default value is "/".
+	// default value is "/". Must comply with RFC3986.
 	RequestPath string `json:"requestPath,omitempty"`
 
 	// SelfLink: [Output Only] Server-defined URL for the resource.
